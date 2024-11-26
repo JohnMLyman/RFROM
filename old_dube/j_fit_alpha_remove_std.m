@@ -1,0 +1,45 @@
+function [y_model,y_model_err_95,slope_error,slope,res]=j_fit_alpha_remove_std(t,y)
+% this code is a linear least square fit  Y=BX+e
+% E is a matrix of the X's that you are fitting to 
+% model is a vector of the B's
+% model_err is the stard devation of the varience of the B's to the the
+%       real B's see Wunch inverse modeling book
+% Right now the code is set up to fit a line with an off set
+%
+%       INPUTS
+% t which is time 
+% y the data which it is fit to 
+% scale the number of elements in t are divided by scale to give the number
+%   of dregrees of freedom. 
+
+
+%       OUTPUTS
+% y_model the line
+% y_model_err_95 the 95% interval of the error on y_model 
+% slope the slope of the line 
+% slope_error the 95% confidence on the slope
+scale=1.;
+
+E=[t'];
+covmat_inv=inv(E'*E);
+model=covmat_inv*E'*y';
+res=E*model-y';
+
+% this part computes the degrees of freedom taking into account the scale
+%   factor and subtracted from the number of elemnts that are fit to.
+
+dof=(size(E,1)/scale-size(E,2))
+chisqr=sum(res.^2)/dof;
+model_err=sqrt(diag(covmat_inv)*chisqr);
+y_model=t*model(1);
+
+% remove data outside of 2.8 std
+good=find(abs(res) <= 2.8*sqrt(chisqr));
+t=t(good);
+y=y(good);
+1001
+% if length(good) >=20
+ [y_model,y_model_err_95,slope_error,slope,res]=j_fit_alpha(t,y);
+
+% end 
+

@@ -1,0 +1,37 @@
+load allheat
+%clear xb xc te to pf cd ba bf bo ct cu ap dt dr mr mb uo os 
+
+
+
+for iyear=1900:2000
+    
+    good=find(dt(:,1) == iyear);
+ 
+    plot(cds(good,1),cds(good,2),'.')
+    title(num2str(iyear));
+    t_new=t(good,:);
+    s_new=s(good,:);
+    
+    junk=unique(t_new(:,1));
+    for ip=1:lenght(junk);
+        junk1=find(t_new(:,1)==junk(ip));
+        junk2=unique(t_new(junk1,2));
+        for ip2=1:length(junk2)
+            N=[junk(ip),junk(ip2)]
+            length(t_new(:,1) == junk(ip) & t_new(:,2) ==junk2(ip2))
+        end
+    end
+    
+    clear junk1 junk2 junk 
+           junk=unique(t_new(:,3));
+    for ip=1:lenght(junk);
+        junk1=find(t_new(:,3)==junk(ip));
+        junk2=unique(t_new(junk1,4));
+        for ip2=1:length(junk2)
+            N=[junk(ip),junk(ip2)]
+            length(t_new(:,3) == junk(ip) & t_new(:,4) ==junk2(ip2))
+        end
+    end  
+            
+             pause  
+end 

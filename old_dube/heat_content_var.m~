@@ -1,0 +1,39 @@
+% this code computes and plots the ten year trend in heat content.
+
+iyear=1993
+
+load (['hcseries2_twin_',num2str(iyear)])
+% df is the estimate of the subsambled TOPEX
+% tp is the estimate form the whole TOPEX record
+% per_var_t  is percent of the subsampled field in the 95% cofidence interval 
+dof=13
+
+
+
+
+per_var=sum((df-tp).^2)/sum((df-sum(df)).^2);
+
+df_a=df;
+per_var_t=per_var;
+df_t=df';
+for iyear=1994:2005
+    
+    load (['hcseries2_twin_',num2str(iyear)])
+    mean_df=sum(df)/length(df);
+    per_var=sum((df-tp).^2)/sum((df-mean_df).^2);
+    
+    per_var_t=[per_var_t,per_var];
+% %     df_a=df+df_a;
+% %     df_t=[df_t,df'];
+end
+
+% % df_a=df_a/dof;
+% % 
+% % %this part adds the 
+% % err=sqrt((.6e7)^2+(sqrt(var_t)/sqrt(dof)).^2)+1.1e7;
+% % figure
+% % e=errorbar(tgrid,tp,err);
+% % figure
+% % plot(tgrid,err);
+tgrid_err=tgrid;
+

@@ -1,0 +1,200 @@
+% makef3f5.m - matlab script to make figures 3 and 5 for the globahc paper
+
+% global integrals of heat content and storage
+
+min_year=1993;
+max_year=2008;
+%load in error bars
+
+load greg_talk_april_2007_error
+
+%area of the earth used to compute w/m^2
+area_of_earth=5.1e14
+
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+% simple fix that must be removed.  guessing that the error in 2006 was the
+% same as 2007...Made December 5th 2007
+
+time=[time 2007.5];
+time_error=time;
+time_all_error=[time_all 2007.5];
+error_noargo=[error_noargo error_noargo(end)];
+error_argo=[error_argo error_argo(end)];
+error_all=[error_all error_all(end)];
+
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+cd ../SAL/Floats
+
+[hc,time,hc_one]=heat_curv_gen_mat('htanom_1993_2007_oco_greg_josh.mat');
+%[hc_argo,time_argo,hc_one_argo]=heat_curv_gen_mat('htanom_1997_2006_xbt_argo.mat');
+%[hc_no_argo,time_no_argo,hc_one_no_argo]=heat_curv_gen_mat('htanom_1993_2006_xbt_no_argo.mat');
+
+%subsect argo and put into Zeta joules
+
+%good_pos=find(time_argo >= 2004 & time_argo <=max_year);
+%hc_argo=hc_argo(good_pos)/1e21;
+%time_argo=time_argo(good_pos);
+%hc_one_argo=hc_one_argo(good_pos)/1e21;
+
+%subsect no argo and put into Zeta joules
+
+%good_pos=find(time_no_argo >= 2004 & time_no_argo <=max_year);
+%hc_no_argo=hc_no_argo(good_pos)/1e21;
+%time_no_argo=time_no_argo(good_pos);
+%hc_one_no_argo=hc_one_no_argo(good_pos)/1e21;
+
+%subsect all and put into Zeta joules
+
+good_pos=find(time >= min_year & time <=max_year);
+hc=hc(good_pos)/1e21;
+time=time(good_pos);
+hc_one=hc_one(good_pos)/1e21;
+
+
+%subsect error and put into Zeta joules
+
+good_pos=find(time_error >=2004 & time_error <= max_year);
+time_error=time_error(good_pos);
+error_argo=error_argo(good_pos)/1e21;
+error_no_argo=error_noargo(good_pos)/1e21;
+
+
+good_pos=find(time_all_error >=min_year & time_all_error <=max_year);
+time_all_error=time_all_error(good_pos);
+error_all=error_all(good_pos)/1e21;
+
+
+close all
+
+figure(2); clf;orient landscape; wysiwyg
+
+p=plot(time,hc,'k-*');
+hold on
+%plot(time_argo,hc_argo,'-*');
+%plot(time_no_argo,hc_no_argo,'r-*');
+ylabel('0-750 m Heat Content Anomaly [zeta-joules]','fontsize',16);
+set(p,'linewidth',3)
+set(gca,'XTick',[min_year:1:max_year],'tickdir','out')
+
+xlabel('Time [years]','fontsize',16);
+
+title('0-750m Heat Content Anomaly','fontsize',18);
+axis([min_year max_year -80 110])
+set(gca,'fontsize',16)
+
+
+
+%e1=errorbar(time_argo,hc_argo,error_argo);set(e1,'linewidth',2)
+%e2=errorbar(time_no_argo,hc_no_argo,error_no_argo,'r');set(e2,'linewidth',2)
+e3=errorbar(time,hc,error_all,'k');set(e3,'linewidth',2)
+
+%plot the x-axis
+
+plot([min_year-1 max_year+1],[0 0],'k')
+
+     
+figure(3); clf;orient landscape; wysiwyg
+
+p=plot(time,hc_one,'k-*');
+hold on
+%plot(time_argo,hc_one_argo,'-*');
+%plot(time_no_argo,hc_one_no_argo,'r-*');
+ylabel('0-750 m Heat Content Anomaly [zeta-joules]','fontsize',16);
+set(p,'linewidth',3)
+set(gca,'XTick',[min_year:1:max_year],'tickdir','out')
+
+xlabel('Time [years]','fontsize',16);
+
+title('0-750m Heat Content Anomaly','fontsize',18);
+axis([min_year max_year -80 160])
+set(gca,'fontsize',16)
+
+
+
+%e1=errorbar(time_argo,hc_one_argo,error_argo);set(e1,'linewidth',2)
+%e2=errorbar(time_no_argo,hc_one_no_argo,error_no_argo,'r');set(e2,'linewidth',2)
+e3=errorbar(time,hc_one,error_all,'k');set(e3,'linewidth',2)
+
+%plot the x-axis
+
+plot([min_year-1 max_year+1],[0 0],'k')
+
+
+
+
+eval(['print -dpng -f2 /home/shoko2/wills/globalhc_dirs/Globalhc/figs/oco/hc_greg_oco_2007_oct_new'])
+eval(['print -dpng -f3 /home/shoko2/wills/globalhc_dirs/Globalhc/figs/oco/hc_one_greg_oco_2007_oct_new'])
+
+
+
+%compute the slope of the line
+
+
+
+% put heat content back in to joules
+cd /home/shoko2/wills/globalhc_dirs/Globalhc/HC
+hc2=hc*1e21;
+tgrid=time;
+std_error_hc2=error_all*1e21;
+
+scale_fit_hc2=std(hc2)./std(tgrid);
+
+
+hc2_2=hc2./scale_fit_hc2;
+
+std_error_hc2=std_error_hc2./scale_fit_hc2;
+
+w_hc2=1./(std_error_hc2.^2);
+
+ [y_model,y_model_err_95,slope_error_hc2,sl_hc2]=j_fit_weighted(tgrid,hc2_2,w_hc2);
+
+
+
+slope_error_hc2=slope_error_hc2*scale_fit_hc2./area_of_earth;
+sl_hc2=sl_hc2*scale_fit_hc2./area_of_earth;
+
+
+
+w2=num2str(sl_hc2/86400/365.25,'%4.2f');
+
+
+w2_err=num2str(slope_error_hc2/86400/365.25,'%4.2f');
+
+
+% ones slope
+
+txt= [w2,'\pm',w2_err,' W/m^2']
+
+hc2=hc_one*1e21;
+tgrid=time;
+std_error_hc2=error_all*1e21;
+
+scale_fit_hc2=std(hc2)./std(tgrid);
+
+
+hc2_2=hc2./scale_fit_hc2;
+
+std_error_hc2=std_error_hc2./scale_fit_hc2;
+
+w_hc2=1./(std_error_hc2.^2);
+
+ [y_model,y_model_err_95,slope_error_hc2,sl_hc2]=j_fit_weighted(tgrid,hc2_2,w_hc2);
+
+
+
+slope_error_hc2=slope_error_hc2*scale_fit_hc2./area_of_earth;
+sl_hc2=sl_hc2*scale_fit_hc2./area_of_earth;
+
+
+
+w2=num2str(sl_hc2/86400/365.25,'%4.2f');
+
+
+w2_err=num2str(slope_error_hc2/86400/365.25,'%4.2f');
+
+
+
+
+txt_ones= [w2,'\pm',w2_err,' W/m^2']
+
+ 

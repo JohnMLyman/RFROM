@@ -1,0 +1,414 @@
+% % file_path='/Users/johnlyman/data/Globalhc/Floats/Argo/CORIOLIS/'
+% % file_path_out='/Users/johnlyman/data/Globalhc/Floats/Argo/CORIOLIS/depth_grid/'
+% % file_name='pfloat_sal_greg_june_2008'
+
+%% Load in the WOD heat content without floats 
+
+%%%% run this code if WOD had been updataed. 
+%%% getwod_heat_oco
+
+eval(['load ',path_EN4_out,'allheat_wod_new_layers_all_conv4',file_name,file_WOD_suf]);
+% get rid of values that lie excatly at the poles
+
+% coords_at_north_pole=find(coords_wod(:,2)==90);
+% coords_wod(coords_at_north_pole,2)=coords_wod(coords_at_north_pole,2)-.00000001;
+
+% Get rid of bad OCLNUM and stuff that Willis QC got rid of (LOOK AT THIS
+% IN MORE DETAIL!!! MOKE SURE THAT IT TAKES OUT THE good_wod are the right
+% files.
+
+%[good_oclnum_willis]=good_oclnum_willis(dt_wod,coords_wod,time_wod,oclnum_wod);
+%[good_oclnum_willis]=good_oclnum_willis_shallow(dt_wod,coords_wod,time_wod,oclnum_wod);
+
+
+%load /Volumes/Data/Globalhc/WOD05/bad_xbt_oclnums_10 bad_oclnum
+
+% Don't qc 800m temperature of the files in the Black Sea or the
+% Mediterranean Sea also temps less than -2 degress c be removed
+
+
+%good_wod=find(qual_wod ==0 & ismember(oclnum_wod,good_oclnum_willis) & ~ismember(oclnum_wod,bad_oclnum));
+
+
+% coords_wod=coords_wod(good_wod,:);
+% dt_wod=dt_wod(good_wod,:);
+% fflag_wod=fflag_wod(good_wod,:);
+% heat_1800_wod=heat_1800_wod(good_wod);
+% heat_900_wod=heat_900_wod(good_wod);
+% heat_300_wod=heat_300_wod(good_wod);
+% heat_700_wod=heat_700_wod(good_wod);
+% heat_100_wod=heat_100_wod(good_wod);
+% mdep_wod=mdep_wod(good_wod);
+% oclnum_wod=oclnum_wod(good_wod);
+% pinfo_wod=pinfo_wod(good_wod);
+% qual_wod=qual_wod(good_wod);
+% time_wod=time_wod(good_wod);
+% wnum_wod=wnum_wod(good_wod);
+% 
+%% load in the Argo fields with out mean
+eval(['load ',file_path_out,'allheat_new_layers',allheat_extra,...
+    ht_var_name,...
+    'cds dt tm mdep npts time fptot fpkeep bdt bbas ind id qual ',...
+	'press_mis_flag dac_centre wmo_inst cycle'])%
+
+
+% change the qual flag to realtime
+
+
+
+
+argo_delayed_mode=nans(size(qual))';
+argo_delayed_mode(qual=='D')=1;
+argo_delayed_mode(qual=='R')=0;
+argo_float_id=id;
+argo_cycle=cycle;
+
+
+%% load in the meanfields from WOD
+depth_name=cell(1,length(layer_bounds)-1);
+
+
+for ilayer=2:length(layer_bounds)
+
+     eval(['depth_name{',num2str((ilayer-1)),'}=''',...
+         num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),''';'])
+end
+
+for jdepth=1:length(depth_name);
+    idepth=depth_name{jdepth}';
+ signal_to_noise=1;
+ 
+eval(['load ',file_path,file_name_mean,'_',idepth','_',num2str(signal_to_noise),'_oa_mean_new.mat ht_out one_out lon lat '])
+
+eval(['mean_heat_oa_',idepth','=ht_out;']);
+lon_grid=lon';
+lat_grid=lat';
+ end
+
+% remove the mean
+np=length(ht_out);
+% extend the lon of the mean so that it wraps around assumes globally
+% grided mean
+
+
+
+%%%
+
+
+nlon_oa=length(lon_grid);
+nlat_oa=length(lat_grid);
+
+lat_grid_oa=lat_grid;
+lon_grid_oa=lon_grid;
+lat_grid_oa2=repmat(lat_grid,[nlon_oa,1]);
+lon_grid_oa2=repmat(lon_grid',[1,nlat_oa]);
+
+eval(['load ',file_path_out,file_name_mean,'_mean_heat_oco_100_new_layers ',...
+    mean_heat_var_name,' lon_grid lat_grid'])
+
+
+
+% mean_heat_0_40=[mean_heat_0_40(end-21:end-1,:,:);mean_heat_0_40;mean_heat_0_40(2:22,:,:)];
+for ilayer=2:length(layer_bounds)
+     eval(['mean_heat_junk=',...
+        'mean_heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),';'])
+     
+     
+     mean_heat_junk=[mean_heat_junk(end-21:end-1,:,:);mean_heat_junk;mean_heat_junk(2:22,:,:)];
+     
+     eval(['mean_heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),...
+         '=mean_heat_junk;'])
+    
+end
+
+% 
+% mean_heat_1800=[mean_heat_1800(end-21:end-1,:,:);mean_heat_1800;mean_heat_1800(2:22,:,:)];
+% mean_heat_900=[mean_heat_900(end-21:end-1,:,:);mean_heat_900;mean_heat_900(2:22,:,:)];
+% mean_heat_700=[mean_heat_700(end-21:end-1,:,:);mean_heat_700;mean_heat_700(2:22,:,:)];
+% mean_heat_300=[mean_heat_300(end-21:end-1,:,:);mean_heat_300;mean_heat_300(2:22,:,:)];
+% mean_heat_100=[mean_heat_100(end-21:end-1,:,:);mean_heat_100;mean_heat_100(2:22,:,:)];
+% mean_heat_300_700=[mean_heat_300_700(end-21:end-1,:,:);mean_heat_300_700;mean_heat_300_700(2:22,:,:)];
+% mean_heat_100_300=[mean_heat_100_300(end-21:end-1,:,:);mean_heat_100_300;mean_heat_100_300(2:22,:,:)];
+
+lon_grid=[lon_grid(end-21:end-1)-360 lon_grid lon_grid(2:22)+360];
+
+
+
+% mean_total_heat_0_40=mean_heat_oa_0_40+interp2(lon_grid,lat_grid,mean_heat_0_40',lon_grid_oa2,lat_grid_oa2);
+for ilayer=2:length(layer_bounds)
+     eval(['mean_heat_junk=',...
+        'mean_heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),';'])
+     
+     eval(['mean_heat_oa_junk=',...
+        'mean_heat_oa_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),';'])
+     
+%      eval(['heat_junk=',...
+%         'heat_',num2str(layer_bounds(ilayer-1)),'_',...
+%          num2str(layer_bounds(ilayer)),';'])
+     
+     heat_grid_junk=interp2(lon_grid,lat_grid,mean_heat_junk',...
+        lon_grid_oa2,lat_grid_oa2);
+    mean_total_heat_junk=mean_heat_oa_junk+heat_grid_junk;
+    
+     
+     eval(['mean_total_heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),...
+         '=mean_total_heat_junk;'])
+    
+end
+% mean_total_heat_300=mean_heat_oa_300+interp2(lon_grid,lat_grid,mean_heat_300',lon_grid_oa2,lat_grid_oa2);
+% 
+% mean_total_heat_100_300=mean_heat_oa_100_300+interp2(lon_grid,lat_grid,mean_heat_100_300',lon_grid_oa2,lat_grid_oa2);
+% mean_total_heat_300_700=mean_heat_oa_300_700+interp2(lon_grid,lat_grid,mean_heat_300_700',lon_grid_oa2,lat_grid_oa2);
+% 
+% mean_total_heat_700=mean_heat_oa_700+interp2(lon_grid,lat_grid,mean_heat_700',lon_grid_oa2,lat_grid_oa2);
+% mean_total_heat_900=mean_heat_oa_900+interp2(lon_grid,lat_grid,mean_heat_900',lon_grid_oa2,lat_grid_oa2);
+% mean_total_heat_1800=mean_heat_oa_1800+interp2(lon_grid,lat_grid,mean_heat_1800',lon_grid_oa2,lat_grid_oa2);
+
+% remove the mean
+
+
+
+% extend the lon of the mean so that it wraps around assumes globally
+% grided mean
+
+
+
+% 
+% 
+% mean_total_heat_1800=[mean_total_heat_1800(end-21:end-1,:);mean_total_heat_1800;mean_total_heat_1800(2:22,:)];
+% mean_total_heat_900=[mean_total_heat_900(end-21:end-1,:);mean_total_heat_900;mean_total_heat_900(2:22,:)];
+% mean_total_heat_700=[mean_total_heat_700(end-21:end-1,:);mean_total_heat_700;mean_total_heat_700(2:22,:)];
+% mean_total_heat_300=[mean_total_heat_300(end-21:end-1,:);mean_total_heat_300;mean_total_heat_300(2:22,:)];
+% mean_total_heat_100=[mean_total_heat_100(end-21:end-1,:);mean_total_heat_100;mean_total_heat_100(2:22,:)];
+% 
+% mean_total_heat_300_700=[mean_total_heat_300_700(end-21:end-1,:);mean_total_heat_300_700;mean_total_heat_300_700(2:22,:)];
+% mean_total_heat_100_300=[mean_total_heat_100_300(end-21:end-1,:);mean_total_heat_100_300;mean_total_heat_100_300(2:22,:)];
+% 
+
+% mean_total_heat_0_40=[mean_total_heat_0_40(end-21:end-1,:,:);mean_total_heat_0_40;mean_total_heat_0_40(2:22,:,:)];
+for ilayer=2:length(layer_bounds)
+     eval(['mean_heat_junk=',...
+        'mean_total_heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),';'])
+     
+     
+     mean_heat_junk=[mean_heat_junk(end-21:end-1,:,:);mean_heat_junk;mean_heat_junk(2:22,:,:)];
+     
+     eval(['mean_total_heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),...
+         '=mean_heat_junk;'])
+    
+end
+
+lon_grid=[lon_grid_oa(end-21:end-1)-360 lon_grid_oa lon_grid_oa(2:22)+360];
+lat_grid=lat_grid_oa;
+
+
+% 
+%     heat_1800_junk=interp2(lon_grid,lat_grid,mean_total_heat_1800',...
+%         coords_wod(:,1),coords_wod(:,2));
+%     heat_1800_wod=heat_1800_wod-heat_1800_junk;
+%     
+%     
+%     heat_900_junk=interp2(lon_grid,lat_grid,mean_total_heat_900',...
+%         coords_wod(:,1),coords_wod(:,2));
+%     heat_900_wod=heat_900_wod-heat_900_junk;
+% 
+%     heat_700_junk=interp2(lon_grid,lat_grid,mean_total_heat_700',...
+%         coords_wod(:,1),coords_wod(:,2));
+%     heat_700_wod=heat_700_wod-heat_700_junk;
+% 
+%     heat_300_junk=interp2(lon_grid,lat_grid,mean_total_heat_300',...
+%         coords_wod(:,1),coords_wod(:,2));
+%     heat_300_wod=heat_300_wod-heat_300_junk;
+% 
+%     heat_100_junk=interp2(lon_grid,lat_grid,mean_total_heat_100',...
+%         coords_wod(:,1),coords_wod(:,2));
+%     heat_100_wod=heat_100_wod-heat_100_junk;
+%     
+%     
+%     heat_300_700_junk=interp2(lon_grid,lat_grid,mean_total_heat_300_700',...
+%         coords_wod(:,1),coords_wod(:,2));
+%     heat_300_700_wod=heat_300_700_wod-heat_300_700_junk;
+% 
+%     heat_100_300_junk=interp2(lon_grid,lat_grid,mean_total_heat_100_300',...
+%         coords_wod(:,1),coords_wod(:,2));
+%     heat_100_300_wod=heat_100_300_wod-heat_100_300_junk;
+    
+%     
+%     heat_0_40_junk=interp2(lon_grid,lat_grid,mean_total_heat_0_40',...
+%         coords_wod(:,1),coords_wod(:,2));
+%     heat_0_40_wod=heat_0_40_wod-heat_0_40_junk;
+    
+ for ilayer=2:length(layer_bounds)
+     eval(['mean_total_heat_junk=',...
+        'mean_total_heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),';'])
+     
+     
+     eval(['heat_wod_junk=',...
+        'heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),'_wod;'])
+     
+     mean_heat_grid_junk=interp2(lon_grid,lat_grid,mean_total_heat_junk',...
+        coords_wod(:,1),coords_wod(:,2));
+    heat_wod_junk=heat_wod_junk-mean_heat_grid_junk;
+    
+     
+     eval(['heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),...
+         '_wod=heat_wod_junk;'])
+    
+end
+    
+    
+
+    eval(['clear ',mean_heat_oa_name])
+   
+    %% remove a seasonal cycle from WOD 
+
+    
+ year_frac=(datenum(dt_wod)-datenum(dt_wod(:,1),0,0))./366;
+ for jdepth=1:length(depth_name);
+    idepth=depth_name{jdepth}';
+    signal_to_noise=1;
+ 
+%eval(['load ',file_path,file_name,'_',num2str(idepth),'_',num2str(signal_to_noise),'_oa_mean_new.mat ht_out one_out lon lat '])
+eval(['load ',file_path,file_name_mean,'_',idepth','_',num2str(signal_to_noise),'_season_gausian_bin_new_mon_dia_off.mat ht_out lat_grid lon_grid time_grid ']);
+
+eval(['mean_heat_oa_',idepth','=ht_out;']);
+
+ end
+
+ 
+ 
+% remove the mean
+np=length(ht_out);
+% extend the lon of the mean so that it wraps around assumes globally
+% grided mean
+
+
+% mean_heat_oa_1800=[mean_heat_oa_1800(end-21:end-1,:,:);mean_heat_oa_1800;mean_heat_oa_1800(2:22,:,:)];
+% mean_heat_oa_900=[mean_heat_oa_900(end-21:end-1,:,:);mean_heat_oa_900;mean_heat_oa_900(2:22,:,:)];
+% mean_heat_oa_700=[mean_heat_oa_700(end-21:end-1,:,:);mean_heat_oa_700;mean_heat_oa_700(2:22,:,:)];
+% mean_heat_oa_300=[mean_heat_oa_300(end-21:end-1,:,:);mean_heat_oa_300;mean_heat_oa_300(2:22,:,:)];
+% mean_heat_oa_100=[mean_heat_oa_100(end-21:end-1,:,:);mean_heat_oa_100;mean_heat_oa_100(2:22,:,:)];
+% mean_heat_oa_300_700=[mean_heat_oa_300_700(end-21:end-1,:,:);mean_heat_oa_300_700;mean_heat_oa_300_700(2:22,:,:)];
+% mean_heat_oa_100_300=[mean_heat_oa_100_300(end-21:end-1,:,:);mean_heat_oa_100_300;mean_heat_oa_100_300(2:22,:,:)];
+
+
+% mean_heat_oa_0_40=[mean_heat_oa_0_40(end-21:end-1,:,:);mean_heat_oa_0_40;mean_heat_oa_0_40(2:22,:,:)];
+for ilayer=2:length(layer_bounds)
+     eval(['mean_heat_junk=',...
+        'mean_heat_oa_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),';'])
+     
+     
+     mean_heat_junk=[mean_heat_junk(end-21:end-1,:,:);mean_heat_junk;mean_heat_junk(2:22,:,:)];
+     
+     eval(['mean_heat_oa_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),...
+         '=mean_heat_junk;'])
+    
+end
+
+
+lon_grid=[lon_grid(end-21:end-1)-360 lon_grid lon_grid(2:22)+360];
+
+
+
+    
+%     heat_0_40_junk=interp3(lat_grid,lon_grid,time_grid,mean_heat_oa_0_40,...
+%         coords_wod(:,2),coords_wod(:,1),year_frac);
+%     heat_0_40_wod=heat_0_40_wod-heat_0_40_junk;
+%     
+for ilayer=2:length(layer_bounds)
+     eval(['mean_heat_junk=',...
+        'mean_heat_oa_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),';'])
+     
+     eval(['heat_junk_wod=',...
+        'heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),'_wod;'])
+     
+     heat_wod_grid_junk=interp3(lat_grid,lon_grid,time_grid,mean_heat_junk,...
+        coords_wod(:,2),coords_wod(:,1),year_frac);
+    heat_anom_junk_wod=heat_junk_wod-heat_wod_grid_junk;
+    
+     
+     eval(['heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),...
+         '_wod=heat_anom_junk_wod;'])
+    
+end
+    
+    
+    
+%% combine WOD and argo 
+% ht_0_40=[heat_0_40_wod;ht_0_40];
+
+for ilayer=2:length(layer_bounds)
+     eval(['ht_junk=',...
+        'ht_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),';'])
+     
+     eval(['heat_wod_junk=',...
+        'heat_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),'_wod;'])
+     
+    ht_junk=[heat_wod_junk;ht_junk];
+    
+     
+     eval(['ht_',num2str(layer_bounds(ilayer-1)),'_',...
+         num2str(layer_bounds(ilayer)),...
+         '=ht_junk;'])
+    
+end
+
+
+
+% 
+% ht_1800=[heat_1800_wod;ht_1800];
+% ht_900=[heat_900_wod;ht_900];
+% ht_700=[heat_700_wod;ht_700];
+% ht_300=[heat_300_wod;ht_300];
+% ht_100=[heat_100_wod;ht_100];
+% ht_300_700=[heat_300_700_wod;ht_300_700];
+% ht_100_300=[heat_100_300_wod;ht_100_300];
+
+
+cds=[coords_wod;cds];
+dt=[dt_wod;dt];
+argo_delayed_mode=[nans(size(qual_wod));argo_delayed_mode];
+argo_float_id=[nans(size(qual_wod));argo_float_id];
+argo_cycle=[nans(size(qual_wod));argo_cycle];
+mdep=[mdep_wod;mdep];
+%time=[time_wod;time];
+
+wod_oclnum=[oclnum_wod;nans(size(id))];
+
+    
+
+
+
+
+    
+ eval(['save ',file_path_out,'allheat_new_layers_argo_WOD_new_',file_name,...
+    ht_var_name,...
+     'cds dt argo_delayed_mode argo_float_id mdep wod_oclnum'])
+	
+   
+
+
+% 
+% eval(['save /Volumes/ThunderBay/Data/Globalhc/WOD05/allheat_100_300_700_900_1800_argo_WOD_new_',file_name,' ht_1800 ht_900 ht_700 ht_300 ht_100 ht_300_700 ht_100_300 '...
+%     'cds dt argo_delayed_mode argo_float_id mdep wod_oclnum'])
+% 
+
+

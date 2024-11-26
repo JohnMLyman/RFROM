@@ -1,0 +1,181 @@
+% the new qc file qc3
+
+
+ 
+
+ d=sdir(['den_f*.mat']);
+ 
+ 
+ for isquare=13:length(d)
+   close(figure,h) 
+scrsz = get(0,'ScreenSize');
+ h=figure('Position',[1 scrsz(4)/1.5 scrsz(3)/1.5 scrsz(4)/1.5]);  
+eval(['load ',d(isquare).name])
+
+display(d(isquare).name)
+
+% sorting the data
+nd=length(depth);
+temp2=temp;
+
+yd=dt(:,1)+(dt(:,2)-1)/12.+(dt(:,3)-1)/365.;
+  
+  %find the right dates (ie only preform the qc on the times that
+  % I cheacked.
+  
+  good_times=find(yd >= 2002);
+  dt=dt(good_times,:);
+  temp=temp(good_times,:);
+  sal=sal(good_times,:);
+  fpress=fpress(good_times,:);
+  mdep=mdep(good_times);
+  temp2=temp;
+  sal2=sal;
+%caluculate the pontential density
+ press_ref=(fpress(:,1:nd-1)+fpress(:,2:nd))./2;
+% 
+ pden_top = sw_pden(sal(:,1:nd-1),temp(:,1:nd-1),fpress(:,1:nd-1),press_ref);
+% pden_bot = sw_pden(sal(:,2:nd),temp(:,2:nd),fpress(:,2:nd),press_ref);
+% 
+% del_den=pden_bot-pden_top;
+% 
+
+dsal=sal(:,1:nd-1)-sal(:,2:nd);
+
+ii=[]
+
+for ijunk=1:length(good_times)
+   npoint=length(finite());
+    
+end
+
+%get rid of profiles with a maxium value less than .
+
+
+jj=find(mdep <= 350.);
+
+if length(good_times) > 10
+
+    
+
+end
+% del_del <-0.001 is about the same as N^2 < -5e6 1/sec^2
+% [ibad,jbad]=find(del_den < -0.001 );
+% jj=unique(ibad);
+%find where there are density inversions
+
+
+%  
+ %jj=[jj;find(temp(:,4)<1)];
+% jj=[jj;find(temp(:,2)<100)];
+% jj=[jj;find(temp(:,8)<2.5)];
+% jj=[jj;find(temp(:,3)<13)];
+% jj=[jj;find(temp(:,11)<6)];
+%jj=[jj;find(temp(:,2)<8)];
+%jj=[jj;find(temp(:,6)<12)];
+%jj=[jj;find(temp(:,9)<12)];
+%jj=[jj;find(temp(:,1)<.6)];
+ %jj=[jj;find(temp(:,3)>28.74)];
+% 
+% jj=[jj;find(temp(:,9)>31)];
+%jj=[jj;find(temp(:,1)<13 & temp(:,1)>12.2)];
+
+temp(jj,:)=[];
+sal(jj,:)=[];
+pden_top(jj,:)=[];
+
+if length(temp) > 0 
+%del_den(jj,:)=[];
+%plotting the good data
+
+subplot(2,4,1)
+plot(sal2,-1.*depth,'.')
+title('all ');
+xlabel('salinity');
+ylabel('depth');
+
+%plotting all the data
+
+subplot(2,4,2)
+plot(temp2,-1.*depth,'.')
+title(['all ',d(isquare).name]);
+xlabel('temp');
+ylabel('depth');
+%axis([30 40 -200 -100])
+%plotting bad data
+
+subplot(2,4,3)
+plot(temp,-1.*depth,'.');
+title('good temp ');
+
+
+% 
+subplot(2,4,4)
+plot(sal,-1*depth,'.');
+title('good sal');
+
+subplot(2,4,8)
+% 
+ plot(pden_top,-1*depth(1:nd-1),'.')
+ title(['del den ',num2str(round(100*length(jj)./length(good_times))),' %'])
+
+
+% 
+% 
+% plot(temp2(jj,:),-1.*depth,'.')
+% title('bad');
+% xlabel('temp');
+% ylabel('depth');
+% 
+% 
+%plotting the map
+
+subplot(2,4,5)
+m_ungrid m_proj;
+m_proj('Miller Cylindrical');
+ m_coast;
+ m_grid;
+ hold on
+m_plot(coords(:,1),coords(:,2),'.k')
+
+%m_plot(coords(jj,1),coords(jj,2),'.r')
+hold off
+
+%plotting month
+
+
+subplot(2,4,6)
+
+plot(dt(:,2),'.b')
+
+hold on
+
+plot(dt(jj,2),'.r')
+xlabel('index');
+ylabel('month');
+hold off
+
+%plotting year
+
+subplot(2,4,7)
+
+plot(dt(:,1),'.b')
+
+hold on
+
+plot(dt(jj,1),'.r')
+xlabel('index');
+ylabel('year');
+hold off
+
+pause
+
+end
+% % % if length (temp) >=1 
+% % %     fpress(jj,:)=[];id(jj,:)=[];qual(jj)=[];coords(jj,:)=[];dt(jj,:)=[];
+% % %     npts(jj)=[];mdep(jj)=[];time(jj,:)=[];
+% % %     per_bad_den=100*length(jj)./length(good_times);
+% % %  eval(['save den_',d(isquare).name,' coords dt time ',...
+% % %         'temp qual depth mdep npts id sal fpress per_bad_den'])
+% % % end
+ end

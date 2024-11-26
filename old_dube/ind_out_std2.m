@@ -1,0 +1,24 @@
+function [ind_bad]=ind_out_std2(vec,n_std)
+% this fuction find the indiceses of points that lie outside of n_std std of
+% the mean of vec. twice
+
+[ind1]=ind_out_std(vec,n_std);
+
+good=[1:length(vec)];
+good(ind1)=[];
+vec(ind1)=[];
+
+
+good2=[1:length(vec)];
+[ind2]=ind_out_std(vec,n_std);
+vec(ind2)=[];
+[ind3]=ind_out_std(vec,n_std);
+
+
+
+
+ind_bad=[good2(ind3),good(ind2),ind1'];
+
+%ind_bad=[good(ind2),ind1'];
+
+

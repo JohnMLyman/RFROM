@@ -1,0 +1,30 @@
+
+min_year=1993;
+max_year=2010;
+
+% iyear is the year that the error is computed for
+
+iyear=1965.5;
+
+
+
+% this is the range of years that the sub-sampeling experiment is computed
+% over.
+
+tgrid=[min_year:max_year]+.5;
+
+% 
+depth_maps='100';
+
+% estimate with all of topex
+
+[hctpx,tpave]=heat_curv_gen_twin_real_realtime_2012(tgrid,depth_maps);
+
+
+%estimate with just instu data
+[tsub,hc2,time_twin]=heat_curv_gen_twin_realtime_2012( ['allheat_twin_',depth_maps,'_',num2str(iyear),'.mat_tpx_map.mat'],depth_maps);
+    
+   
+% guessed estimate using aphla to estiamte uncertiantiy
+ones_file='/Volumes/Data/Globalhc/HC
+[hctpx_ones,sshtpx_ones]=heat_curv_gen_twin_real_realtime_alpha_2012(tgrid,depth_maps,ones_file,iyear)

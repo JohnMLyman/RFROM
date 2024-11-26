@@ -1,0 +1,19 @@
+
+d=sdir(['grad_den_0_grid_aden_den_no_*.mat']);
+d_ind=sdir(['ind_grad_den_0_grid_aden_den_no_*.mat']);
+ 
+d_length=length(d)
+d_ind_length=length(d_ind)
+
+
+for i=1:s
+
+    
+    num(i)=str2num(d(i).name(30:33));
+    
+   if i <= d_ind_length
+       num_ind(i)=str2num(d_ind(i).name(34:37));
+   end %if
+
+
+end %for

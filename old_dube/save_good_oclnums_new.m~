@@ -1,0 +1,15 @@
+d=sdir('e*.mat');
+good_oclnums=[];
+
+for l=1:length(d)
+   d(l).name
+   eval(['load ',d(l).name,' oclnum'])
+   
+   good_oclnums=[good_oclnums;oclnum];
+   
+end
+
+
+
+
+eval(['save ',path,' good_ocl])

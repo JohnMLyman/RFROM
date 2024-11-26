@@ -1,0 +1,2 @@
+stablize_t_and_sl(TreeSetUp)
+stablize_tm(TreeSetUp)

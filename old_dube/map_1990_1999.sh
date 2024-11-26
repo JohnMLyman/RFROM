@@ -1,0 +1,10 @@
+echo hdata1990c.txt > input2; ./mapheat2.x
+echo hdata1991c.txt > input2; ./mapheat2.x
+echo hdata1992c.txt > input2; ./mapheat2.x
+echo hdata1993c.txt > input2; ./mapheat2.x
+echo hdata1994c.txt > input2; ./mapheat2.x
+echo hdata1995c.txt > input2; ./mapheat2.x
+echo hdata1996c.txt > input2; ./mapheat2.x
+echo hdata1997c.txt > input2; ./mapheat2.x
+echo hdata1998c.txt > input2; ./mapheat2.x
+echo hdata1999c.txt > input2; ./mapheat2.x

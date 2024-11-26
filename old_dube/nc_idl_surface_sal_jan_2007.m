@@ -1,0 +1,61 @@
+function nc_idl_surface_sal_jan_2007
+
+% ncexample.m -- "NetCDF Toolbox for Matlab-5" example.
+%  ncexample (no argument) is a short example that lists
+%   itself, builds a simple NetCDF file, then displays
+%   its variables.
+ 
+% Copyright (C) 1997 Dr. Charles R. Denham, ZYDECO.
+%  All Rights Reserved.
+%   Disclosure without explicit written consent from the
+%    copyright owner does not constitute publication.
+ 
+% Version of 12-Jun-1997 16:23:04.
+
+
+type(mfilename)
+
+help(mfilename)
+ 
+% ---------------------------- DEFINE THE FILE --------------------------- %
+
+ncquiet                                              % No NetCDF warnings.
+
+nc = netcdf('surface_sal_jan_2007.nc', 'clobber');              % Create NetCDF file.
+
+nc.description = 'Argo surface sal nutral desity surfaces';                   % Global attributes.
+nc.author = 'Dr. John M/ Lyman';
+nc.date = 'Agust 22, 2006';
+%load /home/shoko2/wills/globalhc_dirs/Globalhc/SAL/Floats/total_den_grid_april_19.mat
+load /home/shoko2/wills/globalhc_dirs/Globalhc/SAL/Floats/argo/all_surface
+
+% Define dimensions.
+
+[n_prof,n_coords]=size(coords_surface);
+nc('n_prof') = n_prof;
+nc('n3')=2;
+nc('n4')=3;
+
+  % Define variables.
+
+
+
+nc{'coords'}={'n_prof','n3'};
+nc{'dt'}={'n_prof','n4'};
+nc{'time'}={'n_prof'};
+nc{'surface_sal'}={'n_prof'};
+
+%nc{'latitude'}.units = 'degrees';                    % Attributes.%
+%nc{'longitude'}.units = 'degrees';
+%nc{'depth'}.units = 'meters';
+
+
+                                                    % Put all the data.
+
+nc{'coords'}(:) = coords_surface;
+nc{'dt'}(:) = dt_surface;
+nc{'time'}(:) = time_surface;
+nc{'surface_sal'}(:) = surface_sal_surface;
+
+nc = close(nc);                                      % Close the file.
+

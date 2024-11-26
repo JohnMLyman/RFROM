@@ -1,0 +1,116 @@
+function [cds_atl,pos_good_atl,cds_pac,pos_good_pac,cds_ind,pos_good_ind]=find_basin_allheat_extra(cds)
+
+%           inputs 
+%  lat(nlat) -90 to 90
+%  lon(nlon) -180 to 180
+%  sss(nlon,nlat)
+
+%       Output (points outside the basin are set to NaN)
+%
+%   sss_ataltic(nlon,nlat) 
+%   sss_pacific(nlon,nlat)
+%   sss_indian(nlon,nlat)
+%
+% Note always plot the basins, and the whole globe to make sure it makes
+% sense!!
+lat2=cds(:,2);
+lon2=cds(:,1);
+
+
+pos=[1:length(lat2)];
+
+
+% Indian Ocean
+
+% block in Atlantic
+pos_mask=find(lon2 >= 0 & lon2<= 20 & lat2 <= -36) ;
+pos_good=pos_mask;
+
+
+% block in Pacific
+
+pos_mask=find(lon2 <= 166 & lon2 >= 146 & lat2 < -22) ;
+pos_good=[pos_mask; pos_good];
+
+% subsect data
+
+
+
+cds_ind=cds(pos_good,:);
+
+pos_good_ind=pos_good;
+
+
+
+
+% Pacific Ocean
+
+% block in Indian
+pos_mask=find(lon2 <= 146 & lon2 >= 126 & lat2 < -22) ;
+pos_good=pos_mask;
+
+% block in Atlantic
+
+pos_mask=find(lon2 >= -68 & lon2 <= -48 & lat2 <= -56) ;
+pos_good=[pos_mask; pos_good];
+
+% blocks in the north
+pos_mask=find(lon2 >= -44.3 & lon2 <= 40 & lat2 >= 60 & lat2 <=80) ;
+pos_good=[pos_mask; pos_good];
+
+
+% subsect data
+
+cds_pac=cds(pos_good,:);
+
+pos_good_pac=pos_good;
+
+
+
+
+
+
+
+
+% Atlantic mask
+
+% blocks in the north
+pos_mask=find(lon2 >= -30 & lon2 <= 50 & lat2 >= 80) ;
+pos_good=pos_mask;
+
+% block in Pacific
+
+pos_mask=find(lon2 >= -88 & lon2 <= -68 & lat2 <= -56) ;
+pos_good=[pos_mask; pos_good];
+
+% block in Indian
+
+pos_mask=find(lon2 >= 0 & lon2<= 20 & lat2 <= -36) ;
+pos_good=[pos_mask; pos_good];
+
+% subsect data
+
+pos_good_atl=pos_good;
+cds_atl=cds(pos_good_atl,:);
+
+
+
+
+
+% pcolor(lon,lat,sss_indian')
+% shading flat
+% plot_coasts_black
+% figure
+% %hold on
+% pcolor(lon,lat,sss_atlantic')
+% shading flat
+% plot_coasts_black
+% figure
+% %hold on
+% pcolor(lon,lat,sss_pacific')
+% shading flat
+% plot_coasts_black
+
+
+
+end

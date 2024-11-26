@@ -1,0 +1,9 @@
+function d=j_var(f)
+
+% this code computes the varience with nans
+
+
+
+m=j_mean(f);
+v=j_mean(f^.2);
+d=v-m*m;

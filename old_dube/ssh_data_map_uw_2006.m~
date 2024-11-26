@@ -1,0 +1,91 @@
+
+load allheat dt tm cds
+
+coords=cds;
+day=datenum([dt,tm,0*tm,0*tm])-datenum(1950,1,1);
+
+num_date_plot=19365+100*7;
+date_plot=datevec(num_date_plot+datenum(1950,1,1));
+
+good_obs=find(day <= num_date_plot+5 & day >=num_date_plot-5);
+cds=coords(good_obs,:);
+
+eval(['load ../Mtpers/ssh',num2str(num_date_plot),'.mat'])
+
+
+ssh=[sshanom(542:end,:);sshanom(1:541,:)];
+
+lon_tpx=[lon(542:end)-360;lon(1:541)];
+lat_tpx=lat;
+arw=areavec(lon_tpx,lat_tpx);
+clear lon lat
+
+load landmask msk2
+
+ 
+
+
+%i=3
+figure(2);wysiwyg
+
+
+
+% linear interpilate to topex grid and apply mland mask
+
+
+ssh(isnan(msk2(2:end-1,:)))=NaN;
+corrhc=ssh;
+
+lon=lon_tpx;
+lat=lat_tpx;
+
+% compute the area average heatcontent across the globe.
+
+% put into the proper coordinates
+min_val=-40
+max_val=40
+del_val=5
+
+ii=find(lon<30);
+jj=find(lon>=30);
+lon=[lon(jj);lon(ii)+360];
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+colormap jet(256)
+
+pcolor(lon,lat,corrhc')
+caxis([min_val max_val])
+shading flat
+
+%t1=text(70,50,[num2str(time(i))],'fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+
+plot(cds(:,1),cds(:,2),'o','MarkerSize',2,'MarkerEdgeColor','k',...
+'MarkerFaceColor','k')
+plot(cds(:,1)+360,cds(:,2),'o','MarkerSize',2,'MarkerEdgeColor','k',...
+'MarkerFaceColor','k')
+
+j=axes('pos',[.13 .85 .775 .02]);
+colormap jet(256)
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel(['Aviso SSH [cm] and in situ observation around ',num2str(date_plot(2)),'-',...
+    num2str(date_plot(3)),'-',num2str(date_plot(1))])
+
+
+
+
+
+%%% print plot
+
+eval(['print -dpng -f1 /home/shoko/C/','''IDL ps''','/heat/talk/ssh_obs.png'])
+
+%close all
+%%%print -djpeg90 -f1 /moala2/josh/Globalhc/paper/f1.jpg
+

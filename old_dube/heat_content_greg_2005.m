@@ -1,0 +1,71 @@
+% make figure 6 it maps the heat content
+
+
+
+for start_year=2005:2005
+
+figure(1); wysiwyg
+
+
+%start_year=2003
+iyear=start_year
+
+load (['hc',num2str(iyear),'c.mat']) 
+% % % hc_junk=corrhc;
+% % % load (['hc',num2str(iyear-1),'c.mat'])
+% % % corrhc=hc_junk-corrhc;
+% % % corrhc=corrhc/86400/365.25;
+corrhc=corrhc/10e8;
+%subplot(2,1,iyear-start_year+1)
+% put into the proper coordinates
+min_val=-4
+max_val=4
+del_val=.5
+
+ii=find(lon<30);
+jj=find(lon>=30);
+lon=[lon(jj);lon(ii)+360];
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+colormap jet(256)
+
+pcolor(lon,lat,corrhc')
+caxis([min_val max_val])
+shading flat
+
+t1=text(70,50,[num2str(iyear)],'fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+j=axes('pos',[.13 .85 .775 .02]);
+colormap jet(256)
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel('Heat Content [J m^{-2} x 10^9]')
+
+
+
+
+
+% now shift the plots around on the page
+% q=get(gcf,'children');
+% a2=get(q(2),'pos');
+% a4=get(q(4),'pos');
+% 
+% aa=(1-a2(4)*2)/2;
+% a2(2)=aa;
+% a4(2)=aa+a2(4);
+% set(q(2),'pos',a2);
+% set(q(4),'pos',a4);
+
+%%orient tall
+
+%%% print plot
+
+eval(['print -dpng -f1 /home/shoko/C/','''IDL ps''','/heat/heat2_content_',num2str(start_year)])
+%%%print -djpeg90 -f1 /moala2/josh/Globalhc/paper/f1.jpg
+end

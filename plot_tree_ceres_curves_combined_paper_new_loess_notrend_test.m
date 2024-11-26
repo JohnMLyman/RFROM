@@ -1,0 +1,687 @@
+
+mycor=[228,26,28 
+    55,126,184
+    77,175,74
+    152,78,163
+    255,127,0
+    55,78,0]./255;
+
+min_year=2008;
+max_year=2022;
+  
+path_file= 'C:\Users\jlyma\OneDrive - University of Hawaii\data\Roemmich_Gilson_Clim\';
+
+% load([path_file,'RG_ArgoClim_heatcurve_all2.mat'],'ht_curve_gilson','time_gilson')
+load([path_file,'RG_ArgoClim_heatcurve_all.mat'],'ht_curve_gilson','time_gilson')
+
+good_gilson=find(time_gilson>=min_year & time_gilson<=max_year & isfinite(ht_curve_gilson'));
+time_gilson=time_gilson(good_gilson);
+ht_curve_gilson=ht_curve_gilson(good_gilson);
+center_year_gilson=nanmean(time_gilson);
+
+  [model_gilson,amp_annual,phase_annual,amp_semi,phase_semi,amp_third,phase_third,slope_gilson,mean_gilson,model_err]=...
+    j_fit_annual_tree(time_gilson',ht_curve_gilson);
+ndays=364.5/12;
+area_of_earth=5.1e14;
+sec_in_day=(60.*60*24);
+fac=1./(sec_in_day*area_of_earth.*ndays);
+start_ind=2;
+end_ind_off=1;
+
+start_ind_qu=4;
+end_ind_off_qu=3;
+
+start_ind_year=13;
+end_ind_off_year=12;
+
+ht_gilson_res=ht_curve_gilson-model_gilson;
+
+ht_gilson_res_qu=smooth(ht_gilson_res,6,'loess');
+ht_gilson_res_year=smooth(ht_gilson_res,24,'loess');
+
+% ht_gilson_res_qu=smooth(ht_gilson_res,3);
+% ht_gilson_res_year=smooth(ht_gilson_res,12);
+
+ht_gilson=ht_gilson_res'+model_gilson'-mean_gilson-slope_gilson.*center_year_gilson;
+ht_gilson_no_cycle=ht_gilson_res+(time_gilson'-center_year_gilson).*slope_gilson';
+ht_gilson_cycle=model_gilson'-(time_gilson).*slope_gilson'-mean_gilson;
+
+ht_gilson_qu=ht_gilson_res_qu+model_gilson'-mean_gilson-slope_gilson.*center_year_gilson;
+ht_gilson_qu_no_cycle=ht_gilson_res_qu+(time_gilson-center_year_gilson).*slope_gilson';
+
+
+ht_gilson_year=ht_gilson_res_year+model_gilson'-mean_gilson-slope_gilson.*center_year_gilson;
+ht_gilson_year_no_cycle=ht_gilson_res_year+(time_gilson-center_year_gilson).*slope_gilson';
+
+gilson_rate=(ht_gilson(start_ind:end)-ht_gilson(1:end-end_ind_off)).*fac;
+gilson_rate_no_cycle=(ht_gilson_no_cycle(start_ind:end)-ht_gilson_no_cycle(1:end-end_ind_off)).*fac;
+gilson_rate_cycle=(ht_gilson_cycle(start_ind:end)-ht_gilson_cycle(1:end-end_ind_off)).*fac;
+
+gilson_rate_qu_no_cycle=(ht_gilson_qu_no_cycle(start_ind_qu:end)-ht_gilson_qu_no_cycle(1:end-end_ind_off_qu)).*fac./3;
+gilson_rate_qu=(ht_gilson_qu(start_ind_qu:end)-ht_gilson_qu(1:end-end_ind_off_qu)).*fac./3;
+
+gilson_rate_year_no_cycle=(ht_gilson_year_no_cycle(start_ind_year:end)-ht_gilson_year_no_cycle(1:end-end_ind_off_year)).*fac./12;
+
+time_gilson_rate=.5.*(time_gilson(1:end-end_ind_off)+time_gilson(start_ind:end));
+time_gilson_rate_qu=.5.*(time_gilson(1:end-end_ind_off_qu)+time_gilson(start_ind_qu:end));
+time_gilson_rate_year=.5.*(time_gilson(1:end-end_ind_off_year)+time_gilson(start_ind_year:end));
+
+% [rmodel_gilson_mon,~,~,~,~,~,~,rslope_mon_gilson,rmean_mon_gilson,~]=...
+%     j_fit_annual_tree(time_gilson_rate',gilson_rate');
+% 
+% cycle_gilson=rmodel_gilson_mon'-rmean_mon_gilson-(time_gilson_rate).*rslope_mon_gilson;
+% res_rate_gilson=gilson_rate-cycle_gilson;
+% 
+% [rmodel_gilson_qu,~,~,~,~,~,~,rslope_qu_gilson,rmean_qu_gilson,~]=...
+%     j_fit_annual_tree(time_gilson_rate_qu',gilson_rate_qu');
+% 
+% cycle_gilson_qu=rmodel_gilson_qu'-rmean_mon_gilson-(time_gilson_rate_qu).*rslope_qu_gilson;
+% res_rate_gilson_qu=gilson_rate_qu-cycle_gilson_qu;
+
+%%%
+
+path_OHCA_data_out='C:\data\OHCA\'
+
+path_tree=[path_OHCA_data_out,'OHCA_trees\'];
+%load([path_tree,'test_tree_curve_yearly_7day_2000_yearly_new_cycle_combined.mat'], 'tgrid', 'ht_curve');
+% load([path_tree,'test_tree_curve_yearly_7day_2000_yearly_new_cycle_combined_2.mat'], 'tgrid', 'ht_curve');
+load([path_tree,'curve_0_2000_max_old_50.mat'], 'tgrid', 'ht_curve');
+
+tgrid_all=tgrid;
+ht_curve_all=ht_curve;
+
+
+
+
+
+good_all=find(tgrid_all>=min_year & tgrid_all<=max_year& isfinite(ht_curve'));
+ 
+ ht_tree_all=double(ht_curve_all(good_all));
+ time_tree_all=double(tgrid_all(good_all));
+ center_year_all=mean(time_tree_all);
+
+[model_tree_all,amp_annual,phase_annual,amp_semi,phase_semi,amp_third,phase_third,slope_tree_all,mean_tree_all,model_err]=...
+    j_fit_annual_tree(time_tree_all,ht_tree_all');
+
+ht_tree_all_res=ht_tree_all-model_tree_all';
+ht_tree_all_res_mon=smooth(ht_tree_all_res,8,'loess');
+ht_tree_all_res_qu=smooth(ht_tree_all_res,26,'loess');
+ht_tree_all_res_semi=smooth(ht_tree_all_res,52,'loess');
+ht_tree_all_res_year=smooth(ht_tree_all_res,104,'loess');
+% ht_tree_all_res_mon=smooth(ht_tree_all_res,4);
+% ht_tree_all_res_qu=smooth(ht_tree_all_res,12);
+% ht_tree_all_res_semi=smooth(ht_tree_all_res,26);
+% ht_tree_all_res_year=smooth(ht_tree_all_res,52);
+
+
+
+ht_mon_all=ht_tree_all_res_mon+model_tree_all'-mean_tree_all-slope_tree_all.*center_year_all;
+ht_mon_all_no_cycle=ht_tree_all_res_mon'+(time_tree_all-center_year_all).*slope_tree_all';
+ht_all_cycle=model_tree_all'-(time_tree_all').*slope_tree_all'-mean_tree_all;
+
+
+
+ht_qu_all=ht_tree_all_res_qu+model_tree_all'-mean_tree_all-slope_tree_all.*center_year_all;
+ht_qu_all_no_cycle=ht_tree_all_res_qu'+(time_tree_all-center_year_all).*slope_tree_all';
+
+ht_semi_all=ht_tree_all_res_semi+model_tree_all'-mean_tree_all-slope_tree_all.*center_year_all;
+ht_semi_all_no_cycle=ht_tree_all_res_semi'+(time_tree_all-center_year_all).*slope_tree_all';
+
+ht_year_all=ht_tree_all_res_year+model_tree_all'-mean_tree_all-slope_tree_all.*center_year_all;
+ht_year_all_no_cycle=ht_tree_all_res_year'+(time_tree_all-center_year_all).*slope_tree_all';
+
+
+
+ht_all=ht_tree_all_res+model_tree_all'-mean_tree_all-slope_tree_all.*center_year_all;
+ht_all_no_cycle=ht_tree_all_res'+(time_tree_all-center_year_all).*slope_tree_all';
+
+time_tree_all_year=time_tree_all;
+
+
+area_of_earth=5.1e14;
+
+ndays=7;
+
+sec_in_day=(60.*60*24);
+fac=1./(sec_in_day*area_of_earth.*ndays)
+start_ind=2;
+end_ind_off=1;
+
+start_ind_mon=5;
+end_ind_off_mon=4;
+
+start_ind_qu=13;
+end_ind_off_qu=12;
+
+start_ind_semi=27;
+end_ind_off_semi=26;
+
+start_ind_year=53;
+end_ind_off_year=52;
+
+rate_all=(ht_mon_all(start_ind:end)-ht_mon_all(1:end-end_ind_off)).*fac;
+rate_all_no_cycle=(ht_all_no_cycle(start_ind:end)-ht_all_no_cycle(1:end-end_ind_off)).*fac;
+rate_all_cycle=(ht_all_cycle(start_ind:end)-ht_all_cycle(1:end-end_ind_off)).*fac;
+
+rate_mon_all=(ht_mon_all(start_ind_mon:end)-ht_mon_all(1:end-end_ind_off_mon)).*fac./4;
+rate_mon_all_no_cycle=(ht_mon_all_no_cycle(start_ind_mon:end)-ht_mon_all_no_cycle(1:end-end_ind_off_mon)).*fac./4;
+rate_mon_all_cycle=(ht_all_cycle(start_ind_mon:end)-ht_all_cycle(1:end-end_ind_off_mon)).*fac./4;
+
+rate_qu_all=(ht_qu_all(start_ind_qu:end)-ht_qu_all(1:end-end_ind_off_qu)).*fac./12;
+rate_qu_all_no_cycle=(ht_qu_all_no_cycle(start_ind_qu:end)-ht_qu_all_no_cycle(1:end-end_ind_off_qu)).*fac./12;
+
+rate_semi_all=(ht_semi_all(start_ind_semi:end)-ht_semi_all(1:end-end_ind_off_semi)).*fac./26;
+rate_semi_all_no_cycle=(ht_semi_all_no_cycle(start_ind_semi:end)-ht_semi_all_no_cycle(1:end-end_ind_off_semi)).*fac./26;
+
+rate_year_all=(ht_year_all(start_ind_year:end)-ht_year_all(1:end-end_ind_off_year)).*fac./52;
+rate_year_all_no_cycle=(ht_year_all_no_cycle(start_ind_year:end)-ht_year_all_no_cycle(1:end-end_ind_off_year)).*fac./52;
+
+
+
+
+
+
+
+time_rate_tree_all=.5.*(time_tree_all(1:end-end_ind_off)+time_tree_all(start_ind:end));
+time_rate_tree_all_qu=.5.*(time_tree_all(1:end-end_ind_off_qu)+time_tree_all(start_ind_qu:end));
+time_rate_tree_all_mon=.5.*(time_tree_all(1:end-end_ind_off_mon)+time_tree_all(start_ind_mon:end));
+
+
+time_rate_tree_all_year=.5.*(time_tree_all_year(1:end-end_ind_off_year)+time_tree_all_year(start_ind_year:end));
+
+[m1,~,~,~,~,~,~,slope1,mean1,model_err]=...
+    j_fit_annual_tree(time_rate_tree_all_year,rate_year_all_no_cycle);
+ rate_year_all_no_cycle=rate_year_all_no_cycle-(mean1+time_rate_tree_all_year*slope1);
+
+ [m2,~,~,~,~,~,~,slope2,mean2,model_err]=...
+    j_fit_annual_tree(time_rate_tree_all_mon,rate_mon_all_no_cycle);
+
+  rate_mon_all_no_cycle=rate_mon_all_no_cycle-(mean2+time_rate_tree_all_mon*slope2);
+%   rate_year_all=rate_year_all-m1;
+
+% [rmodel_all,~,~,~,~,~,~,rslope_all,rmean_all,~]=...
+%     j_fit_annual_tree(time_rate_tree_all,rate_all');
+% 
+% 
+% [rmodel_qu_all,~,~,~,~,~,~,rslope_qu_all,rmean_qu_all,~]=...
+%     j_fit_annual_tree(time_rate_tree_all_qu,rate_qu_all');
+% 
+% [rmodel_mon_all,~,~,~,~,~,~,rslope_mon_all,rmean_mon_all,~]=...
+%     j_fit_annual_tree(time_rate_tree_all_mon,rate_mon_all');
+% % 
+% % [rmodel_year_all,~,~,~,~,~,~,rslope_year_all,rmean_year_all,~]=...
+% %     j_fit_annual_tree(time_rate_tree_all_year,rate_year_all');
+% 
+% 
+% rcycle_mon_all=rmodel_mon_all'-rmean_mon_all-rslope_mon_all.*center_year_all-(time_rate_tree_all_mon'-center_year_all).*rslope_mon_all;
+% res_rate_mon_all=rate_mon_all-rcycle_mon_all;
+% 
+% 
+% rcycle_qu_all=rmodel_qu_all'-rmean_qu_all-rslope_qu_all.*center_year_all-(time_rate_tree_all_qu'-center_year_all).*rslope_qu_all;
+% res_rate_qu_all=rate_qu_all-rcycle_qu_all;
+
+
+%% now compute the curves for using the yearly esitmate
+
+
+
+load('C:\Users\jlyma\OneDrive - University of Hawaii\data\CERES\norm_ohca_toa.mat','toa','toa_time')
+% plot(time_rate_tree,rate_mon)
+% hold on
+
+good_toa=find(toa_time>=min_year & toa_time<=max_year & isfinite(toa));
+toa=toa(good_toa);
+toa_time=toa_time(good_toa);
+
+center_year_toa=nanmean(toa_time);
+
+
+% 
+% [model_toa,~,~,~,~,~,~,slope_toa,mean_toa,~]=...
+%     j_fit_annual_tree(toa_time',toa');
+
+[model_toa,~,~,~,~,~,~,slope_toa,mean_toa,~]=...
+    j_fit_annual_tree(toa_time',toa');
+
+% cycle_toa=model_toa'-mean_toa-(toa_time).*slope_toa';
+cycle_toa=model_toa';
+res_rate_toa=toa-cycle_toa;
+
+
+toa_yearly=smooth(res_rate_toa,24,'loess');
+toa_qu=smooth(res_rate_toa,6,'loess');
+
+% toa_yearly=smooth(res_rate_toa,12);
+% toa_qu=smooth(res_rate_toa,3);
+%%
+
+var_tree_cycle=var(rate_mon_all_cycle);
+
+var_gilson_cycle=var(gilson_rate_cycle);
+var_toa_cycle=var(cycle_toa);
+
+
+var_toa_all=var(toa);
+var_tree_all=var(rate_mon_all);
+var_gilson_all=var(gilson_rate);
+
+var_toa_yearly=var(toa_yearly);
+var_toa_qu=var(toa_qu);
+var_toa=var(res_rate_toa);
+
+var_tree=var(rate_mon_all_no_cycle);
+var_tree_qu=var(rate_qu_all_no_cycle);
+var_tree_year=var(rate_year_all_no_cycle);
+
+var_gilson=var(gilson_rate_no_cycle);
+
+var_gilson_qu=var(gilson_rate_qu_no_cycle);
+var_gilson_year=var(gilson_rate_year_no_cycle);
+
+frac_gilson_year=var_gilson_year./var_toa_yearly;
+frac_tree_year=var_tree_year./var_toa_yearly;
+
+frac_gilson_qu=var_gilson_qu./var_toa_qu;
+frac_tree_qu=var_tree_qu./var_toa_qu;
+
+frac_gilson_mon=var_gilson./var_toa;
+frac_tree_mon=var_tree./var_toa;
+
+frac_gilson_all=var_gilson_all./var_toa_all;
+frac_tree_all=var_tree_all./var_toa_all;
+
+frac_gilson_cycle=var_gilson_cycle./var_toa_cycle;
+frac_tree_cycle=var_tree_cycle./var_toa_cycle;
+%%
+
+figure(1)
+clf;orient tall; wysiwyg_tuna
+
+ subplot(2,1,1)
+plot(time_rate_tree_all_mon,rate_mon_all,'k','LineWidth',1.25)
+
+hold on
+plot(toa_time,toa,'color',mycor(1,:),'LineWidth',1.25)
+plot(time_gilson_rate,gilson_rate,'color',mycor(4,:),'LineWidth',1.25)
+text(2009,-30,['RG09 ratio= ',num2str(round(frac_gilson_all))],'color',mycor(4,:),'fontsize',8)
+text(2009,-35,['RFROM ratio= ',num2str(round(frac_tree_all))],'color','k','fontsize',8)
+text(2008.5,36,'(a)')
+ylabel('W m^{-2}','Fontsize',10,'Fontname','Arial')
+set(gca,'tickdir','out','Fontname','Arial','box','on')
+year_text=2018;
+text_del=5;
+%   text_del=text_del*10;
+  
+  text_size=12;
+  text_off=-50;
+text(year_text,text_off+text_del*4,'RG09','color',mycor(4,:),'FontName','Arial','FontSize',text_size)
+plot([year_text-2 year_text-1],[text_off+text_del*4 text_off+text_del*4],'color',mycor(4,:),'linewidth',2)
+
+text(year_text,text_off+text_del*3,'RFROM','color','k','FontName','Arial','FontSize',text_size)
+plot([year_text-2 year_text-1],[text_off+text_del*3 text_off+text_del*3],'color','k','linewidth',2)
+
+text(year_text,text_off+text_del*2,'CERES','color',mycor(1,:),'FontName','Arial','FontSize',text_size)
+plot([year_text-2 year_text-1],[text_off+text_del*2 text_off+text_del*2],'color',mycor(1,:)','linewidth',2)
+% 
+% plot(time_rate_tree_all_mon,rate_mon_all_cycle,'k')
+% hold on
+% plot(toa_time,cycle_toa,'color',mycor(4,:))
+% plot(time_gilson_rate,gilson_rate_cycle,'color',mycor(4,:))
+% text(2009,-10,['RG ratio= ',num2str(round(frac_gilson_cycle))],'color',mycor(4,:),'fontsize',6)
+% text(2009,-15,['FM ratio= ',num2str(round(frac_tree_cycle))],'color','k','fontsize',6)
+% text(2008.3,8,'b)')
+% subplot(2,1,2)
+% plot(time_rate_tree_all_mon,rate_mon_all_no_cycle,'k','LineWidth',1.25)
+% hold on
+% plot(toa_time,res_rate_toa,'color',mycor(1,:),'LineWidth',1.25)
+% plot(time_gilson_rate,gilson_rate_no_cycle,'color',mycor(4,:),'LineWidth',1.25)
+% text(2009,-25,['RG ratio= ',num2str(round(frac_gilson_mon))],'color',mycor(4,:),'fontsize',8)
+% text(2009,-30,['FM ratio= ',num2str(round(frac_tree_mon))],'color','k','fontsize',8)
+% text(2008.6,18,'b)')
+% ylabel('W m^{-2}','Fontsize',10,'Fontname','Arial')
+% subplot(4,1,3)
+% plot(time_rate_tree_all_qu,rate_qu_all_no_cycle,'k','LineWidth',1.25)
+% hold on
+% plot(toa_time,toa_qu,'color',mycor(1,:),'LineWidth',1.25)
+% plot(time_gilson_rate_qu,gilson_rate_qu_no_cycle,'color',mycor(4,:),'LineWidth',1.25)
+% text(2009,-7,['RG ratio= ',num2str(round(frac_gilson_qu))],'color',mycor(4,:),'fontsize',8)
+% text(2009,-8.5,['FM ratio= ',num2str(round(frac_tree_qu))],'color','k','fontsize',8)
+% text(2008.6,8,'c)')
+% ylabel('W m^{-2}','Fontsize',10,'Fontname','Arial')
+subplot(2,1,2)
+delt_tsm=1/2;
+delt_tsm=1;
+
+plot_pos_tree_year=time_rate_tree_all_year>=min_year+delt_tsm&time_rate_tree_all_year<=max_year-delt_tsm;
+plot_pos_gilson_year=time_gilson_rate_year>=min_year+delt_tsm&time_gilson_rate_year<=max_year-delt_tsm;
+plot_pos_toa_year=toa_time>=min_year+delt_tsm&toa_time<=max_year-delt_tsm;
+
+plot(time_rate_tree_all_year(plot_pos_tree_year),rate_year_all_no_cycle(plot_pos_tree_year),'k','LineWidth',1.25)
+hold on
+plot(toa_time(plot_pos_toa_year),toa_yearly(plot_pos_toa_year),'color',mycor(1,:),'LineWidth',1.25)
+% plot(time_gilson_rate_year(plot_pos_gilson_year),gilson_rate_year_no_cycle(plot_pos_gilson_year),'color',mycor(4,:),'LineWidth',1.25)
+
+%% yearly
+toa_gilson_year=interp1(toa_time,toa_yearly,time_gilson_rate_year);
+toa_tree_year=interp1(toa_time,toa_yearly,time_rate_tree_all_year);
+
+toa_corr_year_tree=toa_tree_year(plot_pos_tree_year&isfinite(toa_tree_year))';
+tree_corr_year=rate_year_all_no_cycle(plot_pos_tree_year&isfinite(toa_tree_year))';
+
+toa_corr_year_gilson=toa_gilson_year(plot_pos_gilson_year);
+gilson_corr_year=gilson_rate_year_no_cycle(plot_pos_gilson_year);
+
+[cor_tree_year,lag_tree_year]=crosscorr(toa_corr_year_tree,tree_corr_year);
+[cor_gil_year,lag_gil_year]=crosscorr(toa_corr_year_gilson,gilson_corr_year);
+good_lag=abs(lag_gil_year)<=6;
+cor_gil_year=cor_gil_year(good_lag);
+lag_gil_year=lag_gil_year(good_lag);
+lag_tree_year=lag_tree_year./4;
+
+% figure(5)
+% clf
+% plot(lag_tree_year,cor_tree_year,'k')
+% hold on
+% plot(lag_gil_year,cor_gil_year)
+
+[~,pos_m]=max(cor_tree_year);
+max_cor_tree_year=cor_tree_year(pos_m);
+
+max_lag_tree_year=lag_tree_year(pos_m);
+cor_0_tree_year=cor_tree_year(lag_tree_year==0);
+
+[~,pos_m]=max(abs(cor_gil_year));
+max_cor_gil_year=cor_gil_year(pos_m);
+
+max_lag_gil_year=lag_gil_year(pos_m);
+cor_0_gil_year=cor_gil_year(lag_gil_year==0);
+
+set(gca,'tickdir','out','Fontname','Arial','box','on')
+text(2014,-.8,['Max Corr = ',num2str(max_cor_tree_year)],'color','k','fontsize',8)
+text(2014,-.9,['Max Lag = ',num2str(max_lag_tree_year),' months'],'color','k','fontsize',8)
+text(2014,-.7,['RFROM ratio= ',num2str(round(frac_tree_year))],'color','k','fontsize',8)
+text(2008.6,1.7,'(b)')
+ylabel('W m^{-2}','Fontsize',10,'Fontname','Arial')
+% toa_gilson=interp1(toa_time,toa_yearly,time_gilson_rate_year);
+% toa_tree=interp1(toa_time,toa_yearly,time_rate_tree_all_year);
+% 
+% corr(toa_tree(plot_pos_tree_year&isfinite(toa_tree))',rate_year_all_no_cycle(plot_pos_tree_year&isfinite(toa_tree))')
+% corr(toa_gilson(plot_pos_gilson_year),gilson_rate_year_no_cycle(plot_pos_gilson_year))
+
+path_figs='C:\data\OHCA\figs\tree_paper\'
+ eval(['print -dpng -r600 -f1 ',path_figs,'toa_tree_ceres2_loess_notrend'])
+
+
+%% quartly
+
+delt_tsm=.25/2;
+delt_tsm=.25;
+plot_pos_tree_qu=time_rate_tree_all_qu>=min_year+delt_tsm&time_rate_tree_all_qu<=max_year-delt_tsm;
+plot_pos_gilson_qu=time_gilson_rate_qu>=min_year+delt_tsm&time_gilson_rate_qu<=max_year-delt_tsm;
+plot_pos_toa_qu=toa_time>=min_year+delt_tsm&toa_time<=max_year-delt_tsm;
+
+toa_gilson_qu=interp1(toa_time,toa_qu,time_gilson_rate_qu);
+toa_tree_qu=interp1(toa_time,toa_qu,time_rate_tree_all_qu);
+
+toa_corr_qu_tree=toa_tree_qu(plot_pos_tree_qu&isfinite(toa_tree_qu))';
+tree_corr_qu=rate_qu_all_no_cycle(plot_pos_tree_qu&isfinite(toa_tree_qu))';
+
+toa_corr_qu_gilson=toa_gilson_qu(plot_pos_gilson_qu);
+gilson_corr_qu=gilson_rate_qu_no_cycle(plot_pos_gilson_qu);
+% 
+% cor_tree_qu=corr(toa_corr_qu_tree,tree_corr_qu)
+% cor_gil_qu=corr(toa_corr_qu_gilson,gilson_corr_qu)
+
+[cor_tree_qu,lag_tree_qu]=crosscorr(toa_corr_qu_tree,tree_corr_qu);
+[cor_gil_qu,lag_gil_qu]=crosscorr(toa_corr_qu_gilson,gilson_corr_qu);
+good_lag=abs(lag_gil_qu)<=6;
+cor_gil_qu=cor_gil_qu(good_lag);
+lag_gil_qu=lag_gil_qu(good_lag);
+lag_tree_qu=lag_tree_qu./4;
+
+figure(6)
+clf
+plot(lag_tree_qu,cor_tree_qu,'k')
+hold on
+plot(lag_gil_qu,cor_gil_qu)
+
+
+[~,pos_m]=max(abs(cor_tree_qu));
+max_cor_tree_qu=cor_tree_qu(pos_m);
+max_lag_tree_qu=lag_tree_qu(pos_m);
+cor_0_tree_qu=cor_tree_qu(lag_tree_qu==0);
+
+[~,pos_m]=max(abs(cor_gil_qu));
+max_cor_gil_qu=cor_gil_qu(pos_m);
+max_lag_gil_qu=lag_gil_qu(pos_m);
+cor_0_gil_qu=cor_gil_qu(lag_gil_year==0);
+
+%% monthly
+
+delt_tsm=(1./12)/2;
+delt_tsm=(1./12);
+
+plot_pos_tree_mon=time_rate_tree_all_mon>=min_year+delt_tsm&time_rate_tree_all_mon<=max_year-delt_tsm;
+plot_pos_gilson_mon=time_gilson_rate>=min_year+delt_tsm&time_gilson_rate<=max_year-delt_tsm;
+plot_pos_toa_mon=toa_time>=min_year+delt_tsm&toa_time<=max_year-delt_tsm;
+
+toa_gilson_mon=interp1(toa_time,toa,time_gilson_rate);
+toa_tree_mon=interp1(toa_time,toa,time_rate_tree_all_mon);
+
+toa_corr_mon_tree=toa_tree_mon(plot_pos_tree_mon&isfinite(toa_tree_mon))';
+tree_corr_mon=rate_mon_all_no_cycle(plot_pos_tree_mon&isfinite(toa_tree_mon))';
+
+toa_corr_mon_gilson=toa_gilson_mon(plot_pos_gilson_mon);
+gilson_corr_mon=gilson_rate_no_cycle(plot_pos_gilson_mon)';
+% 
+% cor_tree_mon=corr(toa_corr_mon_tree,tree_corr_mon)
+% cor_gil_mon=corr(toa_corr_mon_gilson,gilson_corr_mon)
+
+[cor_tree_mon,lag_tree_mon]=crosscorr(toa_corr_mon_tree,tree_corr_mon);
+[cor_gil_mon,lag_gil_mon]=crosscorr(toa_corr_mon_gilson,gilson_corr_mon);
+good_lag=abs(lag_gil_mon)<=6;
+cor_gil_mon=cor_gil_mon(good_lag);
+lag_gil_mon=lag_gil_mon(good_lag);
+lag_tree_mon=lag_tree_mon./4;
+
+figure(8)
+clf
+plot(lag_tree_mon,cor_tree_mon,'k')
+hold on
+plot(lag_gil_mon,cor_gil_mon)
+
+[~,pos_m]=max(abs(cor_tree_mon));
+max_cor_tree_mon=cor_tree_mon(pos_m);
+max_lag_tree_mon=lag_tree_mon(pos_m);
+cor_0_tree_mon=cor_tree_mon(lag_tree_mon==0);
+
+[~,pos_m]=max(abs(cor_gil_mon));
+max_cor_gil_mon=cor_gil_mon(pos_m);
+max_lag_gil_mon=lag_gil_mon(pos_m);
+cor_0_gil_mon=cor_gil_mon(lag_gil_year==0);
+
+%% whole signal
+delt_tsm=(1./12)/2;
+
+% 
+% hold on
+% plot(toa_time,toa,'color',mycor(1,:),'LineWidth',1.25)
+% plot(time_gilson_rate,gilson_rate,'color',mycor(4,:),'LineWidth',1.25)
+% 
+plot_pos_tree=time_rate_tree_all_mon>=min_year+delt_tsm&time_rate_tree_all_mon<=max_year-delt_tsm;
+plot_pos_gilson=time_gilson_rate>=min_year+delt_tsm&time_gilson_rate<=max_year-delt_tsm;
+plot_pos_toa=toa_time>=min_year+delt_tsm&toa_time<=max_year-delt_tsm;
+
+toa_gilson=interp1(toa_time,toa,time_gilson_rate);
+toa_tree=interp1(toa_time,toa,time_rate_tree_all_mon);
+
+toa_corr_tree=toa_tree(plot_pos_tree&isfinite(toa_tree))';
+tree_corr=rate_mon_all(plot_pos_tree&isfinite(toa_tree));
+
+toa_corr_gilson=toa_gilson(plot_pos_gilson);
+gilson_corr=gilson_rate(plot_pos_gilson);
+% 
+% cor_tree=corr(toa_corr_tree,tree_corr)
+% cor_gil=corr(toa_corr_gilson,gilson_corr)
+
+[cor_tree,lag_tree]=crosscorr(toa_corr_tree,tree_corr);
+[cor_gil,lag_gil]=crosscorr(toa_corr_gilson,gilson_corr);
+good_lag=abs(lag_gil)<=6;
+cor_gil=cor_gil(good_lag);
+lag_gil=lag_gil(good_lag);
+lag_tree=lag_tree./4;
+
+figure(9)
+clf
+plot(lag_tree,cor_tree,'k')
+hold on
+plot(lag_gil,cor_gil)
+
+[~,pos_m]=max(abs(cor_tree));
+max_cor_tree=cor_tree(pos_m);
+max_lag_tree=lag_tree(pos_m);
+cor_0_tree=cor_tree(lag_tree==0);
+
+[~,pos_m]=max(abs(cor_gil));
+max_cor_gil=cor_gil(pos_m);
+max_lag_gil=lag_gil(pos_m);
+cor_0_gil=cor_gil(lag_gil_year==0);
+
+% 
+% ohc_time=time_rate_tree_all_year;
+% 
+% 
+% n_mons=length(toa_time);
+% pos_new_ohc=nans(1,n_mons);
+% 
+% for imon=1:n_mons
+% 
+%     delta_t=abs(toa_time(imon)-ohc_time);
+%     [delta_min,jpos]=min(delta_t);
+% 
+%     if min(delta_min)<= 15./365
+%            pos_new_ohc(imon)=min(jpos);
+%     end
+% 
+% 
+% end
+% good=isfinite(pos_new_ohc);
+% pos_new_ohc=pos_new_ohc(good);
+% 
+% 
+% figure(3)
+% 
+% toa_yearly=toa_yearly(good);
+% toa_time_yearly=toa_time(good)
+% plot(toa_time_yearly,toa_yearly,'color',mycor(4,:))
+% hold on
+% 
+% time_ohc_yearly=ohc_time(pos_new_ohc);
+% rate_ohc_yearly=rate_year_all_no_cycle(pos_new_ohc)
+% plot(time_ohc_yearly,rate_ohc_yearly,'k')
+% plot(time_gilson_rate_year,gilson_rate_year_no_cycle,'r')
+% figure(4)
+% 
+% plot(time_ohc_yearly,cycle_toa(good)-rate_all_cycle(pos_new_ohc))
+% 
+% 
+% %%
+% 
+% 
+% corr(toa_yearly,rate_ohc_yearly')
+% corr(toa_yearly(2:end),gilson_rate_year_no_cycle)
+% 
+% 
+% 
+% 
+% %% plot 
+% ohc_time=time_rate_tree_all_mon;
+% 
+% 
+% n_mons=length(toa_time);
+% pos_new_ohc=nans(1,n_mons);
+% 
+% for imon=1:n_mons
+% 
+%     delta_t=abs(toa_time(imon)-ohc_time);
+%     [delta_min,jpos]=min(delta_t);
+% 
+%     if min(delta_min)<= 15./365
+%            pos_new_ohc(imon)=min(jpos);
+%     end
+% 
+% 
+% end
+% good=isfinite(pos_new_ohc);
+% pos_new_ohc=pos_new_ohc(good);
+%%
+figure(2)
+clf;orient landscape; wysiwyg_tuna
+good_tree_cycle=find(time_rate_tree_all_mon>=2008 & time_rate_tree_all_mon<2010);
+good_gilson_cycle=find(time_gilson_rate>=2008 & time_gilson_rate<2010);
+
+clf
+toa_gilson_cycle=interp1(toa_time,cycle_toa,time_gilson_rate);
+toa_tree_cycle=interp1(toa_time,cycle_toa,time_rate_tree_all_mon);
+plot(time_rate_tree_all_mon(good_tree_cycle),toa_tree_cycle(good_tree_cycle),'color',mycor(1,:),'LineWidth',2)
+hold on
+plot(time_rate_tree_all_mon(good_tree_cycle),rate_mon_all_cycle(good_tree_cycle),'k','LineWidth',2)
+plot(time_gilson_rate(good_gilson_cycle),gilson_rate_cycle(good_gilson_cycle),'color',mycor(4,:),'LineWidth',2)
+ttl=['J','F','M','A','M','J','J','A','S','O','N','D'];
+ ttt=[2008:1/12:2010-1/12]+1/24;
+set(gca,'tickdir','out','Fontsize',16,'Fontname','Arial','box','on','xtick',ttt+1/24,'xticklabel',ttl','XTickLabelRotation',0)
+ylabel('W m^{-2}','Fontsize',16,'Fontname','Arial')
+
+
+year_text=2009.8;
+text_del=2;
+%   text_del=text_del*10;
+  
+  text_size=12;
+  text_off=-15;
+text(year_text-.95,text_off+text_del*4,'RG09','color',mycor(4,:),'FontName','Arial','FontSize',text_size)
+plot([year_text-1.1 year_text-1],[text_off+text_del*4 text_off+text_del*4],'color',mycor(4,:),'linewidth',2)
+
+text(year_text-.95,text_off+text_del*3,'RFROM','color','k','FontName','Arial','FontSize',text_size)
+plot([year_text-1.1 year_text-1],[text_off+text_del*3 text_off+text_del*3],'color','k','linewidth',2)
+
+text(year_text-.95,text_off+text_del*2,'CERES','color',mycor(1,:),'FontName','Arial','FontSize',text_size)
+plot([year_text-1.1 year_text-1],[text_off+text_del*2 text_off+text_del*2],'color',mycor(1,:)','linewidth',2)
+
+path_figs='C:\data\OHCA\figs\tree_paper\'
+ eval(['print -dpng -r600 -f2 ',path_figs,'toa_tree_ceres_cycle_loess_notrend'])
+% 
+% plot(time_rate_tree_all_mon,toa_tree_cycle-rate_mon_all_cycle','k',,'LineWidth',2)
+% plot(time_gilson_rate,toa_gilson_cycle-gilson_rate_cycle,'color',mycor(4,:),'LineWidth',2)
+%%  make table
+
+Corr_max =num2str([max_cor_tree;max_cor_tree_year;max_cor_tree_qu;max_cor_tree_mon],3);
+Corr_0=num2str([cor_0_tree;cor_0_tree_year;cor_0_tree_qu;cor_0_tree_mon],3);
+Lag_max=num2str([max_lag_tree;max_lag_tree_year;max_lag_tree_qu;max_lag_tree_mon],3);
+Ratio_CERES_Var=num2str([frac_tree_all;frac_tree_year;frac_tree_qu;frac_tree_mon],3);
+sm_scale={'Month w/annual';'Year';'Quart';'Month'};
+mltable=table(Ratio_CERES_Var,Corr_0,Corr_max,Lag_max,'RowNames',sm_scale);
+
+import mlreportgen.dom.*
+mltableObj = MATLABTable(mltable);
+d = Document([path_figs,'Tree_corr_table_loess'],'docx');
+append(d,mltableObj);
+close(d);
+% rptview(d);
+
+
+%% table for RG09 
+Corr_max =num2str([max_cor_gil;max_cor_gil_year;max_cor_gil_qu;max_cor_gil_mon],3);
+Corr_0=num2str([cor_0_gil;cor_0_gil_year;cor_0_gil_qu;cor_0_gil_mon],3);
+Lag_max=num2str([max_lag_gil;max_lag_gil_year;max_lag_gil_qu;max_lag_gil_mon],3);
+Ratio_CERES_Var=num2str([frac_gilson_all;frac_gilson_year;frac_gilson_qu;frac_gilson_mon],3);
+sm_scale={'Month w/annual';'Year';'Quart';'Month'};
+mltable=table(Ratio_CERES_Var,Corr_0,Corr_max,Lag_max,'RowNames',sm_scale);
+
+import mlreportgen.dom.*
+mltableObj = MATLABTable(mltable);
+d = Document([path_figs,'RG_corr_table_loess'],'docx');
+append(d,mltableObj);
+close(d);
+% rptview(d);
+

@@ -1,0 +1,70 @@
+function [ht_out,year,month]=ave_bengal
+
+cd /Users/johnlyman/data/Globalhc/SAL/Floats/
+
+load ../../HC/landmask msk2
+
+load ../../Mtpers/meanssh lat lon sshcyc gmo
+lon_tpx=[lon(542:end)-360;lon(1:541)];
+lat_tpx=lat;
+
+load annual_and_semi_2004_2007  ht year month lon lat
+
+%plot amplitude
+
+
+
+nt=length(year);
+nlon=length(lon_tpx);
+nlat=length(lat_tpx);
+
+ht_out=ones(nlon,nlat,nt).*NaN;
+for it=1:nt
+    
+    junk=squeeze(ht(:,:,it));
+
+
+
+    corrhc=interp2(lat,lon,junk,lat_tpx,lon_tpx');
+    corrhc(isnan(corrhc))=NaN;
+    corrhc(isnan(msk2(2:end-1,:)))=NaN;
+    ht_out(:,:,it)=corrhc;
+end
+
+
+lon=lon_tpx;
+lat=lat_tpx;
+ht=ht_out;
+%save annual_and_semi_2004_2007_ht_mask ht year month lon lat
+
+min_lat=-6;
+max_lat=40;
+min_lon=77;
+max_lon=105;
+
+bad_lat=find(lat < min_lat | lat > max_lat);
+
+bad_lon=find(lon < min_lon | lon > max_lon);
+
+arw=areavec(lon,lat);
+arw2=repmat(arw,[1,1,nt]);
+
+ht_out=ht_out.*arw2;
+ht_out(bad_lon,:,:)=NaN;
+ht_out(:,bad_lat,:)=NaN;
+
+arw_nan=arw2;
+arw_nan(isnan(ht_out))=NaN;
+
+
+ht_sub=ht_out;
+
+ht_out=squeeze(nansum(ht_out,1));
+ht_out=squeeze(nansum(ht_out,1));
+
+total_area=squeeze(nansum(arw_nan,1));
+total_area=squeeze(nansum(total_area,1));
+
+ht_out=ht_out./total_area;
+
+

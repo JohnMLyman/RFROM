@@ -1,0 +1,106 @@
+% make figure 6 it maps the heat content
+
+
+
+for start_year=1993:2:1994
+
+figure(1); clf;orient tall; wysiwyg
+
+[w_top,lon,lat]=obs_in_winter_map(start_year);
+[w_bot,lon,lat]=obs_in_winter_map(start_year+1);
+top_year=start_year
+bottom_year=start_year+1
+
+   
+
+%plot the heat content anomoly
+subplot(2,1,1)
+
+
+corrhc=w_top;
+subplot(2,1,1)
+% put into the proper coordinates
+min_val=0
+max_val=2.
+del_val=.2
+
+ii=find(lon<30);
+jj=find(lon>=30);
+lon=[lon(jj);lon(ii)+360];
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+colormap jet(256)
+
+pcolor(lon,lat,corrhc')
+caxis([min_val max_val])
+shading flat
+
+t1=text(70,50,[num2str(top_year),'-2003'],'fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+j=axes('pos',[.13 .85 .775 .02]);
+colormap jet(256)
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel('fraction in winter')
+
+
+ subplot(2,1,2)
+
+ corrhc=w_bot;
+
+% put into the proper coordinates
+min_val=0
+max_val=2
+del_val=.2
+
+
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+colormap jet(256)
+
+pcolor(lon,lat,corrhc')
+caxis([min_val max_val])
+shading flat
+
+t1=text(70,50,['2004'],'fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+j=axes('pos',[.13 .85 .775 .02]);
+colormap jet(256)
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel('fraction in winter')
+ 
+ 
+% % % now shift the plots around on the page
+q=get(gcf,'children');
+a2=get(q(2),'pos');
+a4=get(q(4),'pos');
+a1=get(q(1),'pos');
+a3=get(q(3),'pos');
+
+aa=(1-a2(4)*2)/2;
+a2(2)=aa;
+a4(2)=aa+a2(4);
+set(q(2),'pos',a2);
+set(q(4),'pos',a4);
+set(q(1),'pos',a1-[0 .79 0 0]);
+% %%orient tall
+
+%%% print plot
+
+eval(['print -dpng -f1 /home/shoko/C/','''IDL ps''','/heat/winter_big_frac_map_all'])
+%%%print -djpeg90 -f1 /moala2/josh/Globalhc/paper/f1.jpg
+
+end

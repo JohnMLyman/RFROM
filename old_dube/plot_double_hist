@@ -1,0 +1,12 @@
+% Plot double Histigram
+
+load allheat_note
+
+pos_argo=find(s(:,1)=='A');
+pos_xbt=find(s(:,1)~='A');
+
+h1=hist(dt(:,1)+.5,[1950.5:1:2008.5])
+axis([1955 2007 0 9e4])
+hold on 
+h2=hist(dt(:,1)+.5,[1950+.5:1:2008.5])
+set(h2,'FaceColor','r')

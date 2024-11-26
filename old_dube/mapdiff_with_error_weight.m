@@ -1,0 +1,213 @@
+% mapdiff.m - matlab script to map global difference field for HC
+% 3/17/3
+
+load clim gheatclim2 lon lat ln
+load allheat dt ht cds tm topex wnum
+
+% remove climatology
+htclim=interp2(lat,ln,gheatclim2,cds(:,2),cds(:,1));
+clear gheatclim2 ii
+
+% remove annual cycle
+load ../Levitus/levcyc levheatcyc lon lat mo
+levheatcyc=levheatcyc-repmat(nanmean(levheatcyc,3),[1 1 length(mo)]);
+tm=[tm,0*tm,0*tm];
+dmo=datenum([dt,tm])-datenum(1992,1,1);dmo=mod(dmo/365.25*12,12)+1;
+day=datenum([dt,tm])-datenum(1950,1,1);
+lhc(:,:,1)=levheatcyc(:,:,end);lhc(:,:,2:5)=levheatcyc;
+lhc(:,:,6)=levheatcyc(:,:,1);clear levheatcyc
+lhc=[lhc(end,:,:);lhc;lhc(1,:,:)];
+lon=[lon(end)-360,lon,lon(1)+360];
+mo=[mo(end)-12,mo,mo(1)+12];
+htcyc=interp3(lat,lon,mo,lhc,cds(:,2),cds(:,1),dmo,'*cubic');
+htanom=ht-htclim-htcyc;
+% save -append allheat htanom
+clear i dmo lhc lon lat mo
+
+% use topex with annual cycle removed
+tpx=topex(:,2);
+
+% make new regression coeff. and interpolate onto profiles
+%load hregress2
+if 1
+w=unique(wnum);
+for i=8:length(w)
+  ii=find(w(i)==wnum&~isnan(tpx+htanom));
+  len(i)=length(ii);
+  
+  
+  % a guess at a uniform error of 2 centimeters
+  
+  w_in=ones(1,length(ii))*(1./(2^2));
+  [y_model,y_model_err_95,slope_error,slope]=j_fit_weighted_alpha(tpx(ii)',htanom(ii)',w_in);
+  
+  [y_model,y_model_err_95,slope_error2,slope2]=j_fit(tpx(ii)',htanom(ii)',1);
+  
+  error(i)=slope_error;
+  error_con(i)=slope_error2;
+  alpha_con(i)=slope2;
+  alpha(i)=slope;
+  %alpha(i)=tpx(ii)\htanom(ii);
+  c(i)=mycorrel(tpx(ii),htanom(ii));
+  xvar(i)=sqrt(nanmean(htanom(ii).^2));
+end
+ii=find(len<50);alpha(ii)=[];error(ii)=[];error_con(ii)=[];alpha_con(ii)=[];len(ii)=[];
+w(ii)=[];c(ii)=[];xvar(ii)=[];
+
+al=wnum*NaN;cc=al;xx=al;al_con=al;er=al;er_con=al;
+for i=1:length(w)
+  ii=find(w(i)==wnum);
+  al(ii)=repmat(alpha(i),[length(ii) 1]);
+  er(ii)=repmat(error(i),[length(ii) 1]);
+  al_con(ii)=repmat(alpha_con(i),[length(ii) 1]);
+  er_con(ii)=repmat(error_con(i),[length(ii) 1]);
+  cc(ii)=repmat(c(i),[length(ii) 1]);
+  xx(ii)=repmat(xvar(i),[length(ii) 1]);
+end
+load allheat cds
+ii=find(isnan(al));cds(ii,:)=[];al(ii)=[];cc(ii)=[];xx(ii)=[];er(ii)=[];al_con(ii)=[];er_con(ii)=[]
+nn=ii;
+clear w ii i len alpha bind n  ans tpx stanom error error_con alpha_con
+% grid alpha using weighted sum
+tlat=[-85:10:85];tlon=[-175:10:175];
+[ggy,ggx]=meshgrid(tlat,tlon);
+alpha=NaN*ggy;c=alpha;xvar=alpha;
+tic,for i=1:length(ggx(:))21
+  if ggx(i)<-160,ll=find(cds(:,1)>160);cds(ll,1)=cds(ll,1)-360;end
+  if ggx(i)>160,ll=find(cds(:,1)<-160);cds(ll,1)=cds(ll,1)+360;end
+  dt=sqrt((ggx(i)-cds(:,1)).^2/6^2+(ggy(i)-cds(:,2)).^2/3^2);
+  ii=find(dt<3);
+  if length(ii)<30,[poo,jj]=sort(dt);ii=jj(1:30);end
+  
+  % this part controlls for the degrees of freedom 
+  
+  wt=exp(-dt(ii));
+  wjunk=wnum(ii);
+  wgood=unique(wjunk);
+  
+  for iw=1:length(wgood)
+      iiw=find(wgood(iw)==wjunk);
+      error_w(iw)=sum(wt(iiw));
+      error_junk(iw)=er(ii(iiw(1)));
+      error_con_junk(iw)=er_con(ii(iiw(1)));
+  end
+  
+  
+  alpha(i)=(exp(-dt(ii))'*al(ii))/sum(exp(-dt(ii)));
+  error(i)=sqrt((error_w.^2)*(error_junk.^2)')/sum(error_w);
+  
+  alpha_con(i)=(exp(-dt(ii))'*al_con(ii))/sum(exp(-dt(ii)));
+  error_con(i)=sqrt((error_w.^2)*(error_con_junk.^2)')/sum(error_w);
+  
+  clear error_junk error_con_junk error_w wjunk wgood
+  c(i)=(exp(-dt(ii))'*cc(ii))/sum(exp(-dt(ii)));
+  xvar(i)=(exp(-dt(ii))'*xx(ii))/sum(exp(-dt(ii)));
+  if ggx(i)<-160,cds(ll,1)=cds(ll,1)+360;end
+  if ggx(i)>160,cds(ll,1)=cds(ll,1)-360;end
+  if mod(i,100)==0,disp(num2str([i toc])),end
+end
+alpha=reshape(alpha,[length(tlon),length(tlat)]);
+error=reshape(error,[length(tlon),length(tlat)]);
+alpha_con=reshape(alpha_con,[length(tlon),length(tlat)]);
+error_con=reshape(error_con,[length(tlon),length(tlat)]);
+
+c=reshape(c,[length(tlon),length(tlat)]);
+xvar=reshape(xvar,[length(tlon),length(tlat)]);
+tlon=[tlon(end)-360,tlon,tlon(1)+360];tlat=[-95,tlat,95];
+
+alpha=[alpha(end,:);alpha;alpha(1,:)];
+error=[error(end,:);error;error(1,:)];
+alpha_con=[alpha_con(end,:);alpha_con;alpha_con(1,:)];
+error_con=[error_con(end,:);error_con;error_con(1,:)];
+
+c=[c(end,:);c;c(1,:)];
+xvar=[xvar(end,:);xvar;xvar(1,:)];
+
+alpha=[0*tlon',alpha,0*tlon'];
+error=[0*tlon',error,0*tlon'];
+alpha_con=[0*tlon',alpha_con,0*tlon'];
+error_con=[0*tlon',error_con,0*tlon'];
+
+c=[0*tlon',c,0*tlon'];
+xvar=[0*tlon',xvar,0*tlon'];
+alon=[-181:181];alat=[-91:91];clear poo
+alpha=interp2(tlat,tlon,alpha,alat,alon','cubic');
+error=interp2(tlat,tlon,error,alat,alon','cubic');
+
+alpha_con=interp2(tlat,tlon,alpha_con,alat,alon','cubic');
+error_con=interp2(tlat,tlon,error_con,alat,alon','cubic');
+
+c=interp2(tlat,tlon,c,alat,alon','cubic');
+xvar=interp2(tlat,tlon,xvar,alat,alon','cubic');
+clear i ii tlon tlat hccc hcxx hcal al dt ggx ggy j jj ll poo
+save hregress3_w alat alon alpha error error_con alpha_con
+end % of skip
+
+% load allheat htanom cds topex
+% tpx=topex(:,2);
+% tpx(isnan(tpx))=0;
+% hctpx=tpx.*interp2(alat,alon,alpha,cds(:,2),cds(:,1));
+% % note:  now replacing NaN's with zeros in topex
+% 
+% % make difference variable
+% htdiff=htanom-hctpx;
+% 
+% % keep only good data
+% ii=find(~isnan(htdiff));
+% htdiff=htdiff(ii);day=day(ii,:);cds=cds(ii,:);htanom=htanom(ii);tpx=tpx(ii);
+% clear ii mo dy gmo d ans i j poo
+% 
+% % make grid variables
+% tgrid=[1992.75:.25:2003.5];
+% tgrid=[1990.5:.25:2006.0];
+% load ../topo/topo lat lon topo
+% xtopo=lon;ytopo=lat;topo(topo>0)=NaN;topo(topo<=0)=1;
+% load ../Mtpers/ssh16600 lat lon
+% lon=[lon(542:end)-360;lon(1:541)];
+% lon=[lon(end)-360;lon;lon(1)+360];
+% lon2=lon;lat2=lat;
+% ii=1:3:length(lon);jj=1:3:length(lat);lon=lon(ii);lat=lat(jj);
+% msk=interp2(ytopo,xtopo,topo,lat,lon','nearest');
+% msk2=interp2(ytopo,xtopo,topo,lat2,lon2','nearest');
+% [gy,gx]=meshgrid(lat,lon);
+% mcds=[gx(:),gy(:)];
+% gind=find(~isnan(msk));bind=find(isnan(msk));
+% %save landmask msk lon lat msk2 lat2 lon2
+% 
+% % have to spit out data and grid so that we can do inversion
+% % on supercomputer!
+% 
+% % grid
+% outcds=mcds;outcds=outcds(gind,:);
+% %save -ascii map.grd outcds
+% 
+% % save grid info to file so we can read output from fortran prog.
+% %save gridinfo mcds gind bind lon lat tgridii=find(len<50);alpha(ii)=[];len(ii)=[];w(ii)=[];c(ii)=[];xvar(ii)=[];
+% al=wnum*NaN;cc=al;xx=al;
+% for i=1:length(w)
+%   ii=find(w(i)==wnum);
+%   al(ii)=repmat(alpha(i),[length(ii) 1]);
+%   cc(ii)=repmat(c(i),[length(ii) 1]);
+%   xx(ii)=repmat(xvar(i),[length(ii) 1]);
+% end
+% 
+% % make list of indicies to be searched for each grid point
+% yr=(day-datenum(1992,1,1)+datenum(1950,1,1))/365.25+1992;
+% for i=1:length(tgrid)
+%  idx{i}=find(abs(tgrid(i)-yr)<=.5);
+% end
+% 
+% % spit out data
+% for i=1:length(tgrid)
+%   ii=idx{i};
+%   fname=['hdata',num2str(fix(tgrid(i)))];
+%   if (tgrid(i)-fix(tgrid(i)))==0.00,fname=[fname,'a'];end
+%   if (tgrid(i)-fix(tgrid(i)))==0.25,fname=[fname,'b'];end
+%   if (tgrid(i)-fix(tgrid(i)))==0.50,fname=[fname,'c'];end
+%   if (tgrid(i)-fix(tgrid(i)))==0.75,fname=[fname,'d'];end
+%   fname=[fname,'.txt'];
+%   data=[htdiff(ii),htanom(ii),tpx(ii),yr(ii),cds(ii,:)];
+% %  eval(['save -ascii ',fname,' data'])
+% end
+% 
+% 

@@ -1,0 +1,25 @@
+function [w_3,w_11]=artic_overlap(global_basins,lon,lat)
+
+
+
+% This function find the weights for the overlap of the Artic
+% Oceans.  lon and lat can be 1 or 2 dimension and must match global_banins
+
+size_data=size(lon);
+w_3=ones(size_data);
+w_3(global_basins(3).pos)=.5;
+w_11=w_3;
+
+
+lon_180=lon;
+lon_180(lon>180)=lon(lon>180)-360;
+
+jw_3=(abs(lon_180)-180)./180;
+jw_11=(1-jw_3);
+w_3=w_3.*jw_3;
+w_11=jw_11.*w_11;
+
+
+
+
+

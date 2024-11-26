@@ -1,0 +1,33 @@
+eval(['load ',file_path_out,file_name,'_temp_sal_mon_amon sal temp sal_mon_anom temp_mon_anom coords date mdep npts time fptot fpkeep bdt bbas ind id qual ',...
+	'press_mis_flag dac_centre wmo_inst cycle press_grid'])% this is the radius that is looked at
+
+cds=coords;
+dt=date;
+tm=time(:,1);
+
+sal=sal_mon_anom;
+temp=temp_mon_anom;
+
+day=datenum([dt,tm,tm*0,tm*0])-datenum(1950,1,1);
+
+yr=(day-datenum(1992,1,1)+datenum(1950,1,1))/365.25+1992;
+
+nd=length(press_grid);
+
+for idepth=1:nd
+
+sal=sal_mon_anom(:,idepth);
+temp=temp_mon_anom(:,idepth);
+    
+    
+fname_nc=[file_path_tsdata,'tsdata_',num2str(idepth),'_',file_name]
+    
+eval(['save ',fname_nc,' sal temp yr coords'])
+
+
+
+nc_idl_save_tsdata_argo(fname_nc);
+
+end
+
+

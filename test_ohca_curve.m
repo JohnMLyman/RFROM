@@ -1,0 +1,7 @@
+% TreeSetUp=TreeSetUp_2024_orca_heat_novert_test_mid_paige;
+TreeSetUp=TreeSetUp_2024_orca_heat_novert_test_mid_paige;
+bagged_tree_ohca_curve_7_day_errdp_ohca_test(TreeSetUp,0,2000)
+% TreeSetUp=TreeSetUp_2024_orca_heat_novert_test_mid;
+TreeSetUp=TreeSetUp_2024_orca_heat_novert_test_mid;
+
+bagged_tree_ohca_curve_7_day_errdp_ohca(TreeSetUp,0,2000)

@@ -1,0 +1,59 @@
+% this code loads all the heat content into one file
+
+%You to update this file so that it only 
+
+d19=sdir('hc19*.mat');
+d20=sdir('hc20*.mat');
+d=[d19',d20']';
+
+d=d(13:57);
+ntime=length(d);
+
+load(d(1).name,'corrhc','lat','lon') 
+
+nlon=length(lon);
+nlat=length(lat);
+map_hc=nans(nlon,nlat,ntime);
+time=nans(1,ntime);
+tic,for i=1:ntime
+  load(d(i).name,'corrhc') 
+  year=d(i).name;
+  year_num=str2num(year(3:6));
+  switch year(7)
+      case 'a'
+          year_num=year_num;
+      case 'b'
+          year_num=year_num+.25;
+      case 'c'
+          year_num=year_num+.5;
+      case 'd'
+          year_num=year_num+.75;
+  end
+  time(i)=year_num;
+  map_hc(:,:,i)=corrhc;
+  disp([d(i).name,'  ',num2str(toc)])
+end
+
+save total_heat2 map_hc time lat lon
+load
+% this part of the code fits a line to each point in space
+
+slope=nans(nlon,nlat);
+error=slope;
+for ilon=1:nlon
+    for ilat=1:nlat
+        
+        hc=reshape(map_hc(ilon,ilat,:),1,ntime);
+        [jy_model,jy_model_err_95,jslope_error,jslope]=j_fit(time,hc);
+        slope(ilon,ilat)=jslope;
+        error(ilon,ilat)=jslope_error;
+        
+    end
+end
+
+
+save slope_heat2 slope error time lat lon
+
+
+
+

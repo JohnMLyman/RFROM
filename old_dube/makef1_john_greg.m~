@@ -1,0 +1,84 @@
+% makef1.m - matlab script to make figure 1 for globalhc paper:
+% data coverage and time series of data availability
+
+load allheat dt cds topex ht
+%ii=find(~isnan(ht+topex(:,1)+topex(:,2)));
+ii=find(~isnan(ht));
+dt=dt(ii,:);cds=cds(ii,:);
+%ll=coast;
+
+year=[1955,1970,1994]
+
+for j =1:3
+    iyear=year(i);
+    figure(1);clf; orient tall; wysiwyg
+%figure  
+subplot(2,1,1)
+%p=plot(ll(:,2),ll(:,1),'k');set(p,'linewidth',1);hold on
+
+
+ii=find(dt(:,1)==iyear);
+ii_1994=find(dt(:,1)==2006);
+
+ hold on
+plot(cds(ii,1),cds(ii,2),'.r')
+
+plot(cds(ii,1)+360,cds(ii,2),'.r')
+
+plot(cds(ii_1994,1),cds(ii_1994,2),'.k')
+
+plot(cds(ii_1994,1)+360,cds(ii_1994,2),'.k')
+load e0.mat
+plot(e0(:,1),e0(:,2),'b')
+
+plot(e0(:,1)+360,e0(:,2),'b')
+
+
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'box','on','xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+
+hold on
+
+hold off
+% % p2=plot(cds(ii,1),cds(ii,2),'k.','MarkerSize',5);%set(p2,'markersize',10)
+% % axis([-180 180 -90 90])
+title([num2str(iyear),' red, 1994 black'])
+% % set(gca,'fontsize',16)
+% % t1=text(-210,107,'a).','fontsize',16,'fontweight','bold');
+
+
+
+
+
+subplot(2,1,2)
+year=dt(:,1);
+time_2005=find(year == 2006);
+n=hist(year,[1960:2007]);h=bar(1960:2007,n/1e3,'k');
+%axis([1992.4 2003.6 0 200])
+axis([1992.4 2005.6 0 220])
+set(gca,'tickdir','out')
+%set(gca,'yticklabelmode','manual')
+%set(gca,'ytick',[0:20000:140000]')
+%set(gca,'yticklabel',strvcat(num2str([0:20000:140000]')))
+xlabel('year'),ylabel('thousands of profiles')
+%t=text(1991.5,70000,'profiles','rotation',90);
+%set(t,'fontsize',16,'horizontalalignment','center')
+%t2=text(1988.6,218,'b).','fontsize',16,'fontweight','bold');
+
+orient tall
+
+%shift plot
+q=get(gcf,'children');
+a1=get(q(1),'pos')
+set(q(1),'pos',a1+[0 .1 0 0]);
+
+
+% print plot
+%print -deps2 -f1 /home/shoko/C/'IDL ps/'heat/f1_1994_2002.eps
+eval(['print -dpng -f1 /home/shoko/C/','''IDL ps''','/heat/f1_noaa2_2006_',...
+    num2str(iyear),'.png'])
+%print -djpeg90 -f1 /moala2/josh/Globalhc/paper/f1.jpg
+
+end

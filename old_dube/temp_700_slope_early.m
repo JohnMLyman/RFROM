@@ -1,0 +1,45 @@
+% this code loads all the heat content into one file
+
+%You to update this file so that it only 
+
+path='/Volumes/Data/Globalhc/SAL/Floats/'
+
+original=cd(path);
+
+ncload('tempanom_700_1993_2009.nc','lat','lon','time','one','temp','error');
+
+temp_700=permute(temp,[3 2 1]);
+time=time';
+
+nlon=length(lon);
+nlat=length(lat);
+ntime=length(time);
+
+% this part of the code fits a line to each point in space
+
+slope=nans(nlon,nlat);
+trend=nans(nlon,nlat,ntime);
+error=slope;
+for ilon=1:nlon
+    for ilat=1:nlat
+        
+        hc=reshape(temp_700(ilon,ilat,:),1,ntime);
+        good=find(isfinite(hc));
+        if length(good)>2
+            
+          
+        [jy_model,jy_model_err_95,jslope_error,jslope]=j_fit(time(good),hc(good));
+        trend(ilon,ilat,good)=jy_model;
+        slope(ilon,ilat)=jslope;
+        error(ilon,ilat)=jslope_error;
+        end
+        
+    end
+end
+
+
+save slope_temp_700_2009 slope error trend time lat lon
+
+
+cd,original
+

@@ -1,0 +1,55 @@
+function [ht_out]=ave_arabian
+
+
+cd /Users/johnlyman/data/Globalhc/SAL/Floats/
+
+load ../../HC/landmask msk2
+
+load ../../Mtpers/meanssh lat lon sshcyc gmo
+lon_tpx=[lon(542:end)-360;lon(1:541)];
+lat_tpx=lat;
+
+load annual_and_semi_2004_2007  ht year month lon lat
+
+%plot amplitude
+
+
+
+nt=length(year);
+nlon=length(lon_tpx
+for it=1:nt
+    
+    junk=sqeeze(ht(:,:,it));
+
+
+
+    corrhc=interp2(lat,lon,junk,lat_tpx,lon_tpx');
+    corrhc(isnan(corrhc))=NaN;
+    corrhc(isnan(msk2(2:end-1,:)))=NaN;
+    ht_out(:,:,it)=corrhc;
+end
+
+
+lon=lon_tpx;
+lat=lat_tpx;
+
+load annual_and_semi_2004_2007
+
+min_lat=-6;
+max_lat=40;
+min_lon=40;
+max_lon=77;
+
+good_lat=find(lat > min_lat & lat < max_lat);
+
+good_lon=find(lon > min_lon & lon < max_lon);
+
+
+ht_out=ht_out(good_lon,:,:);
+ht_out=ht_out(:,good_lat,:);
+
+ht_out=squeeze(nanmean(ht_out,1));
+ht_out=squeeze(nanmean(ht_out,1));
+
+
+

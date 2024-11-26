@@ -1,0 +1,41 @@
+function [near]=find_wmo_square(wmo,del_deg)
+
+%   INPUTS
+% wmo the World Meteorological Organization square that you are interested
+%   in
+%
+% del_deg the distance in degrees away from the square that 
+
+  if exist(['../SAL/WOD05/w',wmo,'.mat']),
+      eval(['load ../SAL/WOD05/w',wmo,'.mat;'])
+  
+      
+ % find the coners of the WMO square (kinda)
+ 
+  min_lat=min(coords(:,2));
+  max_lat=max(coords(:,2));
+  
+  min_lon=min(coords(:,1));
+  max_lon=max(coords(:,1));
+
+ lon=[min_lon-del_deg:.1:max_lon+del_deg];
+ lat=[min_lat-del_deg:.1:max_lat+del_deg];
+ 
+ nlon=length(lon);
+ nlat=length(lat);
+ 
+ lat2=repmat(lat,1,nlon);
+ lon2=repmat(lon,nlat,1);
+ lon2=lon2(:);
+ 
+ big_lon=find(lon2 >= 180);
+ if big_lon >=1 then
+     lon2(big_lon)=lon2(big_lon)-360;
+ end
+ 
+ small_lon=find(lon2 >=-180);
+ 
+ 
+ 
+ 
+ 

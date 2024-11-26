@@ -1,0 +1,20 @@
+function [ind_bad]=ind_out_qua(vec,n_qua)
+% this fuction find the indiceses of points that lie outside of n_qua quatoail of
+% the median of the vec.
+
+
+
+good=(find(finite(vec) == 1));
+n=length(good);
+vec2=vec(good);
+vec2=sort(vec2);
+quat=interp1([0:n-1]/(n-1),vec2,[.25 .5 .75]);
+min=quat(2)-n_qua*(quat(3)-quat(1)) 
+maquat(2)+n_qua*(quat(3)-quat(1))];
+
+var_vec=(vec-mean_vec).^2;
+
+std_vec=sqrt(nansum(var_vec)./n);
+
+ind_bad=find(sqrt(var_vec) > n_std.*std_vec);
+

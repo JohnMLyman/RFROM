@@ -1,0 +1,32 @@
+ start_year=1993;
+ end_year=2005;
+ 
+for iyear=start_year,end_year
+    
+year=dt(:,1);
+month=dt(:,2);
+
+
+good_time=find(year == iyear);
+
+good_month=month(good_time);
+good_lat=lat(good_time);
+
+north=find(good_lat >=0);
+south=find(good_lat <=0);
+
+
+month_north=good_month(north);
+north_winter=month_north(find(month_north == 1 | month_north ==2 | month_north == 12));
+
+per_north(iyear+1-start_year)=length(north_winter)./(length(month_north)./4);
+
+month_south=good_month(south);
+
+south_winter=month_south(find(month_south == 6 | month_south ==7 | month_south == 8));
+
+per_south(iyear+1-start_year)=length(south_winter)./(length(month_south)./4);
+
+year_plot(iyear+1-start_year)=iyear;
+
+end

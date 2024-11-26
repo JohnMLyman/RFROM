@@ -1,0 +1,88 @@
+tree_model_file_name='tree_sst_tpx_year_1993';
+tree_model_file_name=['tree_sst_tpx_all_year_seasonal_anom'];
+
+path_OHCA_data_out='C:\data\OHCA\'
+file_path_out=[path_OHCA_data_out,'OHCA_grided\'];
+path_tree=[path_OHCA_data_out,'OHCA_trees\'];
+path_new_tree=[path_tree,tree_model_file_name,'\'];
+file_name='argo_2020_10_14_QC';
+file_WOD_suf='_cheng_EN4_2014';
+file_path_hdata=[path_OHCA_data_out,'OHCA_maps\'];
+
+
+
+
+
+
+
+ layer_bounds=[0,40,90,190,290,450,700,950,1450,1950,2000];
+ nlayer=length(layer_bounds);
+
+
+
+
+
+
+for ilayer=2:nlayer
+    
+    tic
+   
+
+   
+
+
+
+    layer_name=[num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer))]
+    layer_title=[num2str(layer_bounds(ilayer-1)),'m to ',num2str(layer_bounds(ilayer)),'m'];
+    file_big_model=[path_new_tree,tree_model_file_name,'_model_',num2str(layer_bounds(ilayer-1)),'_',...
+             num2str(layer_bounds(ilayer)),'.mat'];
+   
+    
+    load(file_big_model,'model_all')
+
+    nbasin=length(model_all);
+
+    for ibasin=1:nbasin
+        Mdl=model_all(ibasin).model;
+        if ~isempty(Mdl)
+            figure;
+            oobErrorBaggedEnsemble = oobError(Mdl);
+            plot(oobErrorBaggedEnsemble)
+            xlabel 'Number of grown trees';
+            ylabel 'Out-of-bag classification error';
+            
+            imp = Mdl.OOBPermutedPredictorDeltaError;
+             title([layer_title,' ',model_all(ibasin).name])
+            figure;
+            bar(imp);
+            
+            ylabel('Predictor importance estimates');
+            xlabel('Predictors');
+            h = gca;
+            PredictorNames={'Year' 'Lon' 'Lat' 'SSH' 'SST'};
+            h.XTickLabel =PredictorNames;
+            h.XTickLabelRotation = 45;
+            h.TickLabelInterpreter = 'none';
+            title([layer_title,' ',model_all(ibasin).name])
+    
+            TreeStats(ibasin,ilayer).PredictorNames=PredictorNames;
+            TreeStats(ibasin,ilayer).PredictorImpotance=imp;
+            TreeStats(ibasin,ilayer).oobError=oobErrorBaggedEnsemble;
+            TreeStats(ibasin,ilayer).LayerName=layer_name;
+            TreeStats(ibasin,ilayer).LayerTitle=layer_title;
+            TreeStats(ibasin,ilayer).BasinName=model_all(ibasin).name;
+        end
+
+    end
+            
+
+  
+    
+   toc./60
+end
+
+file_stats=[path_new_tree,tree_model_file_name,'_all_stats.mat'];
+
+save(file_stats,'TreeStats')
+
+

@@ -1,0 +1,2 @@
+mapdiff_gen_allheat('allheat_noargo','hdata_xbt_test_noargo')
+mapdiff_gen_allheat('allheat_argo','hdata_xbt_test_argo')

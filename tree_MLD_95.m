@@ -1,0 +1,152 @@
+min_layer=0;
+max_layer=2000;
+
+
+
+path_figs='C:\JUNK\'
+year_of_oco_pub=2022;
+slope_min_year=1993;
+set_up_MLD
+% this is the time range of the maps that are to be saved and outputted
+max_year_maps_out=2020;
+min_year_maps_out=2007;
+cold_to_hot_colormap=diverging_map([0:1/200:1],[20 43 140]/255,[204 0 51]/255);
+
+ 
+tree_model_file_name=tree_model_file_name_yearly;
+
+
+
+ilayer=2;
+layer_name=[num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer))];
+tree_file_name=[tree_model_file_name,'_',layer_name];
+load([path_tree,tree_file_name,'_split_7day.mat'], 'ht_estimate',...
+    'lon_tpx' ,'lat_tpx','time_aviso')
+nlon_tpx=length(lon_tpx);
+nlat_tpx=length(lat_tpx);
+ntime_tpx=length(time_aviso);
+
+%%
+period=1;
+period2=1/2;
+period3=1/3;
+
+tree_file_name=[tree_model_file_name_season,'_',layer_name];
+    load([path_tree,tree_file_name,'_seasonal_cycle_split.mat'],...
+        'amp_annual_total','phase_annual_total','amp_semi_total','phase_semi_total',...
+        'amp_third_total','phase_third_total','slope_total','mean_total');
+    ht_cycle=nans(nlon_tpx,nlat_tpx,ntime_tpx);
+    ht_mean=mean_total+slope_total.*center_year;
+    ht_trend=ht_cycle;
+    
+    for itime=1:ntime_tpx
+
+
+        if isfinite(time_aviso(itime))
+            good_t=time_aviso(itime);
+            ht_cycle(:,:,itime)=amp_annual_total.*sin((2*pi.*good_t./period)+...
+                phase_annual_total)+amp_semi_total.*sin((2.*good_t*pi./period2)+phase_semi_total)+...
+                amp_third_total.*sin((2*pi.*good_t./period3)+phase_third_total);
+            ht_trend(:,:,itime)=slope_total.*good_t-slope_total.*center_year;
+        end
+
+    end
+ht_estimate=ht_estimate+ht_cycle+ht_mean;
+
+%%
+
+
+
+
+
+% tree_file_name=[tree_model_file_name,'_',layer_name];
+% load([path_tree,tree_file_name,'_split_7day.mat'], 'ht_estimate',...
+%     'lon_tpx' ,'lat_tpx','time_aviso')
+
+
+% if ~exist(file_sum_name,'file')
+%     bagged_tree_MLD_maps_7_day_split
+% else
+%     load(file_sum_name,'ht_estimate','lon_tpx','lat_tpx','time_aviso')
+% end
+
+% mean_ht=nanmean(ht_estimate,3);
+% ht_estimate=ht_estimate-mean_ht;
+%%
+
+
+ v=VideoWriter([path_figs,'MLD_den_deep.avi']);
+open(v)
+nframe=length(time_aviso);
+for iframe=1:nframe
+figure(1)
+clf
+    set(gcf,'color','white');
+    m_proj('Equidistant cylindrical','long',[30 390],'lat',[-90 90]);
+    
+    
+    
+    
+    corrhc=iqr95(:,:,iframe);
+   
+    
+    
+    lon=lon_tpx';
+    lat=lat_tpx';
+   
+    
+    % put into the proper coordinates
+    
+    min_val=500;
+    max_val=1000;
+    del_val=50;
+    del_cont=25;
+    ii=find(lon<30);
+    jj=find(lon>=30);
+    lon=[lon(jj),lon(ii)+360];
+    corrhc=[corrhc(jj,:);corrhc(ii,:)];
+    %colormap jet(256)
+    
+    colormap(cold_to_hot_colormap) 
+    
+    
+    m_proj('Equidistant cylindrical','long',[30 390],'lat',[-90 90]);
+    %colormap(fresh_to_salty_colormap) 
+    [cs1,h1]=m_contourf(lon,lat,corrhc',[-1000,min_val:del_cont:max_val]);
+    % % 'cat'
+%     save 'OHCA_2019_tpx.mat' lon lat corrhc
+    hold on
+    set(h1,'linecolor','none')
+    hold on
+    m_grid('tickdir','out','xtick',[30:60:390],'ytick',[-90:30:90],'linestyle','none');
+    
+    
+    %[cs12,h12]=m_contour(lon_cont,lat_cont,sal_cont',[32 32],'k');
+    a=gca;
+    hold on
+    m_coast('patch',[1 1 1]);
+    t1=m_text(30,100,[' ', num2str(time_aviso(iframe))],'fontsize',12);
+    %t3=m_text(50,45,[num2str(depth_top_plot),'-',num2str(depth_bot_plot)],'fontsize',12);
+     t2=m_text(170,-150,'(meters)','fontsize',10);
+    
+    caxis([min_val max_val-del_cont])
+    
+    hold off
+    
+    ja=axes('pos',[.262 .90-.0475 .51 .01]);
+    %colormap jet(256)
+    
+    colormap(cold_to_hot_colormap) 
+    
+    [cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:del_cont:max_val]);
+    set(h,'edgecolor','none')
+    set(ja,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+    caxis([min_val max_val-del_cont])
+    japos=get(ja,'pos');
+    set(ja,'XAxisLocation','bottom','pos',japos-[.075 .7 -.15 -.015])
+
+    frame=getframe(gcf);
+     writeVideo(v,frame)
+
+end
+close(v)

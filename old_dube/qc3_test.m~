@@ -1,0 +1,121 @@
+% the new qc file qc3
+close(figure,h) 
+scrsz = get(0,'ScreenSize');
+ h=figure('Position',[1 scrsz(4)/1.5 scrsz(3)/1.5 scrsz(4)/1.5]);
+
+ file_name='f7512'
+
+ d=sdir(['f*.mat']);
+ 
+ 
+ for isquare=1:d
+     
+(eval(['load',d(isquare)])
+
+display(d(isquare))
+
+% sorting the data
+
+temp2=temp;
+
+yd=dt(:,1)+(dt(:,2)-1)/12.+(dt(:,3)-1)/365.;
+  
+  %find the right dates (ie only preform the qc on the times that
+  % I cheacked.
+  
+  good_times=find(yd > 2002);
+  dt=dt(good_times,:);
+  temp=temp(good_times,:);
+  temp2=temp;
+  
+
+jj=[];
+%  
+ %jj=[jj;find(temp(:,4)<1)];
+% jj=[jj;find(temp(:,2)<100)];
+% jj=[jj;find(temp(:,8)<2.5)];
+% jj=[jj;find(temp(:,3)<13)];
+% jj=[jj;find(temp(:,11)<6)];
+%jj=[jj;find(temp(:,2)<8)];
+%jj=[jj;find(temp(:,6)<12)];
+%jj=[jj;find(temp(:,9)<12)];
+%jj=[jj;find(temp(:,1)<.6)];
+ %jj=[jj;find(temp(:,3)>28.74)];
+% 
+% jj=[jj;find(temp(:,9)>31)];
+%jj=[jj;find(temp(:,1)<13 & temp(:,1)>12.2)];
+
+temp(jj,:)=[];
+
+
+%plotting the good data
+
+subplot(2,3,1)
+plot(temp,-1.*depth,'.')
+title('good ');
+xlabel('temp');
+ylabel('depth');
+
+%plotting all the data
+
+subplot(2,3,2)
+plot(temp2,-1.*depth,'.')
+title(['all ',file_name]);
+xlabel('temp');
+ylabel('depth');
+%axis([30 40 -200 -100])
+%plotting bad data
+
+subplot(2,3,3)
+
+
+
+plot(temp2(jj,:),-1.*depth,'.')
+title('bad');
+xlabel('temp');
+ylabel('depth');
+
+
+%plotting the map
+
+subplot(2,3,4)
+m_ungrid m_proj;
+m_proj('Miller Cylindrical');
+ m_coast;
+ m_grid;
+ hold on
+m_plot(coords(:,1),coords(:,2),'.k')
+
+m_plot(coords(jj,1),coords(jj,2),'.r')
+hold off
+
+%plotting month
+
+
+subplot(2,3,5)
+
+plot(dt(:,2),'.b')
+
+hold on
+
+plot(dt(jj,2),'.r')
+xlabel('index');
+ylabel('month');
+hold off
+
+%plotting year
+
+subplot(2,3,6)
+
+plot(dt(:,1),'.b')
+
+hold on
+
+plot(dt(jj,1),'.r')
+xlabel('index');
+ylabel('year');
+hold off
+ 
+ wait
+ end
+ 

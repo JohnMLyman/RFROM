@@ -1,0 +1,82 @@
+function [corrhc_one_total,lon,lat,time_hc]=map_ones_var_mean_oco_white_paper_new(start_year,end_year)
+
+%close(1)
+%close(2)
+cd '/Users/johnlyman/data/Globalhc/SAL/Floats'
+load ../../Mtpers/meanssh lat lon sshmean
+% to get rid of ice
+sshmean=[sshmean(542:end,:);sshmean(1:541,:)];
+
+lon_tpx=[lon(542:end)-360;lon(1:541)];
+lat_tpx=lat;
+arw=areavec(lon_tpx,lat_tpx);
+clear lon lat
+
+load ../../HC/landmask msk2
+%[lon,lat,time,ht]=load_idl_data_mean_heat('../SAL/Floats/mean_1960_2000.nc');
+%load htanom_2004_2007_mon_975
+load 'htanom_oco_realtime_1993_2010.mat'
+%error=1-(error-2.2);
+ lon2=lon;
+
+ lat2=lat;
+nlon=length(lon_tpx);
+nlat=length(lat_tpx);
+corrhc_one_total=ones(nlon,nlat)*0;
+year_map=floor(time);
+mon_map=round(12.*(time-floor(time)))+1;
+
+ start_ind=find(year_map == start_year & mon_map == 1);
+end_ind=find(year_map == end_year & mon_map == 12 );
+start_ind=min(find(year_map == start_year));
+end_ind=max(find(year_map == end_year ));
+ntime=length(time(start_ind:end_ind));
+corr_one_var=ones(nlon,nlat,ntime); 
+
+ 
+for index=start_ind:end_ind
+i=index-start_ind+1;
+%%%figure(i);wysiwyg
+
+lon=lon2;
+lat=lat2;
+
+% linear interpilate to topex grid and apply mland mask
+
+corrhc=interp2(lat,lon,ht(:,:,index),lat_tpx,lon_tpx')./1e9;
+
+corrhc(isnan(msk2(2:end-1,:)))=NaN;
+corrhc(isnan(sshmean))=NaN;
+
+corrhc_one=interp2(lat,lon,one(:,:,index),lat_tpx,lon_tpx');
+corrhc_one(isnan(corrhc_one))=0.;
+
+corrhc_one(isnan(msk2(2:end-1,:)))=NaN;
+corrhc_one(isnan(sshmean))=NaN;
+
+%corrhc_error=interp2(lat,lon,error(:,:,index),lat_tpx,lon_tpx');
+%corrhc_error(isnan(msk2(2:end-1,:)))=NaN;
+
+corrhc_one_total=corrhc_one_total+corrhc_one;
+corrhc_one_var(:,:,i)=corrhc_one;
+
+lon=lon_tpx;
+lat=lat_tpx;
+Area=sum(arw(~isnan(corrhc_one)));
+% compute the area average heatcontent across the globe.
+
+hc(i)=1e9.*nansum(arw(:).*corrhc(:))/sum(arw(~isnan(corrhc(:))));
+hc_one(i)=nansum(arw(:).*corrhc_one(:))/sum(arw(~isnan(corrhc_one(:))));
+
+good_lat=find(lat <= -30);
+
+arw2=arw(:,good_lat);
+corrhcs=corrhc(:,good_lat);
+corrhc_ones=corrhc_one(:,good_lat);
+
+hc_south(i)=1e9.*nansum(arw2(:).*corrhcs(:))/sum(arw(~isnan(corrhc(:))));
+hc_one_south(i)=nansum(arw2(:).*corrhc_ones(:))/sum(arw(~isnan(corrhc_one(:))));
+
+time_hc(i)=time(index);
+end
+

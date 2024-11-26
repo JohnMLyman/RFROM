@@ -1,0 +1,149 @@
+function [mean_diff_rep,std_diff_rep,mean_diff_map,std_diff_map]=...
+    heat_std_gen(min_scale_year,max_scale_year,min_mean_year,max_mean_year)
+
+
+
+% df is the estimate of the subsambled TOPEX
+% tp is the estimate form the whole TOPEX record
+% per_var_t  is percent of the subsampled field in the 95% cofidence interval 
+% tsub in the maped topex var
+% tpave is the unmaped variabilty 
+
+
+
+alpha=(.6e7)/(.04);
+area_of_earth=5.1e14;
+scale=alpha*3.4e14;
+start_year=1955;
+%alpha is in J/m^2 /(cm)
+
+load ../SAL/Floats/hc_factor
+
+    
+for iyear=start_year:2005
+    
+    one_pos=find(time == iyear+.5);
+    one_scale=hc_one(one_pos);
+    
+    
+    load (['hcseries2_twin_',num2str(iyear)])
+    good=find(tgrid <= 2006);
+    tgrid=tgrid(good);
+    tsub=tsub(good);
+    tpave=tpave(good);
+    N=length(tsub);
+    %tsub=tsub(1:N-1);
+   % tpave=tpave(:N);
+    tsub=tsub-mean(tsub);
+    tpave=tpave-mean(tpave);
+%     [y_sub,y_model_err_95,slope_error,slope]=j_fit(tgrid(1:12),tsub,1)
+%     [y_ave,y_model_err_95,slope_error,slope]=j_fit(tgrid(1:12),tpave,1)
+%     tsub=tsub-y_sub;
+%     tpave=tpave-y_ave;
+%      tsub=tsub-tsub(1);
+%      tpave=tpave-tpave(1);
+%    
+
+
+t2=tgrid-mean(tgrid);
+% linear fit
+% seperate the time into 5 sections 1993-1997, 1995-1999,1997-2001,1999-2003,2001-2005
+%1 year (a)
+pos1=find(tgrid>= min_scale_year+.5 & tgrid<= max_scale_year+.5);
+
+% pos1=find(tgrid>= 1993.5 & tgrid<=2005.5-6);
+ %pos2=pos1;
+%pos3=pos1;
+% pos4=pos1;
+% pos5=pos1;
+t2=t2(pos1);t2=t2-mean(t2);
+tgrid1=tgrid(pos1);
+
+%t2=[-2,-1,0,1,2];
+%t2=[-1,0,1];
+%t2=[-3,-2,-1,0,1,-2,-3];
+
+
+% slope error is based on the willis .2e22 J error from topex
+
+slope_error=(sqrt(2)*(0.2e22/scale)./(t2(1)-t2(end)));
+
+slope_error_map1=slope_error;
+
+slope_map1=sqrt(mean((tsub(pos1)-tpave(pos1)-mean(tsub(pos1))+mean(tpave(pos1))).^2));
+
+
+tsub_one1=(tsub(pos1)-mean(tsub(pos1)))./one_scale;
+
+slope_rep1=sqrt(mean((tsub_one1-tpave(pos1)+mean(tpave(pos1))).^2));
+
+
+slope_error_rep1=slope_error;
+
+
+slope_ave1=((tpave(pos1(1))-tpave(pos1(end)))./(t2(1)-t2(end)));
+
+slope_error_ave1=slope_error;
+
+
+
+
+
+    per_var=sum((abs(tsub-tpave)).^2)/sum((tsub).^2);
+   % std_error(iyear-1949)=student(N)*(sum((tsub-tpave).^2))/N)*alpha*3.4e14
+   
+   
+  
+   
+ %   std_error(iyear-1949)=sqrt(f1.^2+f2.^2)*3.4e14;
+%    std_dev(iyear-1949)=sqrt((f2./student(36)).^2+(f1./student(N)).^2)*3.4e14;
+    %std_dev=std_error;
+   % std_error(iyear-1949)=student(N)*(sum((tsub-tpave).^2)/N)*alpha*3.4e14
+    
+   %std_error(iyear-1949)=((student(N)*sum((tsub-tpave).^2)/(N))*alpha)*3.4e14
+    
+    slope_map_t1(iyear-start_year+1)=slope_map1*scale./area_of_earth/86400/365.25;
+    slope_rep_t1(iyear-start_year+1)=slope_rep1*scale./area_of_earth/86400/365.25;
+    slope_ave_t1(iyear-start_year+1)=slope_ave1*scale./area_of_earth/86400/365.25;
+    
+   
+    error_map_t1(iyear-start_year+1)=slope_error_map1*scale./area_of_earth/86400/365.25;
+    error_rep_t1(iyear-start_year+1)=slope_error_rep1*scale./area_of_earth/86400/365.25;
+    error_ave_t1(iyear-start_year+1)=slope_error_ave1*scale./area_of_earth/86400/365.25;
+
+    
+    tgrid_err(iyear-start_year+1)=iyear+.5;
+    
+end
+
+ 
+   % compute the stats on the  
+    
+    
+slope_map_t=slope_map_t1;
+slope_ave_t=slope_ave_t1;
+slope_rep_t=slope_rep_t1;
+error_map_t=error_map_t1;
+error_ave_t=error_ave_t1;
+error_rep_t=error_rep_t1;
+time=tgrid_err;
+good_pos=find(time >= min_mean_year & time <= max_mean_year);
+
+slope_ave_t=slope_ave_t(:,good_pos);
+slope_map_t=slope_map_t(:,good_pos);
+slope_rep_t=slope_rep_t(:,good_pos);
+
+error_ave_t=error_ave_t(:,good_pos);
+error_map_t=error_map_t(:,good_pos);
+error_rep_t=error_rep_t(:,good_pos);
+time=time(good_pos);
+
+
+rep_diff=slope_rep_t-slope_ave_t;
+map_diff=slope_map_t-slope_ave_t;
+
+mean_diff_map=mean(map_diff);
+mean_diff_rep=mean(rep_diff);
+
+std_diff_map=sqrt(mean((map_diff-mean_diff_map).^2));
+std_diff_rep=sqrt(mean((rep_diff-mean_diff_rep).^2));

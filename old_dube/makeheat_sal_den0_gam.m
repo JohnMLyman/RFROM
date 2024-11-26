@@ -1,0 +1,46 @@
+
+% makeheat.m - matlab script to make heat content for all profiles
+% 3/17/03
+
+
+% get new file names
+
+d=sdir('grad_den_0_grid_*.mat');d=d(1:end);
+dd=strvcat(d(:).name);dd=str2num(dd(:,2:5));
+
+% load Levitus high-res climatology so we can subtract it (mean?)
+load /home/shoko2/wills/globalhc_dirs/Globalhc/Levitus/slevhr lon lat dep levsal
+levsal=[levsal(end-40:end,:,:);levsal;levsal(1:41,:,:)];
+lon=[-190.125:.25:190.125];
+levsal(:,end+1,:)=levsal(:,end,:);lat(end+1)=lat(end)+mean(diff(lat));
+
+% loop through e.mat files and make heat content
+coords_tot=[];temp_tot=[];sal_tot=[];dt_tot=[];ratio_bad_tot=[];time_tot=[];gam_tot=[];
+fpress_tot=[];temp_0_tot=[];sal_0_tot=[];press_0_tot=[];press_top_0_tot=[];press_bot_0_tot=[];
+
+id_tot=[];
+for i=1:length(d)
+    
+    d(i).name
+  load(d(i).name,'temp','sal','coords','dt','time','ratio_bad', ...
+	'id','fpress','gam','sal_gam' ,'temp_gam' ,'press_gam' ,'press_top_gam' ,'press_bot_gam', ...
+         'sal_0', 'temp_0', 'press_0', 'press_top_0' ,'press_bot_0');
+  
+    if length(sal_0) >= 1
+    temp_0_tot=[temp_0_tot',temp_0']';
+    sal_0_tot=[sal_0_tot',sal_0']';
+    press_0_tot=[press_0_tot',press_0']';
+    press_top_0_tot=[press_top_0_tot,press_top_0'];
+    press_bot_0_tot=[press_bot_0_tot,press_bot_0'];
+    
+    
+    coords_tot=[coords_tot',coords']';
+    ratio_bad_tot=[ratio_bad_tot,ratio_bad];
+    %id_tot=[id_tot',id]';
+    %fpress_tot=[fpress_tot',fpress']';
+    dt_tot=[dt_tot',dt']';
+    end
+    
+end
+
+    

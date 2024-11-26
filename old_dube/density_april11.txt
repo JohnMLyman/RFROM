@@ -1,0 +1,1876 @@
+
+                              < M A T L A B >
+                  Copyright 1984-2005 The MathWorks, Inc.
+                   Version 7.0.4.352 (R14) Service Pack 2
+                              January 29, 2005
+
+ 
+  To get started, type one of these: helpwin, helpdesk, or demo.
+  For product information, visit www.mathworks.com.
+ 
+>> >> >> >> >> >> >> >> >> >> >> >> >> 
+isquare =
+
+     1
+
+den_den_no_f1000.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+     2
+
+den_den_no_f1004.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+     3
+
+den_den_no_f1005.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+     4
+
+den_den_no_f1006.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+     5
+
+den_den_no_f1007.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+     6
+
+den_den_no_f1008.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+     7
+
+den_den_no_f1009.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+     8
+
+den_den_no_f1012.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+     9
+
+den_den_no_f1013.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    10
+
+den_den_no_f1014.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    11
+
+den_den_no_f1015.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    12
+
+den_den_no_f1016.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    13
+
+den_den_no_f1017.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    14
+
+den_den_no_f1103.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    15
+
+den_den_no_f1104.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    16
+
+den_den_no_f1105.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    17
+
+den_den_no_f1106.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    18
+
+den_den_no_f1107.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    19
+
+den_den_no_f1108.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    20
+
+den_den_no_f1109.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    21
+
+den_den_no_f1111.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    22
+
+den_den_no_f1112.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    23
+
+den_den_no_f1113.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    24
+
+den_den_no_f1114.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    25
+
+den_den_no_f1115.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    26
+
+den_den_no_f1116.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    27
+
+den_den_no_f1117.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    28
+
+den_den_no_f1203.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    29
+
+den_den_no_f1205.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    30
+
+den_den_no_f1206.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    31
+
+den_den_no_f1208.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    32
+
+den_den_no_f1209.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    33
+
+den_den_no_f1211.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    34
+
+den_den_no_f1212.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    35
+
+den_den_no_f1213.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    36
+
+den_den_no_f1214.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    37
+
+den_den_no_f1215.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    38
+
+den_den_no_f1216.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    39
+
+den_den_no_f1217.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    40
+
+den_den_no_f1300.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    41
+
+den_den_no_f1301.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    42
+
+den_den_no_f1302.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    43
+
+den_den_no_f1303.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    44
+
+den_den_no_f1312.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    45
+
+den_den_no_f1313.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    46
+
+den_den_no_f1314.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    47
+
+den_den_no_f1315.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    48
+
+den_den_no_f1316.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    49
+
+den_den_no_f1317.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    50
+
+den_den_no_f1400.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    51
+
+den_den_no_f1401.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    52
+
+den_den_no_f1402.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    53
+
+den_den_no_f1412.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    54
+
+den_den_no_f1413.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    55
+
+den_den_no_f1414.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    56
+
+den_den_no_f1415.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    57
+
+den_den_no_f1416.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    58
+
+den_den_no_f1417.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    59
+
+den_den_no_f1515.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    60
+
+den_den_no_f1516.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    61
+
+den_den_no_f1517.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+
+isquare =
+
+    62
+
+den_den_no_f1600.mat
+
+ans =
+
+    22
+
+
+ans =
+
+     5
+
+
+ans =
+
+    52
+
+
+ans =
+
+     5
+
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+tcsh: No entry for terminal type "'MATLAB Command Window'"
+tcsh: using dumb terminal settings.
+??? Index exceeds matrix dimensions.
+
+Error in ==> <a href="error:/home/shoko2/wills/globalhc_dirs/Globalhc/matlab/gamma/matlab-interface/gamma_n.m,111,1">gamma_n at 111</a>
+  g(indx,ix) = glabel_matlab(start:finish,1);
+
+>> >> 

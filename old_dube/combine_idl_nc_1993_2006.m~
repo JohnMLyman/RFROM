@@ -1,0 +1,55 @@
+% This code cobines the nc files into one file
+
+% load first file
+
+
+
+ncload('htanom_3_1993_1996.nc','lon','ht','time','one','tpx')
+ 
+ht_t=ht;
+time_t=time';
+one_t=one;
+tpx_t=tpx;
+
+ncload('htanom_3_1997_2000.nc','lon','ht','time','one','tpx')
+ht_t=[ht_t;ht];
+one_t=[one_t;];
+tpx_t=[tpx_t;ht];
+
+time_t=[time_t ,time'];
+
+  
+ncload('htanom_3_2001_2003.nc','lon','ht','time','one','tpx')
+   ht_t=[ht_t;ht];
+one_t=[one_t;one];
+tpx_t=[tpx_t;tpx];
+
+time_t=[time_t ,time'];
+ncload('htanom_3_2004_2006.nc','lat','lon','ht','time','one','tpx')
+
+ht_t=[ht_t;ht];
+one_t=[one_t;one];
+tpx_t=[tpx_t;ht];
+
+time_t=[time_t ,time'];
+
+
+time=time_t;
+ht=ht_t;
+one=one_t;
+tpx=tpx_t;
+
+ht=permute(ht,[3 2 1]);
+
+one=permute(one,[3 2 1]);
+
+tpx=permute(tpx,[3 2 1]);
+
+ht(isnan(ht))=0;
+one(isnan(one))=0;
+tps(isnan(tpx))=0;
+
+save 'htanom_1993_2006_3' time lon lat one ht tpx
+
+
+

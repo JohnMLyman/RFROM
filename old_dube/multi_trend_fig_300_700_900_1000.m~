@@ -1,0 +1,47 @@
+
+load hc_300_700_900_1800 hc_one_1800 hc_1800 time_1800 hc_one_900 hc_900 time_900 hc_one_700 hc_700 time_700 hc_one_300 hc_300 time_300 ...
+    hc_one hc time
+
+time_oco=time;
+hc_oco=hc;
+hc_one_oco=hc_one;
+
+
+load error_300_700_900_1800 se_1800 se_900 se_700 se_300 time
+hc=ohca_curve;
+se_hc=ohca_se;
+time_hc=time;
+first=1;
+last=0;
+
+
+fig_2=figure(99);
+ clf; wysiwyg
+ f1=1;
+ f2=2;
+ for idepth=[300,700,900,1800]
+     
+     if idepth==300; depth_range_str='0-300';end
+     if idepth==700; depth_range_str='0-700';end
+     if idepth==700; depth_range_str='700-900';end
+     if idepth==700; depth_range_str='900-1800';end
+     eval(['hc=hc_one_',';'])
+     
+     
+for iscale=[4,5,6,7]
+    icolor=iscale;
+    if iscale==10
+        last=1;
+        icolor=3;
+    end
+    plot_interannual_trends_300_700_900_1800(hc,se_hc,time_hc,iscale,first,last,icolor,depth_range_str,f1,f2)
+    
+    first=0;
+    
+end
+
+
+eval(['print -dpng  -f',f1,' /Users/johnlyman/figs/issi/fig2_',depth_rage_str])
+eval(['print -dpng  -f',f2,' /Users/johnlyman/figs/issi/fig3_',depth_range_str])
+
+end

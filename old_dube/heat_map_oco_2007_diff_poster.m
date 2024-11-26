@@ -1,0 +1,204 @@
+cold_to_hot_colormap=[[1,146,191]'/255,[255,255,255]'/255,[251,0,38]'/255]';
+cold_to_hot_colormap=interp1([0:1/2:1],cold_to_hot_colormap,[0:1/255:1]);
+file_path_out='/Users/johnlyman/data/Globalhc/Floats/Argo/CORIOLIS/depth_grid/'
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Get information on Aviso files %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+s=sdir('../../Mtpers/ssh*.mat');
+sday=strjust(strvcat(s(:).name),'right');
+junk_day_aviso=str2num(sday(:,end-8:end-4));
+[aviso_year,aviso_mon,aviso_d]=datevec(junk_day_aviso+datenum(1950,1,1));
+
+sday=str2num(sday(:,end-8:end-4));
+sday=sday+datenum(1950,1,1)-datenum(1992,1,1);
+syr=sday/365.25+1992;clear sday
+
+load ../../Mtpers/meanssh lat lon sshcyc gmo
+lon_tpx=[lon(542:end)-360;lon(1:541)];
+lat_tpx=lat;
+
+sshcyc=[sshcyc(542:end,:,:);sshcyc(1:541,:,:)];
+
+clear lon lat
+
+
+
+
+load ../../HC/landmask msk2
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% load in the in the Aviso estimate %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+load htanom_2004_2007_mon_975
+lon2=lon;
+ lat2=lat;
+for i=length(time):length(time) 
+    %for i=1:1
+    
+    
+    htdiff_junk=htdiff(:,:,i)./1e9;
+    year_map=floor(time(i))
+    mon_map=round(12.*(time(i)-floor(time(i))))+1
+    year_name=num2str(year_map);
+    mon_name=num2str(mon_map);
+    
+    
+    eval(['load ',file_path_out,'hregress_975_',num2str(mon_map)],' alpha_975 alat alon');
+    alpha=interp2(alat,alon,alpha_975,lat_tpx,lon_tpx');clear alon alat alpha_975
+    
+    
+    sshave=zeros(length(lon_tpx),length(lat_tpx));
+    
+    
+    
+    
+    ii=find(aviso_mon == mon_map & aviso_year == year_map);
+  for j=1:length(ii)
+    load(['../../Mtpers/',s(ii(j)).name],'sshanom')
+    mo=str2num(s(ii(j)).name(end-8:end-4));
+    mo=mo+datenum(1950,1,1)-datenum(1992,1,1);
+    mo=mod(mo/365.25*12,12);
+    sshc=squeeze(0*sshcyc(:,:,1));
+    for k=1:length(gmo)
+	jj=zeros(1,length(gmo));jj(k)=1;
+	w(k)=interp1(gmo,jj,mo,'*cubic');
+	sshc=sshc+sshcyc(:,:,k)*w(k);
+    end %for 
+    sshanom=[sshanom(542:end,:);sshanom(1:541,:)];
+    sshanom=sshanom-sshc;
+   % ssh_total(:,:,j)=sshanom;
+    sshave=sshave+sshanom/length(ii);
+    
+    
+  end  %for months
+
+
+  % make aviso estimate
+  sshave(isnan(sshave))=0;sshave(isnan(msk2(2:end-1,:)))=NaN;
+ 
+      tpxest=sshave.*alpha./1e9;
+  
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%s
+%%%                             %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%i=3
+
+
+%corrhc=interp2(lat,lon,ht(:,:,i),lat_tpx,lon_tpx');
+%corrhc(isnan(msk2(2:end-1,:)))=NaN;
+%corrhc(isnan(sshmean))=NaN;
+
+
+% plot the heat content for 2007
+figure(1);wysiwyg
+lon=lon2;
+lat=lat2;
+
+
+corrhc=interp2(lat,lon,htdiff_junk,lat_tpx,lon_tpx');
+corrhc(isnan(corrhc))=0;
+corrhc=corrhc+tpxest;
+corrhc(isnan(msk2(2:end-1,:)))=NaN;
+
+lon=lon_tpx;
+lat=lat_tpx;
+
+
+% put into the proper coordinates
+min_val=-6;
+max_val=6;
+del_val=1;
+
+ii=find(lon<30);
+jj=find(lon>=30);
+lon=[lon(jj);lon(ii)+360];
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+%colormap jet(256)
+
+colormap(cold_to_hot_colormap) 
+
+pcolor(lon,lat,corrhc')
+caxis([min_val max_val])
+shading flat
+
+plot_coasts_black
+
+switch mon_map
+        case 1
+            month_name='Jan'
+            
+        case 2
+            month_name='Feb'
+            
+        case 3
+            month_name='Mar'
+            
+        case 4
+            month_name='Apr'
+            
+        case 5
+            month_name='May'
+            
+        case 6
+            month_name='Jun'
+          
+        case 7
+            month_name='Jul'
+            
+        case 8 
+            month_name='Aug'
+            
+        case 9
+            month_name='Sep'
+            
+        case 10 
+            month_name='Oct'
+           
+        case 11
+            month_name='Nov'
+            
+        case 12
+            month_name='Dec'
+            
+end
+
+
+t1=text(60,50,[month_name ' ' year_name],'fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+j=axes('pos',[.13 .85 .775 .02]);
+%colormap jet(256)
+
+colormap(cold_to_hot_colormap) 
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel('Upper Ocean Heat Content Anomaly [J m^{-2} x 10^9]')
+
+
+%%% print plot
+
+
+
+eval(['print -dtiff -f1 /Users/johnlyman/figs/oco/poster/oco_old_heat_content_diff_mon_',year_name,'_',mon_name])
+close all
+end
+
+

@@ -1,0 +1,44 @@
+
+                              < M A T L A B >
+                  Copyright 1984-2005 The MathWorks, Inc.
+                   Version 7.0.4.352 (R14) Service Pack 2
+                              January 29, 2005
+
+Warning: MATLAB Toolbox Path Cache is out of date and is not being used.
+Type 'help toolbox_path_cache' for more info.
+ 
+  To get started, type one of these: helpwin, helpdesk, or demo.
+  For product information, visit www.mathworks.com.
+ 
+>> >> >> >> >> >> >> >> >> >> 
+dd =
+
+  Columns 1 through 13 
+
+    17    35    41    49    51    56    57    68    70    71    74    75   120
+
+  Columns 14 through 26 
+
+    76    85    93    99   101   113   115   116   120   121   147   148   149
+
+  Columns 27 through 39 
+
+   150   157   163   180   182   183   186   187   189   192   196   203   206
+
+  Columns 40 through 52 
+
+   208   209   214   215   217   219   240   243   244   245   264   265   267
+
+  Columns 53 through 65 
+
+   274   275   276   285   290   296   302   313   322   333   335   336   348
+
+  Columns 66 through 78 
+
+   349   350   351   352   357   358   368   369   374   375   376   380   388
+
+  Columns 79 through 80 
+
+   390   393
+
+>> >> >> >> >> 

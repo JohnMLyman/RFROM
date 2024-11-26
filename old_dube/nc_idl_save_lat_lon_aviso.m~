@@ -1,0 +1,62 @@
+function nc_idl_freshwater
+
+% ncexample.m -- "NetCDF Toolbox for Matlab-5" example.
+%  ncexample (no argument) is a short example that lists
+%   itself, builds a simple NetCDF file, then displays
+%   its variables.
+ 
+% Copyright (C) 1997 Dr. Charles R. Denham, ZYDECO.
+%  All Rights Reserved.
+%   Disclosure without explicit written consent from the
+%    copyright owner does not constitute publication.
+ 
+% Version of 12-Jun-1997 16:23:04.
+
+
+type(mfilename)
+
+help(mfilename)
+ 
+% ---------------------------- DEFINE THE FILE --------------------------- %
+
+ncquiet                                              % No NetCDF warnings.
+
+nc = netcdf('fresh.nc', 'clobber');              % Create NetCDF file.
+
+nc.description = 'Argo fresh water nutral desity surfaces';                   % Global attributes.
+nc.author = 'Dr. John M/ Lyman';
+nc.date = 'Agust 22, 2006';
+%load /home/shoko2/wills/globalhc_dirs/Globalhc/SAL/Floats/total_den_grid_april_19.mat
+load gridinfo
+
+% Define dimensions.
+
+[n_lat]=size(lat);
+[n_lon]=size(lon);
+
+
+nc('n1')=n_lon;
+nc('n2')=n_lat;
+
+  % Define variables.
+
+
+
+nc{'lat'}={'n2'};
+nc{'lon'}={'n1'};
+
+
+%nc{'latitude'}.units = 'degrees';                    % Attributes.%
+%nc{'longitude'}.units = 'degrees';
+%nc{'depth'}.units = 'meters';
+
+
+                                                    % Put all the data.
+
+nc{'coords'}(:) = coords_fresh;
+nc{'dt'}(:) = dt_fresh;
+nc{'time'}(:) = time_fresh;
+nc{'fresh_water'}(:) = fresh_water_fresh;
+
+nc = close(nc);                                      % Close the file.
+

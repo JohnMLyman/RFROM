@@ -1,0 +1,90 @@
+% mapdiff.m - matlab script to map global difference field for HC
+% 3/17/3
+%11-11-2005 added  linear trend to error estimate.
+function mapdiff_gen_twin_mon(file_name,fname_nc,min_year,max_year)
+
+for iyear=min_year:max_year
+    
+    
+eval(['load ./twin/',file_name,num2str(iyear) ,' dt ht_750 ht_975 ht_1800 cds tm topex '])
+
+
+
+
+% use topex with annual cycle removed
+tpx=topex(:,2);
+
+% make new regression coeff. and interpolate onto profiles
+load hregress2
+
+% for some reason alpha is a function! It didn't cause a problem before 
+%   but it is now, I loaded hregress2 and saved alpha as alpha2 so the 
+%   code would run!  If this part doesn't work than you should do the same.
+%   John Lyman 3/23/2997
+
+tpx=topex(:,1);
+%tpx(isnan(tpx))=0;
+hctpx=tpx.*interp2(alat,alon,alpha2,cds(:,2),cds(:,1));
+% note:  now replacing NaN's with zeros in topex
+
+tm=[tm,0*tm,0*tm];
+
+day=datenum([dt,tm])-datenum(1950,1,1);
+
+
+% keep only good data (htdiff htanom are the same and equal to hctpx
+ii=find(~isnan(hctpx));
+day=day(ii,:);cds=cds(ii,:);tpx=tpx(ii);
+hctpx=hctpx(ii); ht_750=ht_750(ii); ht_975=ht_975(ii);ht_1800=ht_1800(ii);
+
+% make grid variables
+tgrid=[1992.5:1:max_year+.5];
+
+load ../topo/topo lat lon topo
+xtopo=lon;ytopo=lat;topo(topo>0)=NaN;topo(topo<=0)=1;
+load ../Mtpers/ssh16600 lat lon
+lon=[lon(542:end)-360;lon(1:541)];
+lon=[lon(end)-360;lon;lon(1)+360];
+lon2=lon;lat2=lat;
+ii=1:3:length(lon);jj=1:3:length(lat);lon=lon(ii);lat=lat(jj);
+msk=interp2(ytopo,xtopo,topo,lat,lon','nearest');
+msk2=interp2(ytopo,xtopo,topo,lat2,lon2','nearest');
+[gy,gx]=meshgrid(lat,lon);
+mcds=[gx(:),gy(:)];
+gind=find(~isnan(msk));bind=find(isnan(msk));
+ save landmask_twin_gen msk lon lat msk2 lat2 lon2
+
+% have to spit out data and grid so that we can do inversion
+% on supercomputer!
+
+% grid
+outcds=mcds;outcds=outcds(gind,:);
+
+save -ascii map_twin_gen.grd outcds
+
+% save grid info to file so we can read output from fortran prog.
+save gridinfo_twin_gen mcds gind bind lon lat tgrid
+
+% make list of indicie222s to be searched for each grid point
+yr=(day-datenum(1992,1,1)+datenum(1950,1,1))/365.25+1992;
+for i=1:1
+ idx{i}=find(yr>=1992);
+end
+
+% spit out data
+
+  ii=idx{1};
+
+yr=yr(ii);
+tpx=tpx(ii);
+hctpx=hctpx(ii);
+ht_750=ht_750(ii);
+ht_975=ht_975(ii);
+ht_1800=ht_1800(ii);
+
+coords=cds(ii,:);
+fname=['./twin/',fname_nc,num2str(iyear)]
+eval(['save ',fname,' yr tpx coords hctpx ht_750 ht_975 ht_1800'])
+nc_idl_save_hdata_twin_gen(['./twin/',fname_nc,num2str(iyear)])
+end
+

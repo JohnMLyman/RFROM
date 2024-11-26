@@ -1,0 +1,63 @@
+% code to take out the cycle...
+
+
+[hc1,time,hc_one,per_cover]=heat_curv_gen_mat_per_cover('htanom_1993_2007_2004_2007_clim_2');
+
+cd /Users/johnlyman/data/Globalhc/HC
+
+area_ocean=3.4e14;
+
+
+hc_one=hc_one./area_ocean;
+time_one=time;
+
+clear hc1 time per_cover
+
+% remove trend and from allheat
+
+
+load allheat 
+
+% get rid of times that are not used
+
+small_time=floor(min(time_one));
+
+good=find(dt(:,1) >= small_time);
+
+
+bt=bt(good);
+cds=cds(good,:);
+dt=dt(good,:);
+ht=ht(good);
+htanom=htanom(good);
+s=s(good,:);
+t=t(good,:);
+tm=tm(good);
+topex=topex(good,:);
+wnum=wnum(good);
+
+
+nt=length(time_one);
+
+
+
+
+for i=1:nt
+    
+   junk_time=floor(time_one(i)); 
+   pos_junk=find(dt(:,1) == junk_time);
+   ht(pos_junk)=ht(pos_junk)-hc_one(i)
+    
+   
+end
+
+save allheat_no_trend bln blt bt cds dt ht htanom s t tm topex wnum
+
+clear
+
+
+mapdiff_gen_allheat_no_trend('allheat_no_trend','hdata_2004_2007_clim_2_nt','clim_2_2004_2007')
+clear
+
+
+

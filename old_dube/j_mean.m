@@ -1,0 +1,10 @@
+function d=j_mean(f)
+
+%This code computes the mean taking into account that 
+% there are missing values
+
+n=length(find(isnan(f) == 0));
+d=nansum(f)/n;
+
+
+

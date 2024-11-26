@@ -1,0 +1,214 @@
+%  This code computes all the componetes of the bagged tree and assembles
+%  it.  Howerver it assumes that the data files have been made:
+%  that is done in oco_maps_2021_tuna_seasonal.m : and oco_maps_2021_tuna2
+
+ %% REWRITE COMBINE CODES!! TO TAKE INTO ACCOUNT MISSING VALUES AND 
+ %% THAT ALL_YEARS AND YEARLY MAPS ARE ONLY NOW MADE FOR PART OF THE RECORD
+ %% PROBABLY NEED TO RE WORK ALL OF MAKE_ALL_THE BAGGED_TREES
+clearvars
+
+
+% if you comment out nbsins_use it will use all the baisins howver you need
+% to update load_TreeSetUp.m and also comment out
+% nbasins_use=TreeSetUp.nbasins_use
+
+nbasins_use=[1:9];
+% nbasins_use=[5];
+file_name='pfloat_sal_greg_aug_2020_QC_mldinfo';
+
+path_oisst='C:\data\oisst\';
+path_OHCA_data_out='C:\data\MLD\'
+path_OHCA_data_in='C:\OHCA\'
+file_WOD_suf='_cheng_EN4_2014';
+var_type='MLD';
+tree_prefix='tree_sst_tpx_MLD';
+
+
+tree_model_file_name_season=[tree_prefix,'_yearly_overlap_seasonal'];
+tree_model_file_name_yearly=[tree_model_file_name_season,'_anom'];
+tree_model_file_name_all_year=[tree_prefix,'_all_year_seasonal_anom'];
+tree_model_file_name_combined=[tree_prefix,'_combined_seasonal_anom'];
+
+file_name_season=[file_name,'_seasonal'];
+file_name_season_anom=[file_name_season,'_anom'];
+path_ssh=[path_OHCA_data_in,'Mtpers\'];
+file_path_hdata=[path_OHCA_data_out,'MLD_maps\'];
+
+path_tree=[path_OHCA_data_out,'MLD_trees\',tree_prefix,'\'];
+% path_tree=[path_OHCA_data_out,'OHCA_trees\'];
+
+if ~exist(path_tree,'dir')
+    mkdir(path_tree)
+end
+
+path_new_tree_season=[path_tree,tree_model_file_name_season,'\'];
+path_new_tree_yearly=[path_tree,tree_model_file_name_yearly,'\'];
+path_new_tree_all_year=[path_tree,tree_model_file_name_all_year,'\'];
+
+fname_nc_season=[file_path_hdata,'hdata_',file_name_season];
+fname_nc=[file_path_hdata,'hdata_',file_name_season_anom];
+
+
+
+path_tree_junk='C:\JUNK\';
+path_curve=[path_OHCA_data_out,'MLD_curves\'];
+
+layer_bounds=[0,100];
+
+start_year=2005.5;
+end_year=2020.5;
+
+start_year_mean=2007.5;
+end_year_mean=2020.5;
+max_year_fit=2019;
+min_year_fit=2008;
+center_year=(max_year_fit+min_year_fit)./2;
+
+start_yearly_maps=2005.5;
+end_yearly_maps=2020.5;
+
+start_all_year=2005.5;
+end_all_year=2020.5;
+
+start_year_trans=2006;
+end_year_trans=2007;
+
+%% load vars into TreeSetUp
+TreeSetUp.nbasins_use=nbasins_use;
+TreeSetUp.file_name=file_name;
+TreeSetUp.var_type=var_type;
+
+
+TreeSetUp.file_name_season=file_name_season;
+TreeSetUp.file_name_season_anom=file_name_season_anom;
+TreeSetUp.file_WOD_suf=file_WOD_suf;
+TreeSetUp.file_path_hdata=file_path_hdata;
+TreeSetUp.fname_nc_season=fname_nc_season;
+TreeSetUp.fname_nc=fname_nc;
+
+TreeSetUp.tree_prefix=tree_prefix;
+TreeSetUp.tree_model_file_name_season=tree_model_file_name_season;
+TreeSetUp.tree_model_file_name_yearly=tree_model_file_name_yearly;
+TreeSetUp.tree_model_file_name_all_year=tree_model_file_name_all_year;
+TreeSetUp.tree_model_file_name_combined=tree_model_file_name_combined;
+
+TreeSetUp.path_oisst=path_oisst;
+TreeSetUp.path_OHCA_data_out=path_OHCA_data_out;
+TreeSetUp.path_OHCA_data_in=path_OHCA_data_in;
+TreeSetUp.path_ssh=path_ssh;
+
+TreeSetUp.path_tree=path_tree;
+TreeSetUp.path_new_tree_season=path_new_tree_season;
+TreeSetUp.path_new_tree_yearly=path_new_tree_yearly;
+TreeSetUp.path_new_tree_all_year=path_new_tree_all_year;
+
+TreeSetUp.path_tree_junk=path_tree_junk;
+TreeSetUp.path_curve=path_curve;
+
+TreeSetUp.layer_bounds=layer_bounds;
+
+TreeSetUp.start_year=start_year;
+TreeSetUp.end_year=end_year;
+
+TreeSetUp.start_year_mean=start_year_mean;
+TreeSetUp.end_year_mean=end_year_mean;
+TreeSetUp.max_year_fit=max_year_fit;
+TreeSetUp.min_year_fit=min_year_fit;
+TreeSetUp.center_year=center_year;
+
+TreeSetUp.start_yearly_maps=start_yearly_maps;
+TreeSetUp.end_yearly_maps=end_yearly_maps;
+
+TreeSetUp.start_all_year=start_all_year;
+TreeSetUp.end_all_year=end_all_year;
+
+TreeSetUp.start_year_trans=start_year_trans;
+TreeSetUp.end_year_trans=end_year_trans;
+
+% make the MLD file for the trees
+make_tree_files_hdata_topex_MLD(TreeSetUp)
+
+
+%% compute the seasonal cycle 
+% 
+baggedtree_hold_out_yearly_overlap_seasonal_split_new(TreeSetUp)
+read_ssh_matfiles_yearly_overlap_seasonal_split(TreeSetUp)
+make_seasonal_cycle_tree_split(TreeSetUp)
+make_model_stats_yearly_overlap_seasonal_split(TreeSetUp)
+
+
+%% Make the yearlly anomally tree
+% 
+baggedtree_hold_out_yearly_overlap_seasonal_anom_split_new(TreeSetUp)
+read_ssh_matfiles_yearly_overlap_seasonal_anom_split(TreeSetUp)
+make_model_stats_yearly_overlap_seasonal_anom_split(TreeSetUp)
+
+
+%% Make the anomaly tree for all years
+% 
+% baggedtree_hold_out_all_years_seasonal_anom_split_new(TreeSetUp)
+% read_ssh_matfiles_all_years_seasonal_anom_split(TreeSetUp)
+% make_model_stats_all_years_seasonal_anom_split(TreeSetUp)
+% 
+% 
+% %% Make combines ohca maps for all_years and yearly
+% 
+% 
+% bagged_tree_ohca_combine_split(TreeSetUp)
+% 
+% 
+% %% make asses the error
+% % 
+% make_error_holdout_estimate_files_yearly_season_anom_split(TreeSetUp)
+% make_error_holdout_estimate_files_all_years_season_anom_split(TreeSetUp)
+% 
+% 
+% error_holdout_all_years_test_weights_split(TreeSetUp)
+% error_holdout_yearly_test_weights_split(TreeSetUp)
+% 
+% bagged_tree_ohca_error_combine_split(TreeSetUp)
+
+
+% % make the 7-day ohca curve 0-2000m error
+% bagged_tree_ohca_curve_7_day_error_weight
+% 
+% clearvars -except file_name max_year_fit min_year_fit center_year ...
+%     start_year end_year
+% 
+% %%%%%%%%%%%% THESE CODES NEED to BE TESTED TO MAKE SUTRE THAT THEY WORK
+% %%%%%%%%%%%% WITH THIS CODE
+% % % % % make the 7-day ohca curve 0-2000m 
+% 
+% % % % % % make a sesonal cycle to add to the heat content
+% 
+% make_bagged_tree_ohca_maps_7_day_seasonal
+% clearvars -except file_name max_year_fit min_year_fit center_year ...
+%     start_year end_year
+% % % % % % make the curve
+% 
+% bagged_tree_ohca_curve_7_day_with_cycle_combined
+% clearvars -except file_name max_year_fit min_year_fit center_year ...
+% %     start_year end_year
+% % %% makes the error maps for the 0-700 m yearly-ohca map
+% % bagged_tree_ohca_error_maps
+% % 
+% % close all
+% % clear all
+% 
+% plot_map_bagged_tree_paper_error
+% 
+% close all
+% clear all
+% 
+% plot_map_bagged_tree_paper_error_7day
+% close all
+% clear all
+% tree_movie
+% 
+% close all
+% clear all
+% multi_write_netcdf_nc_heat
+
+% close all
+% clear all
+% multi_write_netcdf_nc_heat_error

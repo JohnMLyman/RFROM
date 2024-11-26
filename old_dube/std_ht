@@ -1,0 +1,15 @@
+load allheat
+
+for iyear =1955:2005
+    
+    good_points=(find(dt(:,1))== iyear);
+    ht_iyear=htanom(good_points);
+    real_ht=find(finite(ht_iyear)== 1);
+    good_pos=good_points(real_ht);
+    ht_iyear=ht_iyear(real_ht);
+    std_iyear=std(ht_iyear);
+    
+    std(iyear-start_iyear)=std_iyear;
+    time=iyear;
+end
+

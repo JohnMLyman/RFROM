@@ -1,0 +1,149 @@
+
+% for some reason I can only get the 64-bit version of the mex file to work
+% using these methods.
+
+%load /home/shoko2/wills/globalhc_dirs/Globalhc/SAL/Floats/total_den_grid_april_19.mat
+
+% eval(['load /Users/johnlyman/data/'  filename]);
+load /Users/johnlyman/data/molly_hc hc_combined hc_insitu hc_aviso lon_aviso lat_aviso time one_insitu lon_insitu lat_insitu
+nc_file=['hdata_cpc_pmel.nc']
+n_lon_aviso=length(lon_aviso);
+n_lat_aviso=length(lat_aviso);
+n_lon_insitu=length(lon_insitu);
+n_lat_insitu=length(lat_insitu);
+n_time=length(time);
+
+
+
+
+
+% Create a variable in the workspace.
+my_vardata = linspace(0,50,50);
+
+% Create a netCDF file.
+ncid = netcdf.create(nc_file,'NC_WRITE');
+
+% Define a dimension in the file.
+dim_n_lon_aviso = netcdf.defDim(ncid,'n_lon_aviso',n_lon_aviso);
+dim_n_lat_aviso = netcdf.defDim(ncid,'n_lat_aviso',n_lat_aviso);
+dim_n_lat_insitu = netcdf.defDim(ncid,'n_lat_insitu',n_lat_insitu);
+dim_n_lon_insitu = netcdf.defDim(ncid,'n_lon_insitu',n_lon_insitu);
+dim_n_time = netcdf.defDim(ncid,'n_time',n_time);
+
+
+ 
+% Define a new variable in the file.
+varid_lon_aviso = netcdf.defVar(ncid,'lon_aviso','double',dim_n_lon_aviso);
+varid_lat_aviso = netcdf.defVar(ncid,'lat_aviso','double',dim_n_lat_aviso);
+varid_lat_insitu = netcdf.defVar(ncid,'lat_inistu','double',dim_n_lat_insitu);
+varid_lon_insitu = netcdf.defVar(ncid,'lon_inistu','double',dim_n_lon_insitu);
+varid_time = netcdf.defVar(ncid,'time','double',dim_n_time);
+varid_hc_aviso=netcdf.defVar(ncid,'hc_aviso','double',[dim_n_lon_aviso,dim_n_lat_aviso,dim_n_time]);
+
+% Leave define mode and enter data mode to write data.
+netcdf.endDef(ncid);
+
+% Write data to variable.
+netcdf.putVar(ncid,varid_lon_aviso,lon_aviso,lat_ins);
+ netcdf.close(ncid)
+ 
+ 
+ 
+% % Re-enter define mode.
+% netcdf.reDef(ncid);
+% 
+% % Create an attribute associated with the variable.
+% netcdf.putAtt(ncid,0,'my_att',10);
+
+
+% 
+% 
+% nc_create_empty(nc_file)
+% % Define dimensions.
+% 
+% n_lon_aviso=length(lon_aviso);
+% n_lat_aviso=length(lat_aviso);
+% n_lon_insitu=length(lon_insitu);
+% n_lat_insitu=length(lat_insitu);
+% n_time=length(time);
+% 
+% nc_add_dimension(nc_file,'n_lon_aviso',n_lon_aviso);
+% nc_add_dimension(nc_file,'n_lat_aviso',n_lat_aviso);
+% nc_add_dimension(nc_file,'n_lon_insitu',n_lon_insitu);
+% nc_add_dimension(nc_file,'n_lat_insitu',n_lat_insitu);
+% nc_add_dimension(nc_file,'n_time',n_time);
+% 
+%   % Define variables.
+% 
+%   
+% % coords_out=coords;
+% % tpx_out=tpx;
+% % yr_out=yr;
+% % htanom_out=htanom;
+% % htdiff_out=htdiff;
+% %   
+% % clear coords tpx htanom yr htdiff var_coords var_nprof var_tpx var_yr var_htdiff var_htanom nnn
+% %   
+% var_lon_aviso.Name='lon_aviso';
+% var_lon_aviso.Dimension={'n_lon_aviso'};
+% nc_addvar(nc_file, var_lon_aviso)
+% 
+% var_lat_aviso.Name='lat_aviso';
+% var_lat_aviso.Dimension={'n_lat_aviso'};
+% %var_htanom.Nctype=nc_float;
+% 
+% var_hc_aviso.Name='hc_aviso';
+% var_hc_aviso.Dimension={'n_lon_aviso','n_lat_aviso','n_time'};
+% 
+% var_hc_combined.Name='hc_combined';
+% var_hc_combined.Dimension={'n_lon_aviso','n_lat_aviso','n_time'};
+% %var_coords.Nctype=nc_float;
+% 
+% var_lon_insitu.Name='lon_insitu';
+% var_lon_insitu.Dimension={'n_lon_insitu'};
+% nc_addvar(nc_file, var_lon_insitu)
+% 
+% var_hc_insitu.Name='hc_insitu';
+% var_hc_insitu.Dimension={'n_lon_insitu','n_lat_insitu','n_time'};
+% 
+%   
+% var_lat_insitu.Name='lat_insitu';
+% var_lat_insitu.Dimension={'n_lat_insitu'};
+% %var_htanom.Nctype=nc_float;
+%   
+% var_time.Name='time';
+% var_time.Dimension={'n_time'};
+% 
+% %var_tpx.Nctype=nc_float;
+% 
+% 
+% 
+% 
+% %nc{'latitude'}.units = 'degrees';                    % Attributes.%
+% %nc{'longitude'}.units = 'degrees';
+% %nc{'depth'}.units = 'meters';
+% 
+% 
+%                                                     % Put all the data.
+% nc_addvar(nc_file, var_hc_aviso)
+% nc_addvar(nc_file, var_lat_aviso)
+% nc_addvar(nc_file, var_hc_insitu)
+% nc_addvar(nc_file, var_lat_insitu)
+% nc_addvar(nc_file, var_time)
+% nc_addvar(nc_file, var_hc_combined)
+% 
+% clear vardata
+% 
+% vardata.lon_aviso=lon_aviso;
+% vardata.hc_aviso=hc_aviso;
+% vardata.lat_aviso=lat_aviso;
+% vardata.lon_insitu=lon_insitu;
+% vardata.hc_insitu=hc_insitu;
+% vardata.lat_insitu=lat_insitu;
+% vardata.hc_combined=hc_combined;
+% vardata.time=time;
+% 
+% 
+% 
+% nc_dump(nc_file)
+

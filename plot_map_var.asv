@@ -1,0 +1,91 @@
+
+load('C:\Users\jlyma\OneDrive - University of Hawaii\data\OHCA\OHCA_trees\tree_sst_tpx_all_year_seasonal_anom_0_40_7day_var.mat',...
+    'lat_tpx','lon_tpx','var_ht_yearly')
+plot_var=var_ht_yearly;
+scale_plot=1e16;
+
+cold_to_hot_colormap=diverging_map([0:1/200:1],[20 43 140]/255,[204 0 51]/255);
+
+figure(1);wysiwyg;orient tall
+    set(gcf,'color','white');
+    m_proj('Equidistant cylindrical','long',[30 390],'lat',[-90 90]);
+    subplot(3,1,1)
+    
+    
+    
+    corrhc=plot_var./scale_plot;
+   
+    
+    
+    lon=lon_tpx';
+    lat=lat_tpx';
+    scale_fac=1;
+    
+    % put into the proper coordinates
+    min_val=0;
+    max_val=18;
+    del_val=.5./scale_fac;
+    del_cont=.25./scale_fac;
+    ii=find(lon<30);
+    jj=find(lon>=30);
+    lon=[lon(jj),lon(ii)+360];
+    corrhc=[corrhc(jj,:);corrhc(ii,:)];
+    %colormap jet(256)
+    
+    colormap(cold_to_hot_colormap) 
+    
+    
+    m_proj('Equidistant cylindrical','long',[30 390],'lat',[-90 90]);
+    %colormap(fresh_to_salty_colormap) 
+    [cs1,h1]=m_contourf(lon,lat,corrhc',[-1000,min_val:del_cont:max_val]);
+    % % 'cat'
+    save 'OHCA_2019_tpx.mat' lon lat corrhc
+    hold on
+    set(h1,'linecolor','none')
+    hold on
+    m_grid('tickdir','out','xtick',[30:60:390],'ytick',[-90:30:90],'linestyle','none','xticklabel',[]);
+    
+    
+    %[cs12,h12]=m_contour(lon_cont,lat_cont,sal_cont',[32 32],'k');
+    a=gca;
+    hold on
+    m_coast('patch',[1 1 1]);
+    t1=m_text(30,100,'(a) ','fontsize',12);
+    %t3=m_text(50,45,[num2str(depth_top_plot),'-',num2str(depth_bot_plot)],'fontsize',12);
+    t2=m_text(320,-105,'(10^{16} (J m ^{-2})^{2})','fontsize',12);
+    
+    caxis([min_val max_val-del_cont])
+    
+    hold off
+    
+    ja=axes('pos',[.262 .90-.0475 .51 .01]);
+    %colormap jet(256)
+    
+    colormap(cold_to_hot_colormap) 
+    
+    [cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:del_cont:max_val]);
+    set(h,'edgecolor','none')
+    set(ja,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+    caxis([min_val max_val-del_cont])
+    %xlabel('Upper Ocean Heat Content Anomaly [J m ^{-2} x 10^9]')
+    
+    apos=get(a,'pos');
+%     bpos=get(b,'pos');
+%     cpos=get(c,'pos');
+    japos=get(ja,'pos');
+%     jbpos=get(jb,'pos');
+%     jcpos=get(jc,'pos');
+    
+    
+    set(a,'pos',apos+[0 .016 0 .03])
+%     set(b,'pos',bpos+[0 0 0 .03])
+%     set(c,'pos',cpos+[0 -.02 0 .03])
+    
+    set(ja,'XAxisLocation','bottom','pos',japos-[-.075 .149 .15 0])
+%     set(jb,'XAxisLocation','bottom','pos',jbpos-[-.075 -.225 .15 0])
+%     set(jc,'XAxisLocation','bottom','pos',jcpos-[-.075 .805 .15 0])
+    
+    %%% print plot
+    wysiwyg_tuna;orient tall
+    
+    % plot the heat content change of 2008-2007

@@ -1,0 +1,40 @@
+% this code plots the data in a squarrrre and fits it year by year ment to
+% be run with mapdiff_with_error (inside the loop!)
+
+ii=find(7504==wnum&~isnan(tpx+htanom))
+
+m_ungrid m_proj;
+m_proj('Equidistant Cylindrical','long',[30 390],'lat',[-90 90]);
+ m_coast;
+ m_grid;
+ hold on
+m_plot(cds(ii,1),cds(ii,2),'.r')
+
+m_plot(cds(ii,1)+360,cds(ii,2),'.r')
+
+lon=cds(ii,1);
+lat=cds(ii,2);
+
+year=dt(ii,1);
+
+year_u=unique(year);
+
+t=tpx(ii);
+y=htanom(ii);
+
+
+
+for itime=1:length(year_u)
+    
+    figure
+    jj=find(year_u(iyear) == year);
+    tj=t(jj);
+    yj=y(jj);
+
+    [y_model,y_model_err_95,slope_error,slope]=j_fit_alpha_remove_std(tj',yj');
+    
+    slope_t(i
+
+
+
+

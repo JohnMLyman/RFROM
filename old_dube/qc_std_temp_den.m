@@ -1,0 +1,309 @@
+% the new qc file qc3
+
+
+ h=figure(1)
+
+ d=sdir(['grad_den_0_grid_aden_den_no_*.mat']);
+ 
+ 
+ for isquare=1:length(d)
+   close(figure,h) 
+scrsz = get(0,'ScreenSize');
+ h=figure('Position',[1 scrsz(4)/1.5 scrsz(3)/1.5 scrsz(4)/1.5]);  
+eval(['load ',d(isquare).name])
+
+display(d(isquare).name)
+
+% sorting the data
+nd=length(density_surface);
+temp2=temp;
+
+yd=dt(:,1)+(dt(:,2)-1)/12.+(dt(:,3)-1)/365.;
+  
+  %find the right dates (ie only preform the qc on the times that
+  % I cheacked.
+  
+%   good_times=find(yd >= 2002);
+%   dt=dt(good_times,:);
+%   temp=temp(good_times,:);
+%   sal=sal(good_times,:);
+%   fpress=fpress(good_times,:);2
+%   mdep=mdep(good_times);
+  temp2=temp;
+  sal2=sal;
+  depth2=fpress;
+ theta = sw_ptmp(sal,temp,fpress,0);
+% take out all the points that lie 3 std at every depth level
+ii=[];
+
+
+
+
+for iden=1:nd
+        % use nuetral density when it is aviable.
+   
+    if length(find(finite(temp_gam(:,iden))==1)) >= 2
+        den_temp=temp_gam(:,iden);
+        den_sal=sal_gam(:,iden);
+        den_press=press_gam(:,iden);
+        else
+        den_temp=temp_0(:,iden);
+        den_sal=sal_0(:,iden); 
+        den_press=press_0(:,iden);
+    end
+%only look at profiles where the mean pressure is less then 1000 dbar
+    if (length(find(finite(den_temp) ==1 )) >=2 & nanmean(den_press) > 500)
+         [ind_temp]=ind_out_qua(den_temp,5);
+        [ind_sal]=ind_out_qua(den_sal,5);
+        [ind_press]=ind_out_qua(den_press,5);
+        ii=[ii,ind_sal',ind_temp',ind_press'];
+        
+    end 
+end
+
+% get rid of profiles with more than 5% missing
+
+
+ibad=find(ratio_bad >= .05);
+
+ii=[ii,ibad];
+
+
+%get rid of profiles with desities that lie way outside the norm
+
+den_0= sw_pden(sal,temp,fpress,0);
+den_junk=den_0(:);
+
+if  length(find(finite(den_junk) ==1 )) >=2
+     [den_range]=out_qua(den_junk,5);
+ end
+% 
+ %s=size(den_0);
+% bad_den=[]; 
+% 
+% 
+% for ipos=1:s(1)
+%       
+%             junk_den0=den_0(ipos,:);
+%             bad_junk=find(junk_den0 <= den_range(1) | junk_den0 >= den_range(2));
+%             if length(bad_junk) > 0 
+%                 bad_den=[bad_den,ipos] ;
+%             end
+%              
+%       
+% end
+% 
+
+
+
+
+% ii=[ii, bad_den];
+
+% this section removes profiles that are too short
+
+s=size(sal);
+short=[]; 
+% 
+% 
+ for ipos=1:s(1)
+%       
+             junk=sal(ipos,:)+temp(ipos,:)+fpress(ipos,:);
+
+             if length(find(finite(junk) == 1)) < 10 
+                 short=[short,ipos] ;
+             end
+%              
+%       
+ end
+ii=[ii, short];
+jj=unique(ii);
+
+
+% % get rid of temp at depth
+% 
+% deep=temp(:,nd);
+% 
+% [ind_deep]=ind_out_std2(deep,2);
+% 
+% % if there are enough points do it agian
+% 
+% 
+% 
+% jj=[ind_deep];
+% 
+% % do the same thing for salinity
+% 
+% deep_sal=sal(:,nd);
+% good=[1:length(deep_sal)];
+%     
+% %get rid of bad pofiles
+% deep_sal(jj)=[];
+% good(jj)=[];
+% 
+% [ind_deep2]=ind_out_std2(deep_sal,2);
+% 
+% jj=[jj,good(ind_deep2)];
+
+
+
+% del_del <-0.001 is about the same as N^2 < -5e6 1/sec^2
+% [ibad,jbad]=find(del_den < -0.001 );
+% jj=unique(ibad);
+%find where there are density inversions
+
+
+%  
+ %jj=[jj;find(temp(:,4)<1)];
+% jj=[jj;find(temp(:,2)<100)];
+% jj=[jj;find(temp(:,8)<2.5)];
+% jj=[jj;find(temp(:,3)<13)];
+% jj=[jj;find(temp(:,11)<6)];
+%jj=[jj;find(temp(:,2)<8)];
+%jj=[jj;find(temp(:,6)<12)];
+%jj=[jj;find(temp(:,9)<12)];
+%jj=[jj;find(temp(:,1)<.6)];
+ %jj=[jj;find(temp(:,3)>28.74)];
+% 
+% jj=[jj;find(temp(:,9)>31)];
+%jj=[jj;find(temp(:,1)<13 & temp(:,1)>12.2)];
+
+temp(jj,:)=[];
+sal(jj,:)=[];
+theta2=theta;
+theta(jj,:)=[];
+fpress(jj,:)=[];
+% [tu,rp,p_ave] = sw_turn(sal',temp',fpress');
+% tu=tu';
+% rp=rp';
+% p_ave=p_ave';
+%pden_top(jj,:)=[];
+depth=fpress;
+
+
+
+
+
+
+% % % 
+s_temp=size(temp)
+if s_temp(1) > 1 & s_temp(2) >1
+%del_den(jj,:)=[];
+%plotting the good data
+
+subplot(2,4,1)
+plot(sal2,-1.*depth2,'.')
+hold on
+plot(sal2(jj,:),-1.*depth2(jj,:),'k.')
+hold off
+title('all ');
+xlabel('salinity');
+ylabel('depth');
+
+%plotting all the data
+      
+subplot(2,4,2)
+plot(temp2,-1.*depth2,'.')
+hold on
+plot(temp2(jj,:),-1.*depth2(jj,:),'k.')
+hold off
+
+title(['all ',d(isquare).name]);
+xlabel('temp');
+ylabel('depth');
+%axis([30 40 -200 -100])
+%plotting bad data
+
+subplot(2,4,3)
+plot(temp,-1.*depth,'.');
+title('good temp ');
+
+
+% 
+subplot(2,4,4)
+plot(sal,-1*depth,'.');
+title('good sal');
+
+%
+% subplot(2,5,5)
+% plot(tu,-1.*p_ave,'.');
+% title(['turner angle']);
+subplot(2,4,8 )
+% 
+ plot(sal2',theta2','k')
+ title(['Theta S ',num2str(round(100*length(jj)./length(yd))),' %. ', num2str(isquare)])
+hold on 
+plot (sal',theta','r')
+hold off
+
+% 
+% 
+% plot(temp2(jj,:),-1.*depth,'.')
+% title('bad');
+% xlabel('temp');
+% ylabel('depth');
+% 
+% 
+%plotting the map
+
+subplot(2,4,5)
+m_ungrid m_proj;
+m_proj('Miller Cylindrical');
+ m_coast;
+ m_grid;
+ hold on
+m_plot(coords(:,1),coords(:,2),'.k')
+
+%m_plot(coords(jj,1),coords(jj,2),'.r')
+hold off
+
+%blowup
+subplot(2,4,6)
+m_ungrid m_proj;
+m_proj('Miller Cylindrical','longitudes',[min(coords(:,1)) max(coords(:,1))], ...
+       'latitudes',[min(coords(:,2)) max(coords(:,2))]);
+ m_coast;
+ m_grid;
+hold on 
+m_plot(coords(:,1),coords(:,2),'.k')
+
+m_plot(coords(jj,1),coords(jj,2),'.r')
+hold off
+
+%plotting month
+
+
+% subplot(2,4,6)
+% 
+% plot(dt(:,2),'.b')
+% 
+% hold on
+% 
+% plot(dt(jj,2),'.r')
+% xlabel('index');
+% ylabel('month');
+% hold off
+% 
+% %plotting year
+% 
+subplot(2,4,7)
+
+plot(dt(:,1),'.b')
+
+hold on
+
+plot(dt(jj,1),'.r')
+xlabel('index');
+ylabel('year');
+hold off
+pause
+end
+end
+
+% % if length (temp) >=1 
+% %     fpress(jj,:)=[];id(jj,:)=[];qual(jj)=[];coords(jj,:)=[];dt(jj,:)=[];
+% %     npts(jj)=[];mdep(jj)=[];time(jj,:)=[];
+% %     per_bad_grad=100*length(jj)./length(good_times);
+% %  eval(['save grad_den_',d(isquare).name,' coords dt time ',...
+% %         'temp qual depth mdep npts id sal fpress per_bad_den per_bad_grad'])
+% % end
+% %  end

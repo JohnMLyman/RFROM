@@ -1,0 +1,219 @@
+%  This code computes all the componetes of the bagged tree and assembles
+%  it.  Howerver it assumes that the data files have been made:
+%  that is done in oco_maps_2021_tuna_seasonal.m : and oco_maps_2021_tuna2
+
+ %% REWRITE COMBINE CODES!! TO TAKE INTO ACCOUNT MISSING VALUES AND 
+ %% THAT ALL_YEARS AND YEARLY MAPS ARE ONLY NOW MADE FOR PART OF THE RECORD
+ %% PROBABLY NEED TO RE WORK ALL OF MAKE_ALL_THE BAGGED_TREES
+clearvars
+
+
+% if you comment out nbsins_use it will use all the baisins howver you need
+% to update load_TreeSetUp.m and also comment out
+% nbasins_use=TreeSetUp.nbasins_use
+
+nbasins_use=[1:9];
+% nbasins_use=[5];
+file_name='argo_2021_02_02_QC';
+file_name='argo_2023_03_23_QC';
+
+path_oisst='D:\oisst\';
+path_OHCA_data_out='D:\';
+path_OHCA_data_in='D:\';
+path_main_tree='H:\';
+path_main_tree_temp='J:\';
+path_main_error='H:\';
+
+file_WOD_suf='_cheng_EN4_2014';
+var_type='s';
+tree_prefix='tree_sal';
+tree_prefix_temp='tree_temp';
+path_mat_nc='J:\yearly_temp\';
+
+tree_model_file_name_season=[tree_prefix,'_yearly_overlap_seasonal'];
+tree_model_file_name_yearly=[tree_model_file_name_season,'_anom'];
+tree_model_file_name_all_year=[tree_prefix,'_all_year_seasonal_anom'];
+tree_model_file_name_combined=[tree_prefix,'_combined_seasonal_anom'];
+
+file_name_season=[file_name,'_seasonal'];
+file_name_season_anom=[file_name_season,'_anom'];
+path_ssh=[path_OHCA_data_in,'Mtpers\'];
+file_path_hdata=[path_OHCA_data_out,var_type,'_maps\'];
+
+path_tree=[path_main_tree,tree_prefix,'\',var_type,'_trees\'];
+path_tree_temp=[path_main_tree_temp,tree_prefix_temp,'\','t','_trees\'];
+path_error=[path_main_error,tree_prefix,'\',var_type,'_error\'];
+% path_tree=[path_OHCA_data_out,'OHCA_trees\'];
+
+if ~exist(path_tree,'dir')
+    mkdir(path_tree)
+end
+if ~exist(path_error,'dir')
+    mkdir(path_error)
+end
+path_new_tree_season=[path_tree,tree_model_file_name_season,'\'];
+path_new_tree_yearly=[path_tree,tree_model_file_name_yearly,'\'];
+path_new_tree_all_year=[path_tree,tree_model_file_name_all_year,'\'];
+
+path_new_error_season=[path_error,tree_model_file_name_season,'\'];
+path_new_error_yearly=[path_error,tree_model_file_name_yearly,'\'];
+path_new_error_all_year=[path_error,tree_model_file_name_all_year,'\'];
+
+fname_nc_season=[file_path_hdata,var_type,'data_new_layers_',file_WOD_suf,'_',file_name_season];
+fname_nc=[file_path_hdata,var_type,'data_new_layers_',file_WOD_suf,'_',file_name_season_anom];
+
+
+
+path_tree_junk='O:\JUNK\';
+path_curve=[path_main_tree,tree_prefix,'\',var_type,'_curves\'];
+
+if ~exist(path_tree_junk,'dir')
+    mkdir(path_tree_junk)
+end
+if ~exist(path_curve,'dir')
+    mkdir(path_curve)
+end
+
+layer_bounds=[0, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125,...
+    135, 145, 155, 165, 175, 190, 210, 230, 250, 270, 290, 310, 330 , ...
+    350, 370 , 390, 410,  430, 450, 475, 525, 575, 625, 675, 725, 775,...
+    825, 875, 925, 975, 1025, 1075, 1125, 1175, 1225, 1275, 1325, 1375,...
+    1450, 1550, 1650, 1750, 1850, 1950, 2000]% layer_bounds must be in assending order
+
+start_year=1993.5;
+end_year=2023;
+
+start_year_mean=2007.5;
+end_year_mean=2022.5;
+max_year_fit=2021;
+min_year_fit=2008;
+center_year=(max_year_fit+min_year_fit)./2;
+
+start_yearly_maps=2005.5;
+end_yearly_maps=2023;
+
+start_all_year=1993.5;
+end_all_year=2008.5;
+
+start_year_trans=2006;
+end_year_trans=2007;
+
+nlayer_use=1;
+%% load vars into TreeSetUp
+TreeSetUp.nbasins_use=nbasins_use;
+TreeSetUp.file_name=file_name;
+TreeSetUp.var_type=var_type;
+
+TreeSetUp.file_name_season=file_name_season;
+TreeSetUp.file_name_season_anom=file_name_season_anom;
+TreeSetUp.file_WOD_suf=file_WOD_suf;
+TreeSetUp.file_path_hdata=file_path_hdata;
+TreeSetUp.fname_nc_season=fname_nc_season;
+TreeSetUp.fname_nc=fname_nc;
+
+TreeSetUp.tree_prefix_temp=tree_prefix_temp;
+TreeSetUp.path_mat_nc=path_mat_nc;
+
+TreeSetUp.tree_prefix=tree_prefix;
+TreeSetUp.tree_model_file_name_season=tree_model_file_name_season;
+TreeSetUp.tree_model_file_name_yearly=tree_model_file_name_yearly;
+TreeSetUp.tree_model_file_name_all_year=tree_model_file_name_all_year;
+TreeSetUp.tree_model_file_name_combined=tree_model_file_name_combined;
+
+TreeSetUp.path_oisst=path_oisst;
+TreeSetUp.path_OHCA_data_out=path_OHCA_data_out;
+TreeSetUp.path_OHCA_data_in=path_OHCA_data_in;
+TreeSetUp.path_ssh=path_ssh;
+
+TreeSetUp.path_tree=path_tree;
+TreeSetUp.path_tree_temp=path_tree_temp;
+
+TreeSetUp.path_error=path_error;
+
+TreeSetUp.path_new_tree_season=path_new_tree_season;
+TreeSetUp.path_new_tree_yearly=path_new_tree_yearly;
+TreeSetUp.path_new_tree_all_year=path_new_tree_all_year;
+
+TreeSetUp.path_new_error_season=path_new_error_season;
+TreeSetUp.path_new_error_yearly=path_new_error_yearly;
+TreeSetUp.path_new_error_all_year=path_new_error_all_year;
+
+TreeSetUp.path_tree_junk=path_tree_junk;
+TreeSetUp.path_curve=path_curve;
+
+TreeSetUp.layer_bounds=layer_bounds;
+
+TreeSetUp.start_year=start_year;
+TreeSetUp.end_year=end_year;
+
+TreeSetUp.start_year_mean=start_year_mean;
+TreeSetUp.end_year_mean=end_year_mean;
+TreeSetUp.max_year_fit=max_year_fit;
+TreeSetUp.min_year_fit=min_year_fit;
+TreeSetUp.center_year=center_year;
+
+TreeSetUp.start_yearly_maps=start_yearly_maps;
+TreeSetUp.end_yearly_maps=end_yearly_maps;
+
+TreeSetUp.start_all_year=start_all_year;
+TreeSetUp.end_all_year=end_all_year;
+
+TreeSetUp.start_year_trans=start_year_trans;
+TreeSetUp.end_year_trans=end_year_trans;
+
+
+TreeSetUp.nlayer_use=nlayer_use;
+
+
+%% compute the seasonal cycle 
+% 
+'baggedtree_hold_out_yearly_overlap_seasonal_split_orca_sal'
+baggedtree_hold_out_yearly_overlap_seasonal_split_orca_sal(TreeSetUp)
+'multi_write_mat_monthly_temp_mean_t_orca'
+multi_write_mat_monthly_temp_mean_t_orca(TreeSetUp)
+'read_ssh_matfiles_yearly_overlap_seasonal_orca'
+read_ssh_matfiles_yearly_overlap_seasonal_orca(TreeSetUp)
+'make_seasonal_cycle_tree_split_orca'
+make_seasonal_cycle_tree_split_orca(TreeSetUp)
+'make_model_stats_yearly_overlap_seasonal_split_orca'
+make_model_stats_yearly_overlap_seasonal_split_orca(TreeSetUp)
+
+
+%% Make the yearlly anomally tree
+% 
+'baggedtree_hold_out_yearly_overlap_seasonal_anom_split_orca_new'
+baggedtree_hold_out_yearly_overlap_seasonal_anom_split_orca_new(TreeSetUp)
+'read_ssh_matfiles_yearly_overlap_seasonal_anom_split_orca2'
+read_ssh_matfiles_yearly_overlap_seasonal_anom_split_orca2(TreeSetUp)
+'make_model_stats_yearly_overlap_seasonal_anom_split'
+make_model_stats_yearly_overlap_seasonal_anom_split_orca(TreeSetUp)
+
+
+%% Make the anomaly tree for all years
+'baggedtree_hold_out_all_years_seasonal_anom_split_orca'
+baggedtree_hold_out_all_years_seasonal_anom_split_orca_new(TreeSetUp)
+'read_ssh_matfiles_all_years_seasonal_anom_split_orca22'
+read_ssh_matfiles_all_years_seasonal_anom_split_orca22(TreeSetUp)
+'make_model_stats_all_years_seasonal_anom_split'
+make_model_stats_all_years_seasonal_anom_split_orca(TreeSetUp)
+
+
+%% Make combines ohca maps for all_years and yearly
+
+'bagged_tree_ohca_combine_split_orca'
+bagged_tree_ohca_combine_split_orca(TreeSetUp)
+
+
+%% make asses the error
+% 
+'make_error_holdout_estimate_files_yearly_season_anom_split_orca'
+make_error_holdout_estimate_files_yearly_anom_orca_new(TreeSetUp)
+'make_error_holdout_estimate_files_all_years_anom_split_orca'
+make_error_holdout_estimate_files_all_years_anom_orca_new(TreeSetUp)
+'error_holdout_all_years_test_weights_split_orca'
+error_holdout_all_years_test_weights_split_orca_new(TreeSetUp)
+'error_holdout_yearly_test_weights_split_orca'
+error_holdout_yearly_test_weights_split_orca_new(TreeSetUp)
+'bagged_tree_ohca_error_combine_split_orca'
+bagged_tree_ohca_error_combine_split_orca_new(TreeSetUp)
+

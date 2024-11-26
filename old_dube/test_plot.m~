@@ -1,0 +1,18 @@
+clear
+
+for junk3=1:60
+n=122222222222
+x=rand(n,1)*1500;
+
+y=rand(n,1)*1500;
+
+for f=1:5
+   test_weights
+    GG(f)=sigma;
+    rr(f)=sigma2;
+end
+
+
+plot(rr./GG)
+hold on
+end

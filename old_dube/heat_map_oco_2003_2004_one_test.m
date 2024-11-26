@@ -1,0 +1,213 @@
+cold_to_hot_colormap=[[1,146,191]'/255,[255,255,255]'/255,[251,0,38]'/255]';
+cold_to_hot_colormap=interp1([0:1/2:1],cold_to_hot_colormap,[0:1/255:1]);
+
+
+s=sdir('../../Mtpers/ssh*.mat');
+sday=strjust(strvcat(s(:).name),'right');
+sday=str2num(sday(:,end-8:end-4));
+sday=sday+datenum(1950,1,1)-datenum(1992,1,1);
+syr=sday/365.25+1992;clear sday
+
+load ../../Mtpers/meanssh lat lon sshcyc gmo
+lon_tpx=[lon(542:end)-360;lon(1:541)];
+lat_tpx=lat;
+
+sshcyc=[sshcyc(542:end,:,:);sshcyc(1:541,:,:)];
+
+clear lon lat
+
+
+
+
+load ../../HC/landmask msk2
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%    Load in situ - aviso estimate       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ncload('htanom_diff_realtime_jan_2007_3_error_2005_2006.nc','lat','lon','time','one','htdiff');
+% htdiff=permute(htdiff,[3 2 1])./1e9;
+% one=permute(one,[3 2 1]);
+% 
+% ind_2006=find(time == 2006.5);
+% ind_2005=find(time == 2005.5);
+% 
+% ht_2006=htdiff(:,:,ind_2006);
+% ht_2005=htdiff(:,:,ind_2005);
+
+
+%ncload('htanom_diff_realtime_jan_2007_3_error_2006_2006.nc','lat','lon','time','one','htdiff');
+%ncload('htanom_q1_no_te_1950_2006_2006_2006.nc','lat','lon','time','one','htdiff');
+%ncload('htanom_no_te2_2006_2006.nc','lat','lon','time','one','htdiff');
+ncload('htanom_no_te2_2003_2004.nc','lat','lon','time','one','htdiff');
+%ncload('htanom_josh_march_2002_2006.nc','lat','lon','time','one','htdiff');
+htdiff=permute(htdiff,[3 2 1])./1e9;
+one=permute(one,[3 2 1]);
+ind_2006=find(time == 2003.5);
+
+ht_2006=htdiff(:,:,ind_2006);
+one_2006=one(:,:,ind_2006);
+
+%mask out bad data
+bad=find(one_2006 <= .8);
+%ht_2006(bad)=NaN;
+
+
+%ncload('htanom_diff_realtime_jan_2007_3_error_2005_2005.nc','lat','lon','time','one','htdiff');
+%ncload('htanom_q1_no_te_1950_2006_2005_2005.nc','lat','lon','time','one','htdiff');
+%ncload('htanom_no_te2_2005_2005.nc','lat','lon','time','one','htdiff');
+ncload('htanom_no_te2_2003_2004.nc','lat','lon','time','one','htdiff');
+%ncload('htanom_josh_march_2002_2006.nc','lat','lon','time','one','htdiff');
+htdiff=permute(htdiff,[3 2 1])./1e9;
+one=permute(one,[3 2 1]);
+
+ind_2005=find(time == 2004.5);
+
+ht_2005=htdiff(:,:,ind_2005);
+one_2005=one(:,:,ind_2005);
+
+% mask out bad data
+bad=find(one_2005 <= .8);
+%ht_2005(bad)=NaN;
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% load in the in the Aviso estimate %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%s
+%%                             %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+lon2=lon;
+ lat2=lat;
+
+
+%i=3
+
+
+%corrhc=interp2(lat,lon,ht(:,:,i),lat_tpx,lon_tpx');
+%corrhc(isnan(msk2(2:end-1,:)))=NaN;
+%corrhc(isnan(sshmean))=NaN;
+
+
+% plot the heat content for 2006
+figure(1);wysiwyg
+lon=lon2;
+lat=lat2;
+
+
+corrhc=interp2(lat,lon,one_2006,lat_tpx,lon_tpx');
+corrhc(isnan(corrhc))=0;
+corrhc(isnan(msk2(2:end-1,:)))=NaN;
+
+lon=lon_tpx;
+lat=lat_tpx;
+
+
+% put into the proper coordinates
+min_val=0
+max_val=1
+del_val=.2
+
+ii=find(lon<30);
+jj=find(lon>=30);
+lon=[lon(jj);lon(ii)+360];
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+colormap jet(256)
+
+%colormap(cold_to_hot_colormap) 
+
+pcolor(lon,lat,corrhc')
+caxis([min_val max_val])
+shading flat
+
+plot_coasts_black
+
+
+t1=text(70,50,'2003','fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+j=axes('pos',[.13 .85 .775 .02]);
+colormap jet(256)
+
+%colormap(cold_to_hot_colormap) 
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel('Area Coverage')
+
+% plot the heat content change of 2006-2005
+figure(2);wysiwyg
+lon=lon2;
+lat=lat2;
+
+
+corrhc=interp2(lat,lon,one_2005,lat_tpx,lon_tpx');
+corrhc(isnan(corrhc))=0;
+
+corrhc(isnan(msk2(2:end-1,:)))=NaN;
+
+lon=lon_tpx;
+lat=lat_tpx;
+
+
+% put into the proper coordinates
+min_val=0
+max_val=1
+del_val=.2
+
+ii=find(lon<30);
+jj=find(lon>=30); 
+lon=[lon(jj);lon(ii)+360];
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+colormap jet(256)
+
+%colormap(cold_to_hot_colormap)
+
+pcolor(lon,lat,corrhc')
+
+
+
+caxis([min_val max_val])
+shading flat
+
+plot_coasts_black
+
+t1=text(60,50,'2004','fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+j=axes('pos',[.13 .85 .775 .02]);
+colormap jet(256)
+
+%colormap(cold_to_hot_colormap) 
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel('Area Coverage')
+
+
+
+
+%%% print plot
+
+eval(['print -dpng -f1 /home/shoko/C/','''IDL ps''','/heat/oco/2006/oco_one_john_2003_test'])
+eval(['print -dpng -f2 /home/shoko/C/','''IDL ps''','/heat/oco/2006/oco_one_john_2004_test'])
+
+
+%close all
+%%%print -djpeg90 -f1 /moala2/josh/Globalhc/paper/f1.jpg
+

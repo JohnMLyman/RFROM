@@ -1,0 +1,26 @@
+ 
+%% ncdump('surface_sal_2005.nc')   %% Generated 19-Oct-2006 11:17:46
+ 
+nc = netcdf('surface_sal_2005.nc', 'noclobber');
+if isempty(nc), return, end
+ 
+%% Global attributes:
+ 
+%% (none)
+ 
+%% Dimensions:
+ 
+nc('Numberlon') = 720;
+nc('Numberlat') = 361;
+nc('Numbertime') = 3;
+ 
+%% Variables and attributes:
+ 
+nc{'lon'} = ncfloat('Numberlon'); %% 720 elements.
+ 
+nc{'lat'} = ncfloat('Numberlat'); %% 361 elements.
+ 
+nc{'surface_sal'} = ncfloat('Numbertime', 'Numberlat', 'Numberlon'); %% 779760 elements.
+ 
+endef(nc)
+close(nc)

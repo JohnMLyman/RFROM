@@ -1,0 +1,26 @@
+%this code contours mean salinity
+
+function contour_mean_sal
+load /home/shoko2/wills/globalhc_dirs/Globalhc/Mtpers/meanssh lat lon
+lon_tpx=[lon(542:end)-360;lon(1:541)];
+lat_tpx=lat;
+
+clear lon lat
+
+load /home/shoko2/wills/globalhc_dirs/Globalhc/HC/landmask msk2
+
+% load Levitus high-res climatology so we can subtract it (mean?)
+load /home/shoko2/wills/globalhc_dirs/Globalhc/Levitus/slevhr lon lat dep levsal
+levsal=[levsal(end-40:end,:,:);levsal;levsal(1:41,:,:)];
+lon=[-190.125:.25:190.125];
+levsal(:,end+1,:)=levsal(:,end,:);lat(end+1)=lat(end)+mean(diff(lat));
+surface_sal=levsal(:,:,1);
+
+corrhc=interp2(lat,lon,surface_sal,lat_tpx,lon_tpx');
+corrhc(isnan(msk2(2:end-1,:)))=NaN;
+
+hold on 
+
+contour(lon_tpx,lat_tpx,corrhc',[32:.2:38],'b')
+
+hold off

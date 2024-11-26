@@ -1,0 +1,103 @@
+
+function plot_var_mean_diff(slope_ave_t,slope_rep_t,slope_map_t,...
+    error_ave_t,error_rep_t,error_map_t,time,min_time,max_time)
+
+good_pos=find(time >= min_time & time <= max_time);
+
+name_years=[num2str(min_time),' to ',num2str(max_time)];
+% pick out the times to plot
+
+slope_ave_t=slope_ave_t(:,good_pos);
+slope_map_t=slope_map_t(:,good_pos);
+slope_rep_t=slope_rep_t(:,good_pos);
+
+error_ave_t=error_ave_t(:,good_pos);
+error_map_t=error_map_t(:,good_pos);
+error_rep_t=error_rep_t(:,good_pos);
+time=time(good_pos);
+
+nt=length(time);
+
+% take the difference
+
+rep_diff=slope_rep_t-slope_ave_t;
+map_diff=slope_map_t-slope_ave_t;
+
+mean_map_diff=mean(map_diff,2);
+mean_rep_diff=mean(rep_diff,2);
+
+var_map_diff=sqrt(mean((map_diff-repmat(mean_map_diff,1,nt)).^2,2));
+var_rep_diff=sqrt(mean((rep_diff-repmat(mean_rep_diff,1,nt)).^2,2));
+
+% compute the standard error.
+mean_error_map=sqrt(error_ave_t.^2+error_map_t.^2);
+mean_error_map=sqrt(mean(mean_error_map.^2,2));
+mean_error_rep=sqrt(error_ave_t.^2+error_rep_t.^2);
+mean_error_rep=sqrt(mean(mean_error_rep.^2,2));
+
+% express bais in terms of the error in the true slope
+mean_error_rep=var_rep_diff;
+mean_error_map=var_map_diff;
+
+pos=[1:length(mean_map_diff)];
+
+%plot
+
+subplot(2,1,1)
+
+hold on
+
+pos_rep=find(mean_rep_diff > 0);
+neg_rep=find(mean_rep_diff <= 0);
+
+pos_map=find(mean_map_diff > 0);
+neg_map=find(mean_map_diff <= 0);
+
+% if length(pos_rep ~= 0) 
+%   plot(pos(pos_rep),abs(mean_rep_diff(pos_rep)),'+r')
+% end
+% if length(neg_rep ~= 0) 
+%   plot(pos(neg_rep),abs(mean_rep_diff(neg_rep)),'*r')
+% end
+% 
+% if length(pos_map ~= 0) 
+%   plot(pos(pos_map),abs(mean_map_diff(pos_map)),'+')
+% end
+% if length(neg_map ~= 0) 
+%   plot(pos(neg_map),abs(mean_map_diff(neg_map)),'*')
+% end
+
+% plot error bars
+plot(pos,mean_map_diff)
+plot(pos,mean_rep_diff,'r')
+
+e1=errorbar(pos,(mean_map_diff),mean_error_map,'.');
+e2=errorbar(pos,(mean_rep_diff),mean_error_rep,'r.');
+plot([0,length(pos)],[0,0],'k')
+%e1=errorbar(pos,abs(mean_map_diff),mean_error_map,'.');
+%e2=errorbar(pos,abs(mean_rep_diff),mean_error_rep,'r.');
+
+
+mean_map=mean(mean_map_diff);
+mean_rep=mean(mean_rep_diff);
+ylabel('W m^{-2}');
+title(['Mean of the difference. Mean map ', num2str(mean_map),', mean rep ',num2str(mean_rep),...
+    ':',name_years,'. * negitive + positive'],'fontsize',12)
+hold off 
+
+subplot(2,1,2)
+
+hold on 
+plot(var_map_diff,'.')
+plot(var_rep_diff,'.r')
+
+var_map=sqrt(mean(var_map_diff.^2));
+var_rep=sqrt(mean(var_rep_diff.^2));
+mean_rep=mean(mean_rep);
+ylabel('W m^{-2}');
+title(['Standard devation. STD map ', num2str(var_map),', STD rep ',num2str(var_rep),...
+    ':',name_years],'fontsize',12)
+
+
+
+hold off

@@ -1,0 +1,10 @@
+d=sdir(['den_den_no_f*.mat']);
+d
+
+mdep_total=[];
+for i=1:length(d)
+eval(['load ',d(i).name,' mdep'])
+d(i).name
+mdep_total=[mdep_total',mdep']';    
+    
+end

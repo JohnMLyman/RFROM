@@ -1,0 +1,80 @@
+% This code computes the quantity of fresh water in a given year and saves
+% it in files based on year.
+
+% the maxium depth of the profiles
+max_depth=1000.
+d=sdir(['grad_den_0_grid_aden_den_no_*.mat']);
+
+
+% load Levitus high-res climatology so we can subtract it (mean?)
+load /home/shoko2/wills/globalhc_dirs/Globalhc/Levitus/slevhr lon lat dep levsal
+levsal=[levsal(end-40:end,:,:);levsal;levsal(1:41,:,:)];
+lon=[-190.125:.25:190.125];
+levsal(:,end+1,:)=levsal(:,end,:);lat(end+1)=lat(end)+mean(diff(lat));
+
+
+% these are the fields that will be sa
+time_fresh=[];coords_fresh=[];dt_fresh=[];fresh_water_fresh=[];
+
+for i=1:1 % length(d)
+    
+    
+    if (exist([d(i).name]) & exist(['ind_',d(i).name]))
+        
+            eval(['load ',d(i).name,' coords mdep npts sal temp time fpress dt']);
+            eval(['load ind_',d(i).name,' bad_total']);
+
+            % subsect the good files.
+            coords(bad_total,:)=[];
+            mdep(bad_total,:)=[];
+            sal(bad_total,:)=[];
+            temp(bad_total,:)=[];
+            fpress(bad_total,:)=[];
+            time(bad_total)=[];
+            dt(bad_total,:)=[];
+            npts(bad_total)=[];
+
+            % compute the depth [this is an ad hoc method but it is widely accepted
+            %                   and is not a function of time (ie changing salinity
+            %                   and temp so that the only variation is the change
+            %                   in Salinity)]
+
+            depth=sw_dpth(fpress',coords(:,2)')';
+
+    
+          % interpolate salinity climatology onto temp profiles
+          ii=find(lon<max(coords(:,1))+.3&lon>min(coords(:,1)-.3));
+          jj=find(lat<max(coords(:,2))+.3&lat>min(coords(:,2)-.3));
+          mean_sal=zeros(size(temp,1),length(dep));
+          
+          for l=1:length(dep)
+                mean_sal(:,l)=interp2(lon(ii),lat(jj),levsal(ii,jj,l)',...
+                coords(:,1),coords(:,2));
+          end %if
+          
+          nprof=length(npts);
+          fresh_water=ones(nprof,1)*NaN;
+          
+          
+          
+          for iprof=1:length(npts)
+          
+            junk_depth=depth(iprof,:);
+            junk_sal=sal(iprof,:);
+            junk_temp=temp(iprof,:);
+            
+            junk_mean_sal=interp1(dep,mean_sal(i,:)',junk_depth','pchp')';
+            
+            
+            [junk_fresh_water]=fresh_water_input(junk_temp,junk_sal,junk_depth,junk_mean_sal,max_depth);
+            
+            fresh_water(iprof)=junk_fresh_water;
+          
+          end %for
+  
+  
+ 
+
+    end %if
+
+end %for

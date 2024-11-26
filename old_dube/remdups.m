@@ -1,0 +1,108 @@
+% remdups.m - matlab script to remove duplicates between
+% the WOD01, GTSPP, and float data
+% 1/7/3
+
+w=sdir('./WOD05/toss/w*.mat');
+g=sdir('./GTSPP/netcdf/toss/g*.mat');
+f=sdir('./Floats/toss/f*.mat');
+ww=strvcat(w(:).name);ww=str2num(ww(:,2:5));
+gg=[];%gg=strvcat(g(:).name);gg=str2num(gg(:,2:5));
+ff=strvcat(f(:).name);ff=str2num(ff(:,2:5));
+d=union(ff,union(gg,ww));clear w g f ww gg ff
+
+tic
+for i=1:length(d)
+  
+  
+ 
+  if exist(['./WOD05/toss/w',num2str(d(i)),'.mat']);
+    load(['./WOD05/toss/w',num2str(d(i)),'.mat']);
+    cds=coords;ddt=dt;mdp=mdep;np=npts;tmp=temp;tm=time;ql=qual;
+    s=src;t=typ;bt=bath;
+    isu=zeros(size(mdep));isu(((ptype==2|ptype==0)&mdp<840))=1;
+    
+    %remove argo floats
+    
+    argo=find(strcmp(cellstr(typ),'PF') ==1);
+     
+     cds(argo,:)=[];ddt(argo,:)=[];mdp(argo)=[];np(argo)=[];tm(argo)=[];ql(argo)=[];
+     s(argo)=[];,t(argo,:)=[];bt(argo)=[];tmp(argo,:)=[];
+     isu(argo)=[];
+    
+        clear coords dt npts temp time mdep qual src typ bath argo
+  else
+    cds=[];ddt=[];mdp=[];np=[];tmp=[];tm=[];ql=[];s=[];t=[];bt=[];isu=[];
+  end
+
+  % load GTSPP datal
+% if exist(['./GTSPP/netcdf/toss/g',num2str(d(i)),'.mat']);
+%     load(['./GTSPP/netcdf/toss/g',num2str(d(i)),'.mat']);
+%     isunk=zeros(size(mdep));isunk(dpc==3&mdep<840)=1;
+%     if size(mdep,1)==1,mdep=mdep';end
+%     
+%     
+%      %remove argo floats
+%     
+%     argo=find(strcmp(cellstr(typ),'PF') ==1);
+%      
+%      coords(argo,:)=[];dt(argo,:)=[];mdep(argo)=[];npts(argo)=[];time(argo)=[];qual(argo)=[];
+%      src(argo)=[];,typ(argo,:)=[];bath(argo)=[];
+%      isunk(argo)=[];temp(argo,:)=[];
+%     
+%     cds=[cds;coords];ddt=[ddt;dt];np=[np;npts];bt=[bt;bath];
+%     s=strvcat(s,src);t=strvcat(t,typ);
+%     
+%     
+%     
+%     tm=[tm;time];mdp=[mdp;mdep];tmp=[tmp;temp];ql=[ql;qual];isu=[isu;isunk];
+%     clear coords dt npts temp time mdep qual src typ bath isunk dpc
+%   end
+
+  % load float data
+  if exist(['./Floats/toss/f',num2str(d(i)),'.mat']);
+    load(['./Floats/toss/f',num2str(d(i)),'.mat']);
+    if size(mdep,1)==1,mdep=mdep';end
+    isunk=zeros(size(mdep));
+    cds=[cds;coords];ddt=[ddt;dt];np=[np;npts];bt=[bt;bath];
+    s=strvcat(s,src);t=strvcat(t,typ); 
+    tm=[tm;time];mdp=[mdp;mdep];tmp=[tmp;temp];ql=[ql;qual];isu=[isu;isunk];
+  end
+  clear coords dt npts temp time mdep qual src typ bath isunk
+
+  ntot=length(mdp);
+ %%%%%%%%%Remove the duplicates once
+    [ind_dup,s,t]=remove_duplicates(cds,ddt,tm,s,t,np);
+ 
+    tmp(ind_dup,:)=[];cds(ind_dup,:)=[];ddt(ind_dup,:)=[];
+    tm(ind_dup,:)=[];mdp(ind_dup)=[];np(ind_dup)=[];
+    ql(ind_dup)=[];bt(ind_dup)=[];isu(ind_dup)=[];
+    nkept=length(mdp);
+    ndups=length(ind_dup);
+ %%%%%%%%Remove the duplicates a second time to make sure that a float was
+ %%%%%%%%not in all three data bases.
+    
+    [ind_dup,s,t]=remove_duplicates(cds,ddt,tm,s,t,np);
+ 
+    tmp(ind_dup,:)=[];cds(ind_dup,:)=[];ddt(ind_dup,:)=[];
+    tm(ind_dup,:)=[];mdp(ind_dup)=[];np(ind_dup)=[];
+    ql(ind_dup)=[];bt(ind_dup)=[];isu(ind_dup)=[];
+    nkept2=length(mdp);
+ 
+    ndups2=length(ind_dup);
+  temp=tmp;coords=cds;dt=ddt;npts=np;time=tm;mdep=mdp;qual=ql;isunk=isu;
+  src=s;typ=t;bath=bt;
+  clear tmp cds ddt np tm mdp ql bt s t bah* day dc dd ii jj ind poop swtch isu ptype
+
+  % save to new file
+  save(['./All_Data/d',num2str(d(i)),'.mat'],'temp','coords','dt','npts','time', ...
+	'depth','mdep','qual','ntot','ndups','nkept','src','typ','bath', ...
+	'isunk','ndups2','nkept')
+  
+  disp(['d',num2str(d(i)),'  ',num2str(toc)])
+
+end
+
+t=toc/3600;
+
+ save -ascii dup_time.txt t
+

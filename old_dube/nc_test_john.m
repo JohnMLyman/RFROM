@@ -1,0 +1,34 @@
+function nc_test_john
+
+load hdata_mac_test
+[n_prof_out,n_coords]=size(coords);
+n=n_prof_out
+
+ncfile='nc_new_test_john.nc'
+
+nc_create_empty ( ncfile );
+%n=10000;
+nc_add_dimension ( ncfile, 'time', 0 );
+nc_add_dimension ( ncfile, 'x', n_coords );
+nc_add_dimension ( ncfile, 'y', n );
+
+v.Name = 'time';
+v.Dimension = { 'time' };
+nc_addvar ( ncfile, v );
+
+ v.Name = 'var1';
+ v.Dimension = { 'time', 'x' };
+ nc_addvar ( ncfile, v );
+
+%v.Name = 'var2';
+%v.Dimension = { 'time', 'y', 'x' };
+%nc_addvar ( ncfile, v );
+
+vardata.time = [1:n]';
+vardata.var1 = coords;
+%vardata.var2 = rand(5,n,10);
+nc_addnewrecs ( ncfile, vardata, 'time' );
+
+
+
+

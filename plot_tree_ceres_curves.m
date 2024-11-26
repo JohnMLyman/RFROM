@@ -1,0 +1,215 @@
+
+
+min_year=1993;
+max_year=2019;
+  
+path_file= 'C:\Users\jlyma\OneDrive - University of Hawaii\data\Roemmich_Gilson_Clim\';
+
+load([path_file,'RG_ArgoClim_heat_curve_2019.mat'],'ht_curve_gilson','time_gilson')
+
+good_gilson=find(time_gilson>=min_year & time_gilson<=max_year);
+time_gilson=time_gilson(good_gilson);
+ht_curve_gilson=ht_curve_gilson(good_gilson);
+center_year_gilson=nanmean(time_gilson);
+
+  [model_gilson,amp_annual,phase_annual,amp_semi,phase_semi,amp_third,phase_third,slope_gilson,mean_gilson,model_err]=...
+    j_fit_annual_tree(time_gilson',ht_curve_gilson);
+ndays=364.5/12;
+area_of_earth=5.1e14;
+sec_in_day=(60.*60*24);
+fac=1./(sec_in_day*area_of_earth.*ndays)
+start_ind=2;
+end_ind_off=1;
+
+ht_gilson_res=ht_curve_gilson-model_gilson;
+
+
+ht_gilson_res_qu=smooth(ht_gilson_res,6,'rloess');
+
+ht_gilson_qu=ht_gilson_res_qu+model_gilson'-mean_gilson-slope_gilson.*center_year_gilson;
+ht_gilson=ht_gilson_res'+model_gilson'-mean_gilson-slope_gilson.*center_year_gilson;
+
+
+gilson_rate=(ht_gilson(start_ind:end)-ht_gilson(1:end-end_ind_off)).*fac;
+gilson_rate_qu=(ht_gilson_qu(start_ind:end)-ht_gilson_qu(1:end-end_ind_off)).*fac;
+time_gilson_rate=.5.*(time_gilson(1:end-end_ind_off)+time_gilson(start_ind:end));
+ht_gilson_no_cyce=ht_gilson_res'+(time_gilson-center_year_gilson).*slope_gilson';
+
+
+[model_gilson_qu,~,~,~,~,~,~,slope_qu_gilson,mean_qu_gilson,~]=...
+    j_fit_annual_tree(time_gilson_rate',gilson_rate_qu');
+
+cycle_qu_gilson=model_gilson_qu'-mean_qu_gilson-slope_qu_gilson.*center_year_gilson;
+res_rate_qu_gilson=gilson_rate_qu-cycle_qu_gilson-mean_qu_gilson-slope_qu_gilson.*center_year_gilson;
+
+%%%
+
+path_OHCA_data_out='C:\data\OHCA\'
+
+path_tree=[path_OHCA_data_out,'OHCA_trees\'];
+load([path_tree,'test_tree_curve_yearly_7day_2000_yearly_new_cycle_all_year.mat'], 'tgrid', 'ht_curve');
+
+tgrid_all=tgrid;
+ht_curve_all=ht_curve;
+
+
+
+
+good_all=find(tgrid_all>=min_year & tgrid_all<=max_year);
+ 
+ ht_tree_all=double(ht_curve_all(good_all));
+ time_tree_all=double(tgrid_all(good_all));
+ center_year_all=mean(time_tree_all);
+
+[model_tree_all,amp_annual,phase_annual,amp_semi,phase_semi,amp_third,phase_third,slope_tree_all,mean_tree_all,model_err]=...
+    j_fit_annual_tree(time_tree_all,ht_tree_all');
+
+ht_tree_all_res=ht_tree_all-model_tree_all';
+
+ht_tree_all_res_mon=smooth(ht_tree_all_res,10,'rloess');
+ht_tree_all_res_qu=smooth(ht_tree_all_res,26,'rloess');
+
+ht_qu_all=ht_tree_all_res_qu+model_tree_all'-mean_tree_all-slope_tree_all.*center_year_all;
+ht_mon_all=ht_tree_all_res_mon+model_tree_all'-mean_tree_all-slope_tree_all.*center_year_all;
+ht_mon_all_no_cyce=ht_tree_all_res_mon'+(time_tree_all-center_year_all).*slope_tree_all';
+
+
+area_of_earth=5.1e14;
+
+ndays=7;
+
+sec_in_day=(60.*60*24);
+fac=1./(sec_in_day*area_of_earth.*ndays)
+start_ind=2;
+end_ind_off=1;
+
+
+rate_mon_all=(ht_mon_all(start_ind:end)-ht_mon_all(1:end-end_ind_off)).*fac;
+rate_qu_all=(ht_qu_all(start_ind:end)-ht_qu_all(1:end-end_ind_off)).*fac;
+
+time_rate_tree_all=.5.*(time_tree_all(1:end-end_ind_off)+time_tree_all(start_ind:end));
+
+
+%% now compute the curves for using the yearly esitmate
+
+load([path_tree,'test_tree_curve_yearly_7day_2000_yearly_new_cycle.mat'], 'tgrid', 'ht_curve');
+good=find(tgrid>=min_year & tgrid<=max_year);
+
+ 
+ ht_tree=double(ht_curve(good));
+ time_tree=double(tgrid(good));
+ center_year=mean(time_tree);
+
+[model_tree,amp_annual,phase_annual,amp_semi,phase_semi,amp_third,phase_third,slope_tree,mean_tree,model_err]=...
+    j_fit_annual_tree(time_tree,ht_tree');
+
+ht_tree_res=ht_tree-model_tree';
+
+ht_tree_res_mon=smooth(ht_tree_res,10,'rloess');
+ht_tree_res_qu=smooth(ht_tree_res,26,'rloess');
+
+ht_qu=ht_tree_res_qu+model_tree'-mean_tree-slope_tree.*center_year;
+ht_mon=ht_tree_res_mon+model_tree'-mean_tree-slope_tree.*center_year;
+ht_mon_no_cycle=ht_tree_res_mon'+(time_tree-center_year_all).*slope_tree';
+
+
+
+area_of_earth=5.1e14;
+
+ndays=7;
+
+sec_in_day=(60.*60*24);
+fac=1./(sec_in_day*area_of_earth.*ndays)
+start_ind=2;
+end_ind_off=1;
+
+
+rate_mon=(ht_mon(start_ind:end)-ht_mon(1:end-end_ind_off)).*fac;
+rate_qu=(ht_qu(start_ind:end)-ht_qu(1:end-end_ind_off)).*fac;
+
+time_rate_tree=.5.*(time_tree(1:end-end_ind_off)+time_tree(start_ind:end));
+
+
+load('C:\Users\jlyma\OneDrive - University of Hawaii\data\CERES\norm_ohca_toa.mat','ohca_norm','toa','toa_time')
+% plot(time_rate_tree,rate_mon)
+% hold on
+
+good_toa=find(toa_time>=min_year & toa_time<=max_year);
+toa=toa(good_toa);
+toa_time=toa_time(good_toa);
+
+center_year_toa=nanmean(toa_time);
+figure(1)
+plot(toa_time,toa,'k')
+hold on
+plot(time_rate_tree,rate_qu,'r')
+
+plot(time_rate_tree_all,rate_qu_all,'g')
+
+
+
+[model_toa,~,~,~,~,~,~,slope_toa,mean_toa,~]=...
+    j_fit_annual_tree(toa_time',toa');
+
+cycle_toa=model_toa'-mean_toa-slope_toa.*center_year_toa;
+res_rate_toa=toa-cycle_toa-mean_toa-slope_toa.*center_year_toa;
+
+[model_qu,~,~,~,~,~,~,slope_qu,mean_qu,~]=...
+    j_fit_annual_tree(time_rate_tree,rate_qu');
+
+cycle_qu=model_qu'-mean_qu-slope_qu.*center_year;
+res_rate_qu=rate_qu-cycle_qu-mean_qu-slope_qu.*center_year;
+
+figure(2)
+plot(time_rate_tree,cycle_qu)
+hold on
+plot(time_rate_tree,rate_qu)
+title('yearly')
+
+[model_qu_all,~,~,~,~,~,~,slope_qu_all,mean_qu_all,~]=...
+    j_fit_annual_tree(time_rate_tree_all,rate_qu_all');
+
+cycle_qu_all=model_qu_all'-mean_qu_all-slope_qu_all.*center_year_all;
+
+res_rate_qu_all=rate_qu_all-cycle_qu_all-mean_qu_all-slope_qu_all.*center_year_all;
+
+figure(3)
+plot(time_rate_tree_all,cycle_qu_all)
+hold on
+plot(time_rate_tree_all,rate_qu_all)
+title('all')
+
+figure(4)
+plot(time_rate_tree_all,cycle_qu_all,'g')
+hold on
+plot(time_rate_tree,cycle_qu,'r')
+plot(time_gilson_rate,cycle_qu_gilson,'m')
+plot(toa_time,cycle_toa,'k')
+
+figure(5)
+plot(toa_time,res_rate_toa,'k')
+hold on
+plot(time_rate_tree_all,res_rate_qu_all,'g')
+plot(time_gilson_rate,res_rate_qu_gilson,'m')
+plot(time_rate_tree,res_rate_qu,'r')
+
+
+var_gilson=nanvar(res_rate_qu_gilson)
+
+
+var_all=nanvar(res_rate_qu_all)
+
+
+var_yearly=nanvar(res_rate_qu)
+
+var_toa=nanvar(res_rate_toa)
+figure(6)
+
+
+
+% plot(time_gilson,ht_curve_gilson-nanmean(ht_curve_gilson))
+plot(time_gilson,smooth(ht_gilson_no_cyce,12),'m')
+hold on
+plot(time_tree_all,smooth(ht_mon_all_no_cyce,52),'g')
+% plot(tgrid,ht_curve-nanmean(ht_curve))
+plot(time_tree,smooth(ht_mon_no_cycle,52),'r')

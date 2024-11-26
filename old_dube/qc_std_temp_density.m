@@ -1,0 +1,318 @@
+% the new qc file qc3
+
+close all
+h=figure;
+% fig_a=figure
+% fig_b=figure
+
+ d=sdir(['den*.mat']);
+ 
+ 
+for isquare=302:length(d)
+   close(figure,h) 
+scrsz = get(0,'ScreenSize');
+ h=figure('Position',[1 scrsz(4)/1.2 scrsz(3)/1.2 scrsz(4)/1.2]);  
+eval(['load ',d(isquare).name])
+%eval(['load den_2000_f',num2str(isquare),'.mat'])
+
+display(d(isquare).name) 
+
+% sorting the data
+nd=length(depth);
+temp2=temp;
+
+yd=dt(:,1)+(dt(:,2)-1)/12.+(dt(:,3)-1)/365.;
+  
+  %find the right dates (ie only preform the qc on the times that
+  % I cheacked.
+  
+  good_times=find(yd >= 2002);
+  dt=dt(good_times,:);
+  temp=temp(good_times,:);
+  sal=sal(good_times,:);
+  fpress=fpress(good_times,:);22,5,52,5
+  mdep=mdep(good_times);
+  temp2=temp;
+  sal2=sal;
+ theta = sw_ptmp(sal,temp,fpress,0);
+% take out all the points that lie 3 std at every depth level
+ii=[];
+% for ideep=1:nd
+%    deep_temp=temp(:,ideep);
+%    deep_sal=sal(:,ideep); 
+%    
+% if depth(ideep) >= 400
+%    [ind_temp]=ind_out_std2(deep_temp,4);
+%    [ind_sal]=ind_out_std2(deep_sal,4);
+%    else
+%    [ind_temp]=ind_out_std2(deep_temp,4);
+%    [ind_sal]=ind_out_std2(deep_sal,4);
+% end
+%    
+%    ii=[ii,ind_sal,ind_temp];
+% end
+%jj=unique(ii);
+jj=[];
+
+% % get rid of temp at depth
+% 
+% deep=temp(:,nd);
+% 
+% [ind_deep]=ind_out_std2(deep,2);
+% 
+% % if there are enough points do it agian
+% 
+% 
+% 
+% jj=[ind_deep];
+% 
+% % do the same thing for salinity
+% 
+% deep_sal=sal(:,nd);
+% good=[1:length(deep_sal)];
+%     
+% %get rid of bad pofiles
+% deep_sal(jj)=[];
+% good(jj)=[];
+% 
+% [ind_deep2]=ind_out_std2(deep_sal,2);
+% 
+% jj=[jj,good(ind_deep2)];
+
+press_ref=(fpress(:,1:nd-1)+fpress(:,2:nd))./2;
+% 
+ pden_top = sw_pden(sal(:,1:nd-1),temp(:,1:nd-1),fpress(:,1:nd-1),press_ref);
+ pden_bot = sw_pden(sal(:,2:nd),temp(:,2:nd),fpress(:,2:nd),press_ref);
+%
+pden_top_surface = sw_pden(sal(:,1:nd-1),temp(:,1:nd-1),fpress(:,1:nd-1),0);
+
+ del_den=pden_bot-pden_top;
+
+% del_del <-0.001 is about the same as N^2 < -5e6 1/sec^2
+[ibad,jbad]=find(del_den < -.001);
+ jj=unique(ibad);
+%find where there are density inversions 
+%find mixed layer
+
+% % imixed=1;
+% % surface_press=fpress(:,1);      
+% % surface_temp=temp(:,1);
+% % surface_sal=sal(:,1);
+% % surface_ind=ones(length(surface_press),1);
+% % 
+% % 
+% % test_nan=surface_press+surface_temp+surface_sal;
+% %     while (length(find(finite(test_nan)==0)) >=1) & (imixed < (nd-1))
+% %        imixed=imixed+1;
+% %         bad_press=find(finite(test_nan)==0);
+% %        surface_press(bad_press)=fpress(bad_press,imixed);
+% %        surface_sal(bad_press)=sal(bad_press,imixed);
+% %        surface_temp(bad_press)=temp(bad_press,imixed);
+% %        surface_ind(bad_press)=imixed;
+% %        test_nan=surface_press+surface_temp+surface_sal;
+% %     end
+% % 
+% %     
+% %  del_mixed=ones(length(good_times),nd)*NaN;   
+% % for idepth=1:nd
+% %     
+% %     
+% %     ref_mixed=(surface_press+fpress(:,idepth))./2;
+% %     mixed_top=sw_pden(surface_sal,surface_temp,surface_press,ref_mixed);
+% %     mixed_bot=sw_pden(sal(:,idepth),temp(:,idepth),fpress(:,idepth),ref_mixed);
+% %     del_mixed(:,idepth)=mixed_top-mixed_bot;
+%%end
+
+
+
+%  
+ %jj=[jj;find(temp(:,4)<1)];
+% jj=[jj;find(temp(:,2)<100)];
+% jj=[jj;find(temp(:,8)<2.5)];
+% jj=[jj;find(temp(:,3)<13)];
+% jj=[jj;find(tclose(fig_a)emp(:,11)<6)];
+%jj=[jj;find(temp(:,2)<8)];
+%jj=[jj;find(temp(:,6)<12)];
+%jj=[jj;find(temp(:,9)<12)];
+%jj=[jj;find(temp(:,1)<.6)];
+ %jj=[jj;find(temp(:,3)>28.74)];
+% 
+% jj=[jj;find(temp(:,9)>31)];
+%jj=[jj;find(temp(:,1)<13 & temp(:,1)>12.2)];
+dt2=dt;
+dt2(jj,:)=[];
+temp(jj,:)=[];
+sal(jj,:)=[];
+theta2=theta;
+theta(jj,:)=[];
+fpress(jj,:)=[];
+%surface_press(jj)=[];
+% [tu,rp,p_ave] = sw_turn(sal',temp',fpress');
+% tu=tu';
+% rp=rp';
+% p_ave=p_ave';
+pden_top_surface(jj,:)=[];
+del_den(jj,:)=[];
+% % press_ref(jj,:)=[];
+% % del_mixed(jj,:)=[];
+% % 
+% % del_mixed3=del_mixed;
+% % press_mixed=fpress;
+% % shallow=find(-1.*del_mixed3 < .02);
+% % press_mixed(shallow)=2000;
+% % press_mixed(find(finite(press_mixed) == 0))=2000;
+% % mixed_depth=min(press_mixed,[],2);
+
+% take out mixed layers that are in the thermo or pycnocline
+
+% del_surface_mixed=abs(surface_press-mixed_depth);
+% bad_mixed=find(del_surface <= 4);
+
+
+
+
+
+
+
+% % % 
+if length(temp) > 0 
+%del_den(jj,:)=[];
+%plotting the good data
+
+subplot(2,4,1)
+plot(sal2,-1.*depth,'.')
+title('all ');
+xlabel('salinity');
+ylabel('depth');
+
+%plotting all the data
+
+subplot(2,5,2)
+plot(temp2,-1.*depth,'.')
+%title(['all ',d(isquare).name]);
+xlabel('temp');
+ylabel('depth');
+%axis([30 40 -200 -100])
+%plotting bad data
+
+subplot(2,5,3)
+plot(temp,-1.*depth,'.');
+title('good temp ');
+
+
+% 
+subplot(2,5,4)
+plot(sal,-1*depth,'.');
+title('good sal');
+
+%
+% subplot(2,5,5)
+% plot(tu,-1.*p_ave,'.');
+% title(['turner angle']);
+subplot(2,5,5 )
+% 
+ plot(sal2',theta2','k')
+ title(['Theta S ',num2str(round(100*length(jj)./length(good_times))),' %. ', num2str(isquare)])
+hold on plot(del_den,pden_top_surface,'r.')
+
+plot (sal',theta','r')
+hold off
+
+% 
+% 
+% plot(temp2(jj,:),-1.*depth,'.')
+% title('bad');
+% xlabel('temp');
+% ylabel('depth');
+% 
+% 
+%plotting the map
+
+subplot(2,5,6)
+m_ungrid m_proj;
+m_proj('Miller Cylindrical');
+ m_coast;
+ m_grid;
+ hold on
+m_plot(coords(:,1),coords(:,2),'.k')
+
+%m_plot(coords(jj,1),coords(jj,2),'.r')
+hold off
+subplot(2,5,7)
+m_ungrid m_proj;
+m_proj('Miller Cylindrical','longitudes',[min(coords(:,1)) max(coords(:,1))], ...
+       'latitudes',[min(coords(:,2)) max(coords(:,2))]);
+ m_coast;
+ m_grid;
+hold on 
+m_plot(coords(:,1),coords(:,2),'.k')
+
+m_plot(coords(jj,1),coords(jj,2),'.r')
+hold off
+
+
+%plotting month
+
+
+subplot(2,5,8)
+
+plot(dt(:,2),'.b')
+
+hold on
+
+plot(dt(jj,2),'.r')
+xlabel('index'); axis
+ylabel('month');
+hold off
+
+%plotting year
+
+subplot(2,5,9)
+
+plot(dt(:,1),'.b')
+
+hold on
+
+plot(dt(jj,1),'.r')
+xlabel('index');
+ylabel('year');
+hold off
+
+
+%plot change in desity
+subplot(2,5,10)
+plot(del_den,pden_top_surface,'r.')
+%plot(del_den2,pden_top_surface2,'.')
+% % close(fig_a);
+% % fig_a=figure
+% % plot(del_den,pden_top_surface,'r.')
+% % 
+% % %plot(del_den2,pden_top_surface2,'.')
+% % 
+% % % mixed layer del_den=.02
+% % xlim([0,.1]);
+% % 
+% % 
+% % 
+% % close(fig_b);
+% % fig_b=figure;
+% % subplot(2,1,1);
+% % plot(dt2(:,2),mixed_depth,'.')
+% % subplot(2,1,2);
+% % plot(surface_press)
+% % hold on 
+% % plot(mixed_depth,'.')
+% % hold off
+pause
+end
+end
+
+% % if length (temp) >=1 
+% %     fpress(jj,:)=[];id(jj,:)=[];qual(jj)=hold off
+[];coords(jj,:)=[];dt(jj,:)=[];
+% %     npts(jj)=[];mdep(jj)=[];time(jj,:)=[];
+% %     per_bad_grad=100*length(jj)./length(good_times);
+% %  eval(['save grad_den_',d(isquare).name,' coords dt time ',...
+% %         'temp qual depth mdep npts id sal fpress per_bad_den per_bad_grad'])
+% % end
+% %  end

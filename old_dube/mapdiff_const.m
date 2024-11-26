@@ -1,0 +1,87 @@
+% mapdiff.m - matlab script to map global difference field for HC
+% 3/17/3
+%11-11-2005 added  linear trend to error estimate.
+
+max_year=1992
+    
+load allheat dt ht cds tm topex wnum
+
+
+
+
+% use topex with annual cycle removed
+tpx=topex(:,2);
+
+% make new regression coeff. and interpolate onto profiles
+load hregress2
+
+
+tpx=topex(:,2);
+tpx(isnan(tpx))=0;
+hctpx=tpx.*interp2(alat,alon,alpha,cds(:,2),cds(:,1));
+htdiff=hctpx;
+htanom=hctpx;
+% note:  now replacing NaN's with zeros in topex
+
+tm=[tm,0*tm,0*tm];
+
+day=datenum([dt,tm])-datenum(1950,1,1);
+
+% now change htdiff to be the slope!
+
+% set htanom to one
+
+
+ 
+
+
+htanom=htanom*0.+1.;
+% keep only good data (htdiff htanom are the same and equal to hctpx
+ii=find(~isnan(hctpx));
+htdiff=htdiff(ii);day=day(ii,:);cds=cds(ii,:);htanom=htanom(ii);tpx=tpx(ii);
+
+
+% make grid variables
+tgrid=[1950.5:1:max_year+.5];
+
+load ../topo/topo lat lon topo
+xtopo=lon;ytopo=lat;topo(topo>0)=NaN;topo(topo<=0)=1;
+load ../Mtpers/ssh16600 lat lon
+lon=[lon(542:end)-360;lon(1:541)];
+lon=[lon(end)-360;lon;lon(1)+360];
+lon2=lon;lat2=lat;
+ii=1:3:length(lon);jj=1:3:length(lat);lon=lon(ii);lat=lat(jj);
+msk=interp2(ytopo,xtopo,topo,lat,lon','nearest');
+msk2=interp2(ytopo,xtopo,topo,lat2,lon2','nearest');
+[gy,gx]=meshgrid(lat,lon);
+mcds=[gx(:),gy(:)];
+gind=find(~isnan(msk));bind=find(isnan(msk));
+ save landmask_const msk lon lat msk2 lat2 lon2
+
+% have to spit out data and grid so that we can do inversion
+% on supercomputer!
+
+% grid
+
+outcds=mcds;outcds=outcds(gind,:);
+
+save -ascii map_const.grd outcds
+
+% save grid info to file so we can read output from fortran prog.
+save gridinfo_const mcds gind bind lon lat tgrid
+
+% make list of indicie222s to be searched for each grid point
+yr=(day-datenum(1992,1,1)+datenum(1950,1,1))/365.25+1992;
+for i=1:length(tgrid)
+ idx{i}=find(abs(tgrid(i)-yr)<=.5);
+end
+
+% spit out data
+for i=1:length(tgrid)
+  ii=idx{i};
+  fname=['hdata_const_',num2str(fix(tgrid(i)))];
+  fname=[fname,'.txt']
+  data=[htdiff(ii),htanom(ii),tpx(ii),yr(ii),cds(ii,:)];
+  eval(['save -ascii ',fname,' data'])
+end
+

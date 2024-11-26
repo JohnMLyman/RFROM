@@ -1,0 +1,16 @@
+function [y_model]=find_annual_semi(t,yin)
+
+% remove mean
+
+y=yin-nanmean(yin);
+
+% take out a linear trend
+
+ [y_model,y_model_err_95,slope_error,slope]=j_fit(t,y,scale)
+y=y-y_model;
+
+% fit an annual and a semi annual cycle
+
+
+
+[y_model]=j_fit_sin(t,yin)

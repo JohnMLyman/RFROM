@@ -1,0 +1,391 @@
+
+function [hc,hc_one,hctpx,volume,time_grid]=...
+    oco_new_load_ohca_curves_karina(file_name,min_year_maps,max_year_maps,...
+    min_year_maps_out,max_year_maps_out,top_depth,bot_depth,layer_bounds)
+
+% tree_model_file_name='tree_sst_tpx_year_1993'
+% % file_name_argo='pfloat_sal_greg_oct_2021_QC'
+% % file_name_argo='pfloat_sal_greg_oct_2021_QC'
+% % file_name='argo_2020_10_14_QC'
+% % file_name='argo_2021_01_01_QC'
+path_OHCA_data_out='C:\data\OHCA\';
+path_OHCA_data_in='C:\OHCA\';
+%%  YOU MUST DOWNLOAD ARGO AND AVISO DATA AND PUT THEM IN THE CORRECT LOCATIONS!!!!
+%%%%  Do I need the next line I dont think so!!!  11/14/2017
+
+%%
+% YOU MUST CHANE THE FILE_NAME TO THE CURRNET DATE EVERY TIME YOU CHANGE
+% LAYERBOUNDS AND/OR FILE_NAME_ARGO SO THAT THE FILES DO NOT GET OVER WRITEN!!!!!
+% file_nmae=argo_year_month_day_qc
+distancescale=100./111.; %in degress lat
+timescale=30; % in days
+
+% layer_bounds=[0,40,90,190,290,450,700,950,1450,1950,2000] % layer_bounds must be in assending order
+
+pos_top=find(layer_bounds==top_depth);
+pos_bot=find(layer_bounds==bot_depth);
+%layer_bounds=[0,100,300,700,900,1800] % layer_bounds must be in assending order
+
+% % this is the time range of the maps that are to be saved and outputted
+% max_year_maps_out=2021;
+% min_year_maps_out=2018;
+% 
+% % this is the time range of the maps that were made by oco_maps* and are in
+% % the file name that has to be read
+% max_year_maps=2021;
+% min_year_maps=1990;
+time_grid_maps=[min_year_maps+.5:1:max_year_maps+.5];
+
+%set paths
+% file_path='/Volumes/ThunderBay/Data/Globalhc/Floats/Argo/CORIOLIS/'
+% file_path_out='/Volumes/ThunderBay/Data/Globalhc/Floats/Argo/CORIOLIS/depth_grid/'
+file_path=[path_OHCA_data_out,'OHCA_profiles\'];
+file_path_out=[path_OHCA_data_out,'OHCA_grided\'];
+file_path_in=path_OHCA_data_in;
+% path_tree=[path_OHCA_data_out,'OHCA_trees\'];
+% I think you can change file_anme_mean if you want to run a diffent mean but not
+% 100% sure doubble check
+file_name_mean=file_name;
+file_path_hdata=[path_OHCA_data_out,'OHCA_maps\'];
+file_WOD_suf='_cheng_EN4_2014'
+file_EN3_type='_cheng_EN4_2014'
+path_EN4_in=[path_OHCA_data_in,'EN4\Cheng_2014\'];
+path_EN4_out=[path_OHCA_data_out,'EN4\Cheng_2014\'];
+allheat_extra='_new'
+hdata_file_name=['hdata_new_layers_',file_WOD_suf,'_',file_name];
+hregress_file=['hregress_',file_name,'_'];
+     
+% load in the topex data and remove the annual cycle     
+
+
+path_ssh=[path_OHCA_data_in,'Mtpers\'];
+
+% time_grid=[min_year_maps:.5:max_year_maps];
+time_grid=[min_year_maps_out+.5:1:max_year_maps_out+.5];
+% eval(['load  ',path_ssh,'meanssh_oco_realtime_',file_name,'.mat  lat lon gmo sshcyc '])
+% eval(['load ',file_path_out,file_name,'_','aviso_oco aviso']);
+eval(['load ',file_path_out,file_name,'_','aviso_cycle lon lat sshcyc']);
+
+
+s=dir([path_ssh,'matlab_files\ssh*.mat']);
+nfiles=length(s);
+sday=strjust(strvcat(s(:).name),'right');
+sday=str2num(sday(:,end-8:end-4));
+
+
+sday=sday+datenum(1950,1,1);
+datevec_sday=datevec(sday);
+aviso_day=sday-datenum(datevec_sday(:,1),1,1)+1;
+syr=datevec_sday(:,1)+(aviso_day-1)./yeardays(datevec_sday(:,1));
+aviso_mon=datevec_sday(:,2);
+clear sday
+
+lat_tpx=lat;
+lon_tpx=lon;
+% lon=lon';
+% lon_tpx=[lon(721:end)-360;lon(1:720)];
+% sshcyc=[sshcyc(721:end,:,:);sshcyc(1:720,:,:)];
+
+clear lon lat
+
+
+
+
+% eval(['load ',path_ssh,'landmask msk2'])
+
+
+
+
+min_tpx_year=min(datevec_sday(:,1));
+max_tpx_year=max(datevec_sday(:,1));
+% tgrid=min_tpx_year+.5:max_tpx_year+.5;
+tgrid=time_grid;
+nyears=length(tgrid);
+
+
+nlat_tpx=length(lat_tpx);
+nlon_tpx=length(lon_tpx);
+
+
+
+ssh=nans(nlon_tpx,nlat_tpx,nyears);
+ssh_total=nans(nlon_tpx,nlat_tpx,40);
+
+for iyear=1:nyears 
+    iyear
+    
+    yr_name=num2str(floor(tgrid(iyear)));
+    
+    
+    ii=find(-.5<=(tgrid(iyear)-syr) & (tgrid(iyear)-syr)<.5);
+
+    % load ssh from mat files remove season cycle made in mapdiff_
+    ssh_total=nans(nlon_tpx,nlat_tpx,length(ii));
+  for j=1:length(ii)
+     ifile=ii(j);
+    load([s(ifile).folder,'\',s(ifile).name],'sshanom')
+
+    junk_mon=aviso_mon(ii(j));
+    junk_day=aviso_day(ii(j));
+    sshc=squeeze(sshcyc(:,:,junk_mon));
+    
+%     sshanom=[sshanom(721:end,:);sshanom(1:720,:)];
+    sshanom=sshanom-sshc;
+    ssh_total(:,:,j)=sshanom;
+    
+    
+    
+    
+  end  %for months
+
+
+      ssh(:,:,iyear)=nanmean(ssh_total,3);
+  
+  
+end % for years  
+
+
+
+clear ssh_total
+
+
+
+
+
+
+% load in the data from an example file. ALL FILES MUST HAVE THE SAME LON,
+% LAT AND TIME GRID
+
+ilayer=2;
+
+
+
+layer_name=[num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer))];
+file_name_out=[hdata_file_name,num2str(time_grid_maps(1)-.5),'_',num2str(time_grid_maps(end)-.5)];
+load([file_path_hdata,file_name_out,'_',layer_name,'_real_new_layers.mat'],...
+'lon', 'lat' ,'time')
+pos_neg180=-180<lon & lon<0;
+pos_pos180=lon>=0;
+lon_ht=[lon(pos_pos180) ;lon(pos_neg180)+360];
+lat_ht=lat;
+% time_grid=time;
+[LONht,LATht,TIMEht]=ndgrid(lon_ht,lat_ht,time);
+%put grid into scaled distance 
+LONht=LONht./distancescale;
+LATht=LATht./distancescale;
+TIMEht=TIMEht./timescale;
+
+
+
+% load in the topex gridded topo map
+% load('C:\Users\jlyma\OneDrive - University of Hawaii\data\topo_tpx_new.mat',...
+% 'topo_tpx_new','lon_topo','lat_topo')
+
+
+
+lon_tpx=double(lon_tpx);
+lat_tpx=double(lat_tpx);
+
+
+[LON,LAT,TIME]=ndgrid(lon_tpx,lat_tpx,time_grid);
+[LON2,LAT2]=ndgrid(lon_tpx,lat_tpx);
+%put grid into scaled distance 
+LON=LON./distancescale;
+LAT=LAT./distancescale;
+TIME=TIME./timescale;
+LON2=LON2./distancescale;
+LAT2=LAT2./distancescale;
+% compute the grid for the alphas
+
+file_name_hregress=[hregress_file,layer_name];
+alpha_name=['alpha_',layer_name];
+load([file_path_out,file_name_hregress],'alon','alat')
+pos_al_neg180=-180<alon & alon<=0;
+pos_al_pos180=alon>=0 & alon<=180;
+lon_alpha=[alon(pos_al_pos180) alon(pos_al_neg180)+360];
+
+
+[aLON,aLAT]=ndgrid(lon_alpha,alat);
+%put grid into scaled distance 
+aLON=aLON./distancescale;
+aLAT=aLAT./distancescale;
+
+
+
+
+
+
+load('C:\Users\jlyma\OneDrive - University of Hawaii\data\topo_tpx_new.mat','topo_tpx_new')
+ topo_tpx_new=-1.*topo_tpx_new;
+arw=areavec(lon_tpx,lat_tpx);
+
+hc=zeros(nyears,1);
+hc_one=hc;
+hctpx=hc;
+volume=hc;
+
+
+
+% httree_curve=tpx_curve;
+
+% tree_out=nans(nlon_tpx,nlat_tpx,nyears);
+
+[~,LAT,~]=ndgrid(lon_tpx,lat_tpx,tgrid);
+pos_north=LAT >= 0;
+
+
+depth_min_total=layer_bounds(pos_top);
+depth_max_total=layer_bounds(pos_bot);
+delta_depth_total=depth_max_total-depth_min_total;
+arwj_all=repmat(arw,1,1,nyears);
+for ilayer=pos_top+1:pos_bot
+
+      arwj=arw;
+    depth_min=layer_bounds(ilayer-1);
+    depth_max=layer_bounds(ilayer);
+    delta_depth=depth_max-depth_min;
+    
+    shallow=topo_tpx_new < depth_min;
+    mid=topo_tpx_new>=depth_min & topo_tpx_new<depth_max;
+    
+
+    arwj(mid)=arwj(mid).*(topo_tpx_new(mid)-depth_min)./delta_depth;
+    arwj(shallow)=NaN;
+    layer_area=nansum(arwj(:));
+    arwj_2d=arwj;
+
+    arwj=repmat(arwj,1,1,nyears);
+    
+
+     layer_name=[num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer))];
+     
+    file_name_out=[hdata_file_name,num2str(time_grid_maps(1)-.5),'_',num2str(time_grid_maps(end)-.5)];
+    file_name_hregress=[hregress_file,layer_name];
+
+    % load in the tree estimates
+
+%     tree_file_name=[tree_model_file_name,'_',layer_name];
+%     load([path_tree,tree_file_name,'_10day.mat'], 'ht_estimate','time_aviso')
+%   
+%     
+%     for itime=1:nyears
+%         jyear=tgrid(itime);
+%         tree_out(:,:,itime)=mean(ht_estimate(:,:,time_aviso<jyear+.5&time_aviso>=jyear-.5),3,'omitnan');
+%     end
+    
+    
+% load in alphas 
+
+    alpha_name=['alpha_',layer_name];
+    load([file_path_out,file_name_hregress],alpha_name);
+    eval(['alpha=',alpha_name,';'])
+    alpha=[alpha(pos_al_pos180,:) ; alpha(pos_al_neg180,:)];
+    Falpha=griddedInterpolant(aLON,aLAT,alpha);
+    alpha_out=Falpha(LON2,LAT2);
+    alpha_out=repmat(alpha_out,1,1,nyears);
+% load in the OA heatcontent estimates and difference estimates.
+
+    load([file_path_hdata,file_name_out,'_',layer_name,'_real_new_layers.mat'], 'ht',...
+        'htdiff','one', 'lon', 'lat' ,'time')
+
+
+
+    % shift from -180 to 180 to 0 to 360
+
+   
+    jhtdiff=[htdiff(pos_pos180,:,:) ; htdiff(pos_neg180,:,:)];
+%     jhtdiff_tree=[htdiff_tree(pos_pos180,:,:) ; htdiff_tree(pos_neg180,:,:)];
+    jht=[ht(pos_pos180,:,:) ; ht(pos_neg180,:,:)];
+    jone=[one(pos_pos180,:,:) ; one(pos_neg180,:,:)];
+
+
+    % linearly interepert to a aviso grid
+
+    Fhtdiff=griddedInterpolant(LONht,LATht,TIMEht,jhtdiff);
+%     Fhtdiff_tree=griddedInterpolant(LONht,LATht,TIMEht,jhtdiff_tree);
+    Fht=griddedInterpolant(LONht,LATht,TIMEht,jht);
+    Fone=griddedInterpolant(LONht,LATht,TIMEht,jone);
+
+    ht_out=Fht(LON,LAT,TIME);
+    one_out=Fone(LON,LAT,TIME);
+    htdiff_out=Fhtdiff(LON,LAT,TIME);
+%     htdiff_tree_out=Fhtdiff_tree(LON,LAT,TIME);
+
+%     tpx_out=ssh.*alpha_out;
+    httpx_out=htdiff_out+ssh.*alpha_out;
+    
+
+
+
+% 
+% 
+%     httree_out=htdiff_tree_out+tree_out;
+
+
+
+
+
+%     ht_maps=nansum(cat(4,ht_out.*arwj./arwj_all,ht_maps),4);
+%     one_maps=nansum(cat(4,one_out.*(delta_depth./delta_depth_total).*arwj./arwj_all,one_maps),4);
+%     tpx_maps=nansum(cat(4,tpx_out.*arwj./arwj_all,tpx_maps),4);
+%     httpx_maps=nansum(cat(4,httpx_out.*arwj./arwj_all,httpx_maps),4);
+%     
+    jarea=nansum(arwj);
+    jarea=squeeze(nansum(jarea));
+
+    jvol=jarea.*delta_depth;
+
+    jhc=nansum(ht_out.*arwj);
+    jhc=squeeze(nansum(jhc));
+
+    jone=nansum(one_out.*arwj);
+    jone=squeeze(nansum(jone));
+
+    jhctpx=nansum(httpx_out);
+    jhctpx=squeeze(nansum(jhctpx));
+
+    jhc_one=jhc.*jarea./jone;
+
+    hc=hc+jhc;
+    hc_one=hc_one+jhc_one;
+
+    hctpx=hctpx+jhctpx;
+
+    volume=volume+jvol;
+
+
+
+
+%     jhttree_curve=nansum(httree_out.*arwj);
+%     jhttree_curve=squeeze(nansum(jhttree_curve));
+%     httree_curve=httree_curve+jhttree_curve;
+% 
+%     jtree_curve=nansum(tree_out.*arwj);
+%     jtree_curve=squeeze(nansum(jtree_curve));
+%     tree_curve=tree_curve+jtree_curve;
+%     
+
+
+
+
+
+
+
+
+
+
+
+end
+
+
+% one_all=one_maps;
+% tpx_all=tpx_maps;
+% httpx_all=httpx_maps;
+% clear ht_estimate LON pos_north 
+% 
+
+% 
+% 
+% write_ascii_norm_half(httpx_curve_north,tgrid,'combined_0_2000_northern_no_argo.txt');
+% write_ascii_norm(httpx_curve,tgrid,'combined_0_2000_whole_no_argo.txt');
+% write_ascii_norm_half(httpx_curve_south,tgrid,'combined_0_2000_southern_no_argo.txt');

@@ -1,0 +1,42 @@
+function [slope,time,error,lat,lon]=heat_slope_300_700_900_1800(lat,lon,time,ht,file_out)
+
+
+% this code loads all the heat content into one file
+
+%You to update this file so that it only 
+
+
+nlon=length(lon);
+nlat=length(lat);
+ntime=length(time);
+
+% this part of the code fits a line to each point in space
+
+slope=nans(nlon,nlat);
+error=slope;
+for ilon=1:nlon
+    for ilat=1:nlat
+        
+        hc=reshape(ht(ilon,ilat,:),1,ntime);
+        
+        good=find((isfinite(hc) ~= 0));
+        hc=hc(good);
+        time_junk=time(good);
+        zero_test=find(hc == 0);
+        if length(good)>5 length(zero_test)< len
+            ilon,ilat
+           
+        [jy_model,jy_model_err_95,jslope_error,jslope]=j_fit(time_junk,hc);
+        slope(ilon,ilat)=jslope;
+        error(ilon,ilat)=jslope_error;
+        end
+        
+    end
+end
+
+
+eval(['save ',file_out,' slope error time lat lon'])
+
+
+
+

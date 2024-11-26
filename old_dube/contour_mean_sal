@@ -1,0 +1,10 @@
+%this code contours mean salinity
+
+load ../../Mtpers/meanssh lat lon
+lon_tpx=[lon(542:end)-360;lon(1:541)];
+lat_tpx=lat;
+
+clear lon lat
+
+load ../../HC/landmask msk2
+

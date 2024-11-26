@@ -1,0 +1,44 @@
+cd '/Users/johnlyman/data/Globalhc/SAL/Floats'
+
+load htanom_1993_2007_mon_all_2004_2007_clim_2_11_4_2008
+
+month=round(12.*(time-floor(time)))+1;
+year=floor(time);
+
+nlon=length(lon);
+nlat=length(lat);
+good=find(year >= 2004);
+t=(time(good));
+ntime=length(t);
+
+model=ones(nlon,nlat,ntime)*NaN;
+amp_annual=ones(nlon,nlat)*NaN;
+phase_annual=ones(nlon,nlat)*NaN;
+amp_semi=ones(nlon,nlat)*NaN;
+phase_semi=ones(nlon,nlat)*NaN;
+
+
+
+for ilat=1:nlat
+for ilon=1:nlon
+    
+    
+    
+    junk=squeeze(ht(ilon,ilat,good))';
+    if (isnan(sum(junk)) == 0) 
+       
+        [jmodel,jamp_annual,jphase_annual,jamp_semi,jphase_semi]=find_annual_semi(t,junk);
+        model(ilon,ilat,:)=jmodel;
+        amp_annual(ilon,ilat)=jamp_annual;
+        phase_annual(ilon,ilat)=jphase_annual;
+        amp_semi(ilon,ilat)=jamp_semi;
+        phase_semi(ilon,ilat)=jphase_semi;
+        
+    end
+
+    
+    
+end
+end
+
+load annual_and_semi_2004_2007  amp_annual phase_annual lon lat

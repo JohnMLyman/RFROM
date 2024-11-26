@@ -1,0 +1,28 @@
+
+% makeheat.m - matlab script to make heat content for all profiles
+% 3/17/03
+
+
+% get new file names
+
+d=sdir('*grad*.mat');d=d(1:end);
+dd=strvcat(d(:).name);dd=str2num(dd(:,2:5));
+
+% load Levitus high-res climatology so we can subtract it (mean?)
+load /home/shoko2/wills/globalhc_dirs/Globalhc/Levitus/slevhr lon lat dep levsal
+levsal=[levsal(end-40:end,:,:);levsal;levsal(1:41,:,:)];
+lon=[-190.125:.25:190.125];
+levsal(:,end+1,:)=levsal(:,end,:);lat(end+1)=lat(end)+mean(diff(lat));
+
+% loop through e.mat files and make heat content
+coords_tot=[];temp_tot=[];sal_tot=[];dt_tot=[];ratio_bad_tot=[];time_tot=[];gam_tot=[];fpress_tot=[];
+id_tot=[];
+for i=1:length(d)
+  load(d(i).name,'temp','sal','coords','dt','time','ratio_bad', ...
+	'id','fpress','gam');
+  
+    
+    
+
+    
+end

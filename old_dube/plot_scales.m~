@@ -1,0 +1,24 @@
+
+
+scales=[1:12];% in years
+
+% [mean_map,std_map,std_error_map,mean_rep,std_rep,std_error_rep]=...
+%     scale_type(1993,2004,1967,2002,'diff',scales);
+
+
+
+hold on 
+plot(scales,mean_map)
+plot(scales,mean_rep,'r')
+plot([0,max(scales)],[0,0],'k')
+
+
+%e1=errorbar(scales,mean_rep,std_rep,'.r');
+%e2=errorbar(scales,mean_map,std_map,'.');
+e4=errorbar(scales,mean_rep,std_error_rep,'.r');
+e5=errorbar(scales,mean_map,std_error_map,'.');
+ylabel('difference in W m^{-2}');
+xlabel('scale (years)');
+title(['mean difference'],'fontsize',12)
+
+hold off

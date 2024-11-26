@@ -1,0 +1,230 @@
+
+fresh_to_salty_colormap=[[1,146,191]'/255,[255,255,255]'/255,[255,158,15]'/255]';
+fresh_to_salty_colormap=interp1([0:1/2:1],fresh_to_salty_colormap,[0:1/255:1]);
+ 
+
+cold_to_hot_colormap=[[1,146,191]'/255,[255,255,255]'/255,[251,0,38]'/255]';
+cold_to_hot_colormap=interp1([0:1/2:1],cold_to_hot_colormap,[0:1/255:1]);
+
+load ../../Mtpers/meanssh lat lon
+lon_tpx=[lon(542:end)-360;lon(1:541)];
+lat_tpx=lat;
+
+clear lon lat
+
+load ../../HC/landmask msk2
+%[lon,lat,time,fresh]=load_idl_data_fresh('fresh_aviso_2003_2005.nc');
+
+%ncload('surface_sal_anom_3_error_2004_2005.nc','lat','lon','sal','time','one');
+ncload('surface_sal_anom_3_error_3_deg_2006_2006.nc','lat','lon','time','one','sal');
+one_2006=permute(one,[3 2 1]);
+surface_sal=permute(sal,[3 2 1]);
+
+ind_2006=find(time == 2006.5);
+
+
+surface_sal_2006=surface_sal(:,:,ind_2006);
+
+ncload('surface_sal_anom_3_error_3_deg_2004_2005.nc','lat','lon','time','one','sal');
+one_2004_2005=permute(one,[3 2 1]);
+surface_sal=permute(sal,[3 2 1]);
+
+%ind_2006=find(time == 2006.5);
+ind_2005=find(time == 2005.5);
+
+%ht_2006=htdiff(:,:,ind_2006);
+
+surface_sal_2005=surface_sal(:,:,ind_2005);
+
+% this section is because a grided lon=180 and not lon=-180, this sets data
+% at -180 to the same values as 180...
+%surface_sal(end+1,:,1)=surface_sal(1,:,1);
+%lon(end+1)=-180.0;
+ lon2=lon;
+ lat2=lat;
+
+
+%i=3
+
+
+%corrhc=interp2(lat,lon,ht(:,:,i),lat_tpx,lon_tpx');
+%corrhc(isnan(msk2(2:end-1,:)))=NaN;
+%corrhc(isnan(sshmean))=NaN;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot the heat content for 2006
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure(1);wysiwyg
+lon=lon2;
+lat=lat2;
+
+
+corrhc=interp2(lat,lon,surface_sal_2006,lat_tpx,lon_tpx');
+corrhc(isnan(msk2(2:end-1,:)))=NaN;
+
+
+lon=lon_tpx;
+lat=lat_tpx;
+
+
+% put into the proper coordinates
+min_val=-1
+max_val=1
+del_val=.5
+
+ii=find(lon<30);
+jj=find(lon>=30);
+lon=[lon(jj);lon(ii)+360];
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+%colormap jet(256)
+
+colormap(fresh_to_salty_colormap) 
+
+pcolor(lon,lat,corrhc')
+caxis([min_val max_val])
+shading flat
+
+plot_coasts_black
+
+
+t1=text(70,50,'2006','fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+j=axes('pos',[.13 .85 .775 .02]);
+%colormap jet(256)
+colormap(fresh_to_salty_colormap)
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel('Surface Salinity Anomoly [PSU]')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot surface_sal for 2005%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+figure(2);wysiwyg
+lon=lon2;
+lat=lat2;
+
+
+corrhc=interp2(lat,lon,surface_sal_2005,lat_tpx,lon_tpx');
+corrhc(isnan(msk2(2:end-1,:)))=NaN;
+
+
+lon=lon_tpx;
+lat=lat_tpx;
+
+
+% put into the proper coordinates
+min_val=-1
+max_val=1
+del_val=.5
+
+ii=find(lon<30);
+jj=find(lon>=30);
+lon=[lon(jj);lon(ii)+360];
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+%colormap jet(256)
+colormap(fresh_to_salty_colormap)
+
+pcolor(lon,lat,corrhc')
+
+
+
+caxis([min_val max_val])
+shading flat
+
+plot_coasts_black
+
+t1=text(60,50,'2005','fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+j=axes('pos',[.13 .85 .775 .02]);
+%colormap jet(256)
+colormap(fresh_to_salty_colormap)
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel('Surface Salinity Anomoly [PSU]]')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot 1-year surface_sal  cange 2005 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+figure(3);wysiwyg
+lon=lon2;
+lat=lat2;
+
+
+corrhc=interp2(lat,lon,surface_sal_2006-surface_sal_2005,lat_tpx,lon_tpx');
+corrhc(isnan(msk2(2:end-1,:)))=NaN;
+
+
+lon=lon_tpx;
+lat=lat_tpx;
+
+
+% put into the proper coordinates
+min_val=-1
+max_val=1
+del_val=.5
+
+ii=find(lon<30);
+jj=find(lon>=30);
+lon=[lon(jj);lon(ii)+360];
+corrhc=[corrhc(jj,:);corrhc(ii,:)];
+%colormap jet(256)
+colormap(fresh_to_salty_colormap)
+
+pcolor(lon,lat,corrhc')
+
+
+
+caxis([min_val max_val])
+shading flat
+
+plot_coasts_black
+
+t1=text(60,50,'2006-2005','fontsize',16,'fontweight','bold');
+axis([30 390 -90 90])
+axis equal
+axis([30 390 -90 90])
+set(gca,'xtick',[30:30:390],'tickdir','out','xticklabel', [30:30:180,-150:30:30],'ytick',[-90:30:90])
+hold on
+j=axes('pos',[.13 .85 .775 .02]);
+%colormap jet(256)
+colormap(fresh_to_salty_colormap)
+
+[cs,h]=contourf([min_val:.01:max_val],[0 1],[1 1]'*[min_val:.01:max_val],[min_val:(max_val-min_val)/254:max_val]);
+set(h,'edgecolor','none')
+set(j,'tickdir','out','xaxisl','top','xtick',[min_val:del_val:max_val],'ytick',[])
+caxis([min_val max_val])
+xlabel('1-year Surface Salinity Change [PSU/year]]')
+
+
+
+%%%%%%%%%%%%%%%%%%
+%%% print plots  %
+%%%%%%%%%%%%%%%%%%
+
+eval(['print -dpng -f1 /home/shoko/C/','''IDL ps''','/heat/oco/2006/oco_surface_sal_3deg_2006'])
+eval(['print -dpng -f2 /home/shoko/C/','''IDL ps''','/heat/oco/2006/oco_surface_sal_3deg_2005'])
+eval(['print -dpng -f3 /home/shoko/C/','''IDL ps''','/heat/oco/2006/oco_surface_sal_3deg_change_2006_2005'])
+
+
+%close all
+%%%print -djpeg90 -f1 /moala2/josh/Globalhc/paper/f1.jpg
+

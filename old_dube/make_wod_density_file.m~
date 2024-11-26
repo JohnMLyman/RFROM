@@ -1,0 +1,120 @@
+% the  new qc file qc3 
+     
+close all
+
+
+ d=sdir(['den_den_no*.mat']);
+ 
+ density_surface=[18:.02:31];
+ n_den=length(density_surface);
+ 
+ 
+
+ 
+  dd=[1:length(d)];
+  
+ for iplace=1:length(dd)
+%for isquare=302:length(d)
+isquare=dd(iplace) 
+
+
+
+eval(['load ',d(isquare).name])
+%eval(['load den_2000_f',num2str(isquare),'.mat'])
+
+display(d(isquare).name) 
+
+% sorting the data
+nd=length(depth);
+
+  
+  %find the right dates (ie only preform the qc on the times that
+  % I cheacked.
+  
+  good_times=find(yd >= 2002);
+  dt=dt(good_times,:);
+  temp=temp(good_times,:);
+  sal=sal(good_times,:);
+  fpress=fpress(good_times,:);
+  mdep=mdep(good_times);
+  npts=npts(good_times);
+  time=time(good_times);
+ 
+ coords=coords(good_times,:);
+ % this section looks at the number of bad points in the profile
+ 
+ 
+ % FIND THE DENISTY GRADIENT
+ 
+
+
+jj=[];
+
+
+
+
+% condition based on Johnson 2006?7 jamstec
+[N2]=sw_bfrq(sal,temp,fpress);
+[ibad,jbad]=find(N2 < -1e-4);
+
+
+jj=unique([ibad']');
+
+
+pden_0(jj,:)=[];
+temp(jj,:)=[];
+sal(jj,:)=[];
+fpress(jj,:)=[];
+coords(jj,:)=[]
+
+dt(jj,:)=[];
+time(jj)=[];
+id(jj)=[];
+mdep(jj)=[];
+qual(jj)=[];
+npts(jj)=[];
+
+
+
+
+
+
+alon=coords(:,1);
+alat=coords(:,2);
+
+
+
+[gam,dg_lo,dg_hi] = gamma_n(sal',temp',fpress',alon,alat);
+gam=gam';
+missing_gam=find(gam <-90);
+if length(missing_gam <=1) 
+    gam(missing_gam)=NaN;
+end
+dg_lo=dg_lo';
+dg_hi=dg_hi';
+
+
+% grid to density referanced to the surface
+[sal_0,temp_0,press_0,press_top_0,press_bot_0] = vert_den_grid(sal,temp,fpress,pden_0,density_surface);
+
+
+[sal_gam,temp_gam,press_gam,press_top_gam,press_bot_gam] = vert_den_grid(sal,temp,fpress,gam,density_surface);
+
+
+% %     npts(jj)=[];mdep(jj)=[];time(jj,:)=[];
+    per_bad_grad=100*length(jj)./length(good_times);
+  eval(['save wod_den_',d(isquare).name,' coords dt time ',...
+         'temp qual mdep npts id sal fpress ', ...
+         'gam dg_lo dg_hi  density_surface ',...
+         'sal_gam temp_gam press_gam press_top_gam press_bot_gam ', ...
+         'sal_0 temp_0 press_0 press_top_0 press_bot_0'])
+     
+         clear coords dt time ...
+         temp qual mdep npts id sal fpress  ...
+        gam dg_lo dg_hi density_surface ...
+         sal_gam temp_gam press_gam press_top_gam press_bot_gam ... 
+         sal_0 temp_0 press_0 press_top_0 press_bot_0 ...
+         N2 alon alat jj
+     
+ end
+% %  end

@@ -1,0 +1,63 @@
+
+% makeheat.m - matlab script to make heat content for all profiles
+% 3/17/03
+
+
+% get new file names
+
+d=sdir('grad_den_0_grid_a*.mat');d=d(1:end);
+dd=strvcat(d(:).name);dd=str2num(dd(:,2:5));
+
+% load Levitus high-res climatology so we can subtract it (mean?)
+load /home/shoko2/wills/globalhc_dirs/Globalhc/Levitus/slevhr lon lat dep levsal
+levsal=[levsal(end-40:end,:,:);levsal;levsal(1:41,:,:)];
+lon=[-190.125:.25:190.125];
+levsal(:,end+1,:)=levsal(:,end,:);lat(end+1)=lat(end)+mean(diff(lat));
+
+% loop through e.mat files and make heat content
+coords_tot=[];temp_tot=[];sal_tot=[];dt_tot=[];ratio_bad_tot=[];time_tot=[];gam_tot=[];
+fpress_tot=[];temp_0_tot=[];sal_0_tot=[];press_0_tot=[];press_top_0_tot=[];press_bot_0_tot=[];
+temp_gam_tot=[];sal_gam_tot=[];press_gam_tot=[];press_top_gam_tot=[];press_bot_gam_tot=[];
+id_tot=[];
+for i=1:length(d)
+    
+    d(i).name
+  load(d(i).name,'temp','sal','coords','dt','time','ratio_bad', 'density_surface',...
+	'id','fpress','gam','sal_gam' ,'temp_gam' ,'press_gam' ,'press_top_gam' ,'press_bot_gam', ...
+         'sal_0', 'temp_0', 'press_0', 'press_top_0' ,'press_bot_0');
+  
+    if length(sal_0) >= 1
+    temp_0_tot=[temp_0_tot',temp_0']';
+    sal_0_tot=[sal_0_tot',sal_0']';
+    press_0_tot=[press_0_tot',press_0']';
+    press_top_0_tot=[press_top_0_tot,press_top_0'];
+    press_bot_0_tot=[press_bot_0_tot,press_bot_0'];
+    
+    
+    
+    temp_gam_tot=[temp_gam_tot',temp_gam']';
+    sal_gam_tot=[sal_gam_tot',sal_gam']';
+    press_gam_tot=[press_gam_tot',press_gam']';
+    press_top_gam_tot=[press_top_gam_tot,press_top_gam'];
+    press_bot_gam_tot=[press_bot_gam_tot,press_bot_gam'];
+    
+    
+    temp_tot=[temp_tot',temp']';
+    sal_tot=[sal_tot',sal']';
+    fpress_tot=[fpress_tot',fpress']';
+    
+    plot(press_gam);
+
+    coords_tot=[coords_tot',coords']';
+    ratio_bad_tot=[ratio_bad_tot,ratio_bad];
+    %id_tot=[id_tot',id]';
+    %fpress_tot=[fpress_tot',fpress']';
+    dt_tot=[dt_tot',dt']';
+    end
+    
+end
+
+save total_den_grid_april_28
+clear 
+
+qc_std_temp_den_total

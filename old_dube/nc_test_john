@@ -1,0 +1,30 @@
+function nc_test_john
+
+ncfile='nc_new_test_john.nc'
+
+nc_create_empty ( ncfile );
+
+nc_add_dimension ( ncfile, 'time', 0 );
+nc_add_dimension ( ncfile, 'x', 10 );
+nc_add_dimension ( ncfile, 'y', 20 );
+
+v.Name = 'time';
+v.Dimension = { 'time' };
+nc_addvar ( ncfile, v );
+
+v.Name = 'var1';
+v.Dimension = { 'time', 'y' };
+nc_addvar ( ncfile, v );
+
+v.Name = 'var2';
+v.Dimension = { 'time', 'y', 'x' };
+nc_addvar ( ncfile, v );
+
+vardata.time = [1:5]';
+vardata.var1 = rand(5,20);
+vardata.var2 = rand(5,20,10);
+nc_addnewrecs ( ncfile, vardata, 'time' );
+
+
+
+
