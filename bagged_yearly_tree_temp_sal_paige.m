@@ -138,7 +138,7 @@ filename=[file_big_model_short,'basin_',num2str(ibasin),'.mat'];
             pos_3d_use(pos_use(~good))=0;
             jyr_yearly=jyr(good);
         
-            input_mat=nans(length(jyr_yearly),7);
+            input_mat=nans(length(jyr_yearly),6);
             input_mat(:,1)=jyr_yearly;
             if ibasin==2
                % use lon 0 to 360 for the pacific basin
