@@ -40,7 +40,7 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean_real_delayed(ht_estimat
         delete(file)
     end
          
-    [globalat]=make_globalatribute_RFROM_real_delayed();
+    [globalat]=make_globalatribute_RFROM_real_delayedv22();
     
     
     mySchema.Name   = '/';

@@ -40,7 +40,7 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean_real(ht_estimate,time_1
         delete(file)
     end
          
-    [globalat]=make_globalatribute_RFROM_real();
+    [globalat]=make_globalatribute_RFROM_realv22();
     
     
     mySchema.Name   = '/';

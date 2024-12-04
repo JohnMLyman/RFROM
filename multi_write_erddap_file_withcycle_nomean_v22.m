@@ -1,6 +1,6 @@
-function []=multi_write_erddap_file_withcycle_v2(TreeSetUp)
+function []=multi_write_erddap_file_withcycle_nomean_v22(TreeSetUp)
 
-
+% MUST MAKE NETCDF WITH MEAN FIRST!!!!!
 
 nbasins_use=TreeSetUp.nbasins_use;
 file_name=TreeSetUp.file_name;
@@ -62,13 +62,15 @@ end_all_year=TreeSetUp.end_all_year;
 
 start_year_trans=TreeSetUp.start_year_trans;
 end_year_trans=TreeSetUp.end_year_trans;
-
+start_year_mean_remove=TreeSetUp.start_year_mean_remove;
+end_year_mean_remove=TreeSetUp.end_year_mean_remove;
 
 
 %%
 % tree_model=[tree_model_file_name_yearly,'_withcycle'];
 % path_new_tree=[path_new_tree_yearly,'withcycle/'];
-subdir='yearly_withcycle';
+
+subdir='yearly_withcycle_no_mean';
 start_year_file=start_year;
 end_year_file=end_year;
 path_new_tree=path_new_tree_combined_withcycle;
@@ -77,6 +79,7 @@ tree_model=tree_model_file_name_combined_withcycle;
 %%
 
 path_nc_erddap=[path_ERDDAP,'netcdf\',tree_prefix,'\',subdir,'\'];
+
 if var_type=='s'
      file_prefix='RFROMV22_SAL_';
 elseif var_type=='t'
@@ -88,6 +91,7 @@ end
 if ~exist(path_nc_erddap,'dir')
     mkdir(path_nc_erddap)
 end
+
 % because the data is geroup by year if the start year is a whole number
 % then the files will start in the pervious year
 start_year_ssh=floor(start_year_file);
@@ -101,7 +105,8 @@ time_ssh_load=start_year_ssh:end_year_ssh;
 
 
 %%
-
+mean_pressure=[];
+mean_pressure_bnds=[];
 if var_type=='h'
     mean_depth=(layer_bounds(1:end-1)+layer_bounds(2:end))./2;
     mean_depth=mean_depth';
@@ -111,6 +116,8 @@ else
     mean_pressure=mean_pressure';
     mean_pressure_bnds=[layer_bounds(1:end-1); layer_bounds(2:end)];
 end
+
+[ht_mean]=bagged_tree_ohca_curve_7_day_errdp_ohca_mean_remove(TreeSetUp);
 
 for year_load=time_ssh_load
 
@@ -130,6 +137,10 @@ for year_load=time_ssh_load
 
         if ~isempty(time_1950)
             mon_estimate=ht_estimate(:,:,:,good_month);
+            mon_estimate=mon_estimate-ht_mean;
+
+            
+
 
 
             if imonth>=10
@@ -138,15 +149,18 @@ for year_load=time_ssh_load
                   file_name_nc= [path_nc_erddap,file_prefix,num2str(year_load),'_0',num2str(imonth),'.nc'];
             end
             if var_type =='t'
+                break ;'NOT WRITTEN FOR TEMPERATURE'
          
-                 write_netcfd_cf_temp_pressure_mon_single(mon_estimate,time_1950,lon_tpx,...
+                 write_netcfd_cf_temp_pressure_mon_singlev22(mon_estimate,time_1950,lon_tpx,...
                        lat_tpx,mean_pressure,mean_pressure_bnds,file_name_nc)
             elseif var_type=='s'
-                 write_netcfd_cf_sal_pressure_mon_single(mon_estimate,time_1950,lon_tpx,...
+                break ;'NOT WRITTEN FOR SALINITY'
+                 write_netcfd_cf_sal_pressure_mon_singlev22(mon_estimate,time_1950,lon_tpx,...
                        lat_tpx,mean_pressure,mean_pressure_bnds,file_name_nc)
             elseif var_type=='h'
-                write_netcfd_cf_heat_depth_mon_single(mon_estimate,time_1950,lon_tpx,...
-                   lat_tpx,mean_depth,mean_depth_bnds,file_name_nc)
+                write_netcfd_cf_heat_depth_mon_single_nomeanv22(mon_estimate,time_1950,lon_tpx,...
+                   lat_tpx,mean_depth,mean_depth_bnds,start_year_mean_remove,...
+                   end_year_mean_remove,file_name_nc)
             end
  
         end

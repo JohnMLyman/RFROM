@@ -1,12 +1,12 @@
-function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,lon_tpx,...
-    lat_tpx,mean_depth,mean_depth_bnds,start_mean,end_mean,file_name_nc)
+function []=write_netcfd_cf_sal_pressure_mon_singlev22(sal_estimate,time_1950,lon_tpx,...
+                   lat_tpx,mean_pressure,mean_pressure_bnds,file_name_nc)
     
 % time [days since 1950-01-01 00:00:00] CMEMS time I should convert all
 % % times to this
 % 
 % path_tree='C:\Users\jlyma\OneDrive - University of Hawaii\data\OHCA\OHCA_trees\';
 % %NEED TO CONVERT TIME TO DAYS SINCE ??? FROM AVISO.  ALSO NEED TO MASK HEAT
-%CONTENT TO REFLECT THE DEPTH RANGE
+%CONTENT TO REFLECT THE pressure RANGE
 
 % path_nc='C:\Users\jlyma\OneDrive - University of Hawaii\data\OHCA\OHCA_trees\netcdf\';
 
@@ -31,7 +31,7 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,l
     nlon=length(longitude);
     nlat=length(latitude);
     ntime=length(time);
-    ndepth=length(mean_depth);
+    npressure=length(mean_pressure);
 
     nv=2;
     
@@ -51,23 +51,23 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,l
     mySchema.Dimensions(2).Length = nlat;
     mySchema.Dimensions(3).Name   = 'time';
     mySchema.Dimensions(3).Length = ntime;
-    mySchema.Dimensions(4).Name   = 'mean_depth';
-    mySchema.Dimensions(4).Length = ndepth;
+    mySchema.Dimensions(4).Name   = 'mean_pressure';
+    mySchema.Dimensions(4).Length = npressure;
     mySchema.Dimensions(5).Name   = 'vertices';
     mySchema.Dimensions(5).Length = nv;
     
     map_dimen(1).Name='longitude';
     map_dimen(2).Name='latitude';
-    map_dimen(3).Name='mean_depth';
+    map_dimen(3).Name='mean_pressure';
     map_dimen(4).Name='time';
     map_dimen(1).Length=nlon;
     map_dimen(2).Length=nlat;
-    map_dimen(3).Length=ndepth;
+    map_dimen(3).Length=npressure;
     map_dimen(4).Length=ntime;
-    mean_depth_bnds_dimen(1).Name='vertices';
-    mean_depth_bnds_dimen(1).Length=nv;
-    mean_depth_bnds_dimen(2).Name='mean_depth';
-    mean_depth_bnds_dimen(2).Length=ndepth;
+    mean_pressure_bnds_dimen(1).Name='vertices';
+    mean_pressure_bnds_dimen(1).Length=nv;
+    mean_pressure_bnds_dimen(2).Name='mean_pressure';
+    mean_pressure_bnds_dimen(2).Length=npressure;
     
 
     % Longitude
@@ -111,17 +111,17 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,l
     mySchema.Variables(3).Datatype='single';
     mySchema.Variables(3).FillValue='disable';
 
-      % mean_depth
-    mean_depth_att(1).Name='units';
-    mean_depth_att(1).Value='meters';
-    mean_depth_att(2).Name='Description';
-    mean_depth_att(2).Value='The mean depth of vertical integration';
-    mean_depth_att(3).Name='bounds';
-    mean_depth_att(3).Value='mean_depth_bnds';
+      % mean_pressure
+    mean_pressure_att(1).Name='units';
+    mean_pressure_att(1).Value='decibar';
+    mean_pressure_att(2).Name='Description';
+    mean_pressure_att(2).Value='The mean pressure';
+    mean_pressure_att(3).Name='bounds';
+    mean_pressure_att(3).Value='mean_pressure_bnds';
     
-    mySchema.Variables(4).Name='mean_depth';
+    mySchema.Variables(4).Name='mean_pressure';
     mySchema.Variables(4).Dimensions=map_dimen(3);
-    mySchema.Variables(4).Attributes=mean_depth_att;
+    mySchema.Variables(4).Attributes=mean_pressure_att;
     mySchema.Variables(4).Datatype='single';
     mySchema.Variables(4).FillValue='disable';
 
@@ -130,15 +130,14 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,l
 
 
     
-    % Heatcontent
+    % salinity
     ohca_att(1).Name='units';
-    ohca_att(1).Value='10^9 J m^-2';
+    ohca_att(1).Value='grams_per_kilogram';
     ohca_att(2).Name='Description';
-    ohca_att(2).Value=['mapped ocean heat content anomaly (TEOS-10) integrated ',...
-        'from upper to lower bounds of mean depth with the seasonal cycle ',...
-        'relivite to ',num2str(start_mean),' to ',num2str(end_mean),' mean'];
+    ohca_att(2).Value=['mapped ocean absolute salinity (TEOS-10) averaged ',...
+        'from upper to lower bounds of mean pressure with the seasonal cycle '];
     
-    mySchema.Variables(5).Name='ocean_heat_content_anomaly';
+    mySchema.Variables(5).Name='ocean_salinity';
     mySchema.Variables(5).Dimensions=map_dimen;
     mySchema.Variables(5).Attributes=ohca_att;
     mySchema.Variables(5).Datatype='single';
@@ -146,14 +145,14 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,l
     
      
 
-        % mean depth_bnds
+        % mean pressure_bnds
    
-    mean_depth_bnds_att(1).Name='Description';
-    mean_depth_bnds_att(1).Value='The upper and lower bounds of vertical integration';
+    mean_pressure_bnds_att(1).Name='Description';
+    mean_pressure_bnds_att(1).Value='The upper and lower bounds of vertical integration';
     
-    mySchema.Variables(6).Name='mean_depth_bnds';
-    mySchema.Variables(6).Dimensions=mean_depth_bnds_dimen;
-    mySchema.Variables(6).Attributes=mean_depth_bnds_att;
+    mySchema.Variables(6).Name='mean_pressure_bnds';
+    mySchema.Variables(6).Dimensions=mean_pressure_bnds_dimen;
+    mySchema.Variables(6).Attributes=mean_pressure_bnds_att;
     mySchema.Variables(6).Datatype='single';
     mySchema.Variables(6).FillValue='disable';
     
@@ -165,9 +164,9 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,l
    latitude=single(latitude);
    longitude=single(longitude);
    time=single(time);
-   mean_depth=single(mean_depth);
-   mean_depth_bnds=single(mean_depth_bnds);
-   ht_estimate=single(ht_estimate./1e9);
+   mean_pressure=single(mean_pressure);
+   mean_pressure_bnds=single(mean_pressure_bnds);
+   sal_estimate=single(sal_estimate);
 
 
 
@@ -177,9 +176,9 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,l
     ncwrite(file,'latitude',latitude,[1]);
     ncwrite(file,'longitude',longitude,[1]);
     ncwrite(file,'time',time,[1]);
-    ncwrite(file,'mean_depth',mean_depth,[1]);
-    ncwrite(file,'mean_depth_bnds',mean_depth_bnds,[1,1]);
-    ncwrite(file,'ocean_heat_content_anomaly',ht_estimate,[1,1,1,1]);  
+    ncwrite(file,'mean_pressure',mean_pressure,[1]);
+    ncwrite(file,'mean_pressure_bnds',mean_pressure_bnds,[1,1]);
+    ncwrite(file,'ocean_salinity',sal_estimate,[1,1,1,1]);  
     
 end
         

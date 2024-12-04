@@ -1,11 +1,11 @@
-function [globalat]=make_globalatribute_RFROM_real_delayedv22()
+function [globalat]=make_globalatribute_RFROMV22()
 
 
 
     globalat(1).Name='Conventions';
     globalat(1).Value='CF-1.8';
     globalat(2).Name='title';
-    globalat(2).Value='RFROM v2.2 Real Time and Delayed Mode';
+    globalat(2).Value='RFROM v2.2';
     globalat(3).Name='institution';
     globalat(3).Value='NOAA PMEL, CIMAR';
     globalat(4).Name='source';
@@ -13,7 +13,7 @@ function [globalat]=make_globalatribute_RFROM_real_delayedv22()
     globalat(5).Name='references';
     globalat(5).Value='Lyman, J.M. and G.C. Johnson. 2023. Global High-Resolution Random Forest Regression Maps of Ocean Heat Content Anomalies Using in Situ and Satellite Data,Submitted  Journal of Atmospheric and Oceanic Technology,  June 3, 2022. ';
     globalat(6).Name='history';
-    globalat(6).Value='01/01/2025 v2.2';
+    globalat(6).Value='01/11/2025 v2.2';
     globalat(7).Name='comment';
     globalat(7).Value='none';
 

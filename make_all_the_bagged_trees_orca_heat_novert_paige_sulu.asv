@@ -16,7 +16,7 @@
 % nbasins_use=TreeSetUp.nbasins_use
 
 % TreeSetUp=TreeSetUp_2023_orca_heat_novert_test;
-TreeSetUp=TreeSetUp_2024_orca_heat_novert_test_mid_paige_final;
+TreeSetUp=TreeSetUp_2024_orca_heat_novert_test_mid_paige_sulu;
 % 
 tic
 %% ONLY UNCOMMENT IF YOU ARE USSING DATA FILES IN THE OLD FORMAT!!
@@ -33,8 +33,9 @@ tic
 delete([TreeSetUp.path_tree_junk,'*.mat']);
 toc./60/60
 
-baggedtree_hold_out_all_years_seasonal_orca_novert_paige(TreeSetUp)
 'baggedtree_hold_out_all_years_seasonal_orca_novert_paige'
+
+baggedtree_hold_out_all_years_seasonal_orca_novert_paige(TreeSetUp)
 toc./60/60
 
 'read_ssh_matfiles_all_years_season_orca_novert_paige'
@@ -121,13 +122,13 @@ multi_write_erddap_file_withoutcycle(TreeSetUp)
 multi_write_erddap_file_withcycle(TreeSetUp)
 toc./60./60
 
-'multi_write_erddap_file_withcycle_nomean_v21'
+'multi_write_erddap_file_withcycle_nomean_v22'
 % must run multi_write_erddap_file_withcycle(TreeSetUp) first.  It makes
 % the netcdffiles that mean is comuted from.
-multi_write_erddap_file_withcycle_nomean_v21(TreeSetUp) 
+multi_write_erddap_file_withcycle_nomean_v22(TreeSetUp) 
 toc./60./60
 
-'multi_write_erddap_file_withcycle_nomean_v21_reatime'
+'multi_write_erddap_file_withcycle_nomean_v22_reatime'
 % % must run multi_write_erddap_file_withcycle(TreeSetUp) first.  It makes
 % % the netcdffiles that mean is comuted from.
 multi_write_erddap_file_withcycle_nomean_v21_realtime(TreeSetUp) 
@@ -136,24 +137,24 @@ toc./60./60
 tic
 
 bagged_tree_ohca_curve_7_day_errdp_ohca_test(TreeSetUp,0,2000)
-% % % 'make_1x1xmonth_files_v2'
-% % % make_1x1xmonth_files_v21(TreeSetUp)
-% % % toc./60./60
-% % % 
-% % % %% make the vertical intral curves and maps from no mean netcdf files.
-% % % 'bagged_tree_ohca_curve_7_day_errdp_ohca'
-% % % bagged_tree_ohca_curve_7_day_errdp_ohca(TreeSetUp,0,700)
-% % % bagged_tree_ohca_curve_7_day_errdp_ohca_writenc(TreeSetUp,0,2000)
-% % % bagged_tree_ohca_curve_7_day_errdp_ohca(TreeSetUp,0,2000)
-% % % bagged_tree_ohca_curve_7_day_errdp_ohca(TreeSetUp,700,2000)
-% % % % mae the ocean heat up take curve
-% % % OHU_curve_and_ascii_file(TreeSetUp,0,2000)
-% % % toc./60./60
-% % % % plot the curves
-% % % 'plot_oco_curves'
-% % % plot_oco_curves(TreeSetUp)
-% % % 
-% % % toc./60./60.
+'make_1x1xmonth_files_v2'
+make_1x1xmonth_files_v21(TreeSetUp)
+toc./60./60
+
+%% make the vertical intral curves and maps from no mean netcdf files.
+'bagged_tree_ohca_curve_7_day_errdp_ohca'
+bagged_tree_ohca_curve_7_day_errdp_ohca(TreeSetUp,0,700)
+bagged_tree_ohca_curve_7_day_errdp_ohca_writenc(TreeSetUp,0,2000)
+bagged_tree_ohca_curve_7_day_errdp_ohca(TreeSetUp,0,2000)
+bagged_tree_ohca_curve_7_day_errdp_ohca(TreeSetUp,700,2000)
+% mae the ocean heat up take curve
+OHU_curve_and_ascii_file(TreeSetUp,0,2000)
+toc./60./60
+% plot the curves
+'plot_oco_curves'
+plot_oco_curves(TreeSetUp)
+
+toc./60./60.
 
 % % % % make the heatcontent maps
 % % % 'heat_plots_2023_orca'

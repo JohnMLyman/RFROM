@@ -1,4 +1,4 @@
-function []=multi_write_erddap_file_withcycle_v2(TreeSetUp)
+function []=multi_write_erddap_file_withcycle_v21(TreeSetUp)
 
 
 
@@ -139,13 +139,13 @@ for year_load=time_ssh_load
             end
             if var_type =='t'
          
-                 write_netcfd_cf_temp_pressure_mon_single(mon_estimate,time_1950,lon_tpx,...
+                 write_netcfd_cf_temp_pressure_mon_singlev22(mon_estimate,time_1950,lon_tpx,...
                        lat_tpx,mean_pressure,mean_pressure_bnds,file_name_nc)
             elseif var_type=='s'
-                 write_netcfd_cf_sal_pressure_mon_single(mon_estimate,time_1950,lon_tpx,...
+                 write_netcfd_cf_sal_pressure_mon_singlev22(mon_estimate,time_1950,lon_tpx,...
                        lat_tpx,mean_pressure,mean_pressure_bnds,file_name_nc)
             elseif var_type=='h'
-                write_netcfd_cf_heat_depth_mon_single(mon_estimate,time_1950,lon_tpx,...
+                write_netcfd_cf_heat_depth_mon_singlev22(mon_estimate,time_1950,lon_tpx,...
                    lat_tpx,mean_depth,mean_depth_bnds,file_name_nc)
             end
  

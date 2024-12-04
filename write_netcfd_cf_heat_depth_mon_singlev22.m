@@ -1,5 +1,5 @@
-function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,lon_tpx,...
-    lat_tpx,mean_depth,mean_depth_bnds,start_mean,end_mean,file_name_nc)
+function []=write_netcfd_cf_heat_depth_mon_singlev22(ht_estimate,time_1950,lon_tpx,...
+                   lat_tpx,mean_depth,mean_depth_bnds,file_name_nc)
     
 % time [days since 1950-01-01 00:00:00] CMEMS time I should convert all
 % % times to this
@@ -136,7 +136,7 @@ function []=write_netcfd_cf_heat_depth_mon_single_nomean(ht_estimate,time_1950,l
     ohca_att(2).Name='Description';
     ohca_att(2).Value=['mapped ocean heat content anomaly (TEOS-10) integrated ',...
         'from upper to lower bounds of mean depth with the seasonal cycle ',...
-        'relivite to ',num2str(start_mean),' to ',num2str(end_mean),' mean'];
+        'relivite to 2008 to 2020 mean'];
     
     mySchema.Variables(5).Name='ocean_heat_content_anomaly';
     mySchema.Variables(5).Dimensions=map_dimen;

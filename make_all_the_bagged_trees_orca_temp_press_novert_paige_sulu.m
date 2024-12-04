@@ -28,13 +28,22 @@ tic
 delete([TreeSetUp.path_tree_junk,'*.mat']);
 toc./60/60
 
-'baggedtree_yearly_overlap_seasonal_orca_novert'
-baggedtree_yearly_overlap_seasonal_orca_novert(TreeSetUp)
-toc./60./60
+% 'baggedtree_yearly_overlap_seasonal_orca_novert'
+% baggedtree_yearly_overlap_seasonal_orca_novert(TreeSetUp)
+% toc./60./60
+% 
+% 'read_ssh_matfiles_yearly_seasonal_orca_novert'
+% read_ssh_matfiles_yearly_seasonal_orca_novert(TreeSetUp)
+% toc./60./60
 
-'read_ssh_matfiles_yearly_seasonal_orca_novert'
-read_ssh_matfiles_yearly_seasonal_orca_novert(TreeSetUp)
-toc./60./60
+'baggedtree_hold_out_all_years_seasonal_orca_novert_paige'
+baggedtree_hold_out_all_years_seasonal_orca_novert_paige(TreeSetUp)
+
+toc./60/60
+
+'read_ssh_matfiles_all_years_season_orca_novert_paige'
+read_ssh_matfiles_all_years_season_orca_novert_paige(TreeSetUp)
+% 
 
 'compute_basin_coverage'
 compute_basin_coverage(TreeSetUp)
@@ -107,11 +116,11 @@ toc./60./60
 
 'multi_write_erddap_file_withcycle'
 
-multi_write_erddap_file_withcycle_v21(TreeSetUp)
+multi_write_erddap_file_withcycle_v22(TreeSetUp)
 toc./60./60
 
 'make_1x1xmonth_files_v2'
-make_1x1xmonth_files_v21_paige(TreeSetUp)
+make_1x1xmonth_files_v22_paige(TreeSetUp)
 toc./60./60
 
 

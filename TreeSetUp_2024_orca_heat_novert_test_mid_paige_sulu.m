@@ -23,12 +23,14 @@ path_Fig_data='H:\Figs\OHC\data\';
 tree_model_file_name_season=[tree_prefix,'_yearly_overlap_seasonal'];
 tree_model_file_name_yearly=[tree_model_file_name_season,'_anom'];
 tree_model_file_name_all_year=[tree_prefix,'_all_year_seasonal_anom'];
+tree_model_file_name_all_year_season=[tree_prefix,'_all_year_seasonal'];
+
 tree_model_file_name_combined=[tree_prefix,'_combined_seasonal_anom'];
 tree_model_file_name_combined_withcycle=[tree_prefix,'_combined_seasonal_anom_wc'];
 
 tree_model_file_name_season=tree_model_file_name_all_year_season;
-tree_model_file_name_combined=tree_model_file_name_all_year;
-tree_model_file_name_combined_withcycle=[tree_prefix,'_all_year_seasonal_anom_wc'];
+% tree_model_file_name_combined=tree_model_file_name_all_year;
+% tree_model_file_name_combined_withcycle=[tree_prefix,'_all_year_seasonal_anom_wc'];
 
 file_name_season=[file_name,'_seasonal'];
 file_name_season_anom=[file_name_season,'_anom'];
