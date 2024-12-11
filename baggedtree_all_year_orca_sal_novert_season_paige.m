@@ -89,6 +89,7 @@ tree_model_file_name=tree_model_file_name_season;
 nlayer=length(layer_bounds);
 
 
+
 coords=[];
 tpx=[];
 yr=[];
@@ -96,7 +97,6 @@ sst=[];
 
 
 
-nlayer=length(layer_bounds);
 
 % % if ~exist([fname_nc,'.mat'],'file')
 % 
