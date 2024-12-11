@@ -1,4 +1,4 @@
-function []=loess_sal_errdap_fast_v22(TreeSetUp)
+function []=loess_sal_errdap_fast_v21(TreeSetUp)
 
 tic
 nbasins_use=TreeSetUp.nbasins_use;
@@ -137,15 +137,15 @@ parfor imod=1:nmod
               
 
                if imonth>=10
-                      file_name_nc_sal= [path_nc_erddap_sal,'RFROMV22_SAL_',num2str(iyear),'_',num2str(imonth),'.nc'];
-                      file_name_nc_temp= [path_nc_erddap_temp,'RFROMV22_TEMP_',num2str(iyear),'_',num2str(imonth),'.nc'];
-                      file_name_nc_sal_loess= [path_nc_erddap_sal_loess,'RFROMV22_SAL_LOESS_',num2str(iyear),'_',num2str(imonth),'.nc'];
+                      file_name_nc_sal= [path_nc_erddap_sal,'RFROMV21_SAL_',num2str(iyear),'_',num2str(imonth),'.nc'];
+                      file_name_nc_temp= [path_nc_erddap_temp,'RFROMV21_TEMP_',num2str(iyear),'_',num2str(imonth),'.nc'];
+                      file_name_nc_sal_loess= [path_nc_erddap_sal_loess,'RFROMV21_SAL_LOESS_',num2str(iyear),'_',num2str(imonth),'.nc'];
                      
 
                    else
-                      file_name_nc_sal= [path_nc_erddap_sal,'RFROMV22_SAL_',num2str(iyear),'_0',num2str(imonth),'.nc'];
-                      file_name_nc_temp= [path_nc_erddap_temp,'RFROMV22_TEMP_',num2str(iyear),'_0',num2str(imonth),'.nc'];
-                      file_name_nc_sal_loess= [path_nc_erddap_sal_loess,'RFROMV22_SAL_LOESS_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                      file_name_nc_sal= [path_nc_erddap_sal,'RFROMV21_SAL_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                      file_name_nc_temp= [path_nc_erddap_temp,'RFROMV21_TEMP_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                      file_name_nc_sal_loess= [path_nc_erddap_sal_loess,'RFROMV21_SAL_LOESS_',num2str(iyear),'_0',num2str(imonth),'.nc'];
                      
 
                end
@@ -158,15 +158,15 @@ parfor imod=1:nmod
                    [sal]=loess3d_JML_smooth_sal(temp,sal,4,4,2);
                    
                   
-                     write_netcfd_cf_sal_pressure_mon_singlev22(sal,time_1950,lon,...
-                   lat,pres,mean_pressure_bnds,file_name_nc_sal_loess)
+                   
     %                for itime=1:1
-                  
+                   write_netcfd_cf_sal_pressure_mon_single(sal,time_1950,lon,...
+                   lat,pres,mean_pressure_bnds,file_name_nc_sal_loess)
 
                end
 
                 
-             
+              
                
 %                 file_name_junk_stable_mat= [path_nc_erddap_sal_stable,'RFROM_JUNK_',num2str(iyear),'_0',num2str(imonth),'.mat'];
 % 

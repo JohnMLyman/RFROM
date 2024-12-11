@@ -76,6 +76,11 @@ load(fname_nc);
 
 nlayer=length(layer_bounds);
 
+%%  TEST
+
+
+%%
+
 % if ~exist([fname_nc,'_sst.mat'],'file')
 % find_oisst_4_mean_orca_model works for model and non model
     [sst]=find_oisst_4_mean_orca_model(coords(:,1),coords(:,2),yr,path_oisst,TreeSetUp);

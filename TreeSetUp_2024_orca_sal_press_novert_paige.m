@@ -23,7 +23,7 @@ tree_prefix_temp='tree_temp_novert';
 path_mat_nc='D:\monthly_temp\';
 path_ERDDAP='H:\erddap_filt_anomt\sal_novert_2024';
 path_ERDDAP_sal=path_ERDDAP;
-path_ERDDAP_temp='H:\erddap_filt\temp_novert_2024';
+path_ERDDAP_temp='N:\erddap_filt\temp_novert_2024';
 
 % tree_model_file_name_season=[tree_prefix,'_yearly_overlap_seasonal'];
 % tree_model_file_name_yearly=[tree_model_file_name_season,'_anom'];
@@ -33,6 +33,8 @@ tree_model_file_name_all_year=[tree_prefix,'_all_year_seasonal_anom'];
 tree_model_file_name_combined=[tree_prefix,'_combined_seasonal_anom'];
 tree_model_file_name_combined_withcycle=[tree_prefix,'_combined_seasonal_anom_wc'];
 
+% Because only the all year model is made set it to the combined name
+tree_model_file_name_combined=tree_model_file_name_all_year;
 
 tree_model_file_name_season_temp=[tree_prefix_temp,'_yearly_overlap_seasonal'];
 tree_model_file_name_combined_temp=[tree_prefix_temp,'_combined_seasonal_anom'];
@@ -59,6 +61,10 @@ path_new_tree_season=[path_tree,tree_model_file_name_season,'\'];
 path_new_tree_yearly=[path_tree,tree_model_file_name_yearly,'\'];
 path_new_tree_all_year=[path_tree,tree_model_file_name_all_year,'\'];
 path_new_tree_combined=[path_tree,'combined\'];
+
+% Because only the all year model is made set it to the combined name
+path_new_tree_combined=path_new_tree_all_year;
+
 path_new_tree_combined_withcycle=[path_tree,'combined_withcycle_filt\'];
 path_new_tree_combined_temp=[path_tree_temp,'combined\'];
 path_new_tree_combined_withcycle_temp=[path_tree_temp,'combined_withcycle_filt\'];

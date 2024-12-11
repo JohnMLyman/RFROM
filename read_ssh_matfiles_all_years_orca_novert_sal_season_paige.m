@@ -196,10 +196,14 @@ parfor year_load=time_ssh_load
     
         layer_name=[num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer))];
         tree_file_name_out=[tree_model,'_',layer_name,'_',num2str(year_load)];
-%          tree_file_name_out_withcycle_temp=[tree_model_withcycle_temp,'_',layer_name,'_',num2str(year_load)];
-        tree_file_name_out_withoutcycle_temp=[tree_model_withoutcycle_temp,'_',layer_name,'_',num2str(year_load)];
-%          file_name_temp=[path_new_tree_withcycle_temp,tree_file_name_out_withcycle_temp,'_split_7day.mat'] ;
-        file_name_temp=[path_new_tree_withoutcycle_temp,tree_file_name_out_withoutcycle_temp,'_split_7day.mat'] ;
+% %          tree_file_name_out_withcycle_temp=[tree_model_withcycle_temp,'_',layer_name,'_',num2str(year_load)];
+%         tree_file_name_out_withoutcycle_temp=[tree_model_withoutcycle_temp,'_',layer_name,'_',num2str(year_load)];
+% %          file_name_temp=[path_new_tree_withcycle_temp,tree_file_name_out_withcycle_temp,'_split_7day.mat'] ;
+%         file_name_temp=[path_new_tree_withoutcycle_temp,tree_file_name_out_withoutcycle_temp,'_split_7day.mat'] ;
+
+        tree_file_name_out_withcycle_temp=[tree_model_withcycle_temp,'_',layer_name,'_',num2str(year_load)];
+        file_name_temp=[path_new_tree_withcycle_temp,tree_file_name_out_withcycle_temp,'_split_7day.mat'] ;
+        [temp_use]=read_temp_use(file_name_temp);
 
          [temp_use]=read_temp_use(file_name_temp);
 

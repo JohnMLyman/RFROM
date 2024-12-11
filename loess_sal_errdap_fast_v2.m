@@ -1,4 +1,4 @@
-function []=loess_sal_errdap_fast(TreeSetUp)
+function []=loess_sal_errdap_fast_v2(TreeSetUp)
 
 tic
 nbasins_use=TreeSetUp.nbasins_use;

@@ -22,36 +22,36 @@ tic
 
 
 
-% % % %% compute the seasonal cycle 
-% % % 
-% % % 'Delete Junk directory'
-% % % delete([TreeSetUp.path_tree_junk,'*.mat']);
-% % % toc./60/60
-% % % 
-% % % 'baggedtree_yearly_overlap_seasonal_orca_sal_newcycle'
-% % %  baggedtree_all_year_orca_sal_novert_season_paige(TreeSetUp)
+%% compute the seasonal cycle 
 
-% % % 
-% % % toc./60./60
-% % % 
-% % % 'read_ssh_matfiles_yearly_seasonal_orca_vert_sal_newcycle'
-% % % read_ssh_matfiles_all_years_orca_novert_sal_season_paige(TreeSetUp)
-% % % % read_ssh_matfiles_yearly_seasonal_orca_vert_sal_newcycle(TreeSetUp)
-% % % 
-% % % toc./60./60
-% % % 
-% % % 'compute_basin_coverage'
-% % % compute_basin_coverage(TreeSetUp)
-% % % toc./60./60
-% % % 
-% % % 'make_seasonal_cycle_tree_split_orca_vert'
-% % % make_seasonal_cycle_tree_split_orca_vert(TreeSetUp)
-% % % toc./60./60
-% % % 
-% % % % 'make_model_stats_yearly_seasonal_orca_vert_newcycle_sal'
-% % % % make_model_stats_yearly_seasonal_orca_vert_newcycle_sal(TreeSetUp)
-% % % % toc./60./60
-% % % %% Make the yearlly anomally tree
+'Delete Junk directory'
+delete([TreeSetUp.path_tree_junk,'*.mat']);
+toc./60/60
+
+'baggedtree_yearly_overlap_seasonal_orca_sal_newcycle'
+ baggedtree_all_year_orca_sal_novert_season_paige(TreeSetUp)
+
+
+toc./60./60
+
+'read_ssh_matfiles_yearly_seasonal_orca_vert_sal_newcycle'
+read_ssh_matfiles_all_years_orca_novert_sal_season_paige(TreeSetUp)
+% read_ssh_matfiles_yearly_seasonal_orca_vert_sal_newcycle(TreeSetUp)
+
+toc./60./60
+
+'compute_basin_coverage'
+compute_basin_coverage(TreeSetUp)
+toc./60./60
+
+'make_seasonal_cycle_tree_split_orca_vert'
+make_seasonal_cycle_tree_split_orca_vert(TreeSetUp)
+toc./60./60
+
+% 'make_model_stats_yearly_seasonal_orca_vert_newcycle_sal'
+% make_model_stats_yearly_seasonal_orca_vert_newcycle_sal(TreeSetUp)
+% toc./60./60
+%% Make the yearlly anomally tree
 
 
 % % Clear out the junkdir
@@ -103,9 +103,10 @@ toc./60./60
 
 
 %%
+% dont need to make combined files because only made all year model
+% 'make_combined_files'
+% make_combined_files(TreeSetUp)
 
-'make_combined_files'
-make_combined_files(TreeSetUp)
 % % % toc./60./60
 
 'multi_add_seasonal_cycle_filt'
@@ -116,23 +117,30 @@ toc./60./60
 
 'multi_write_erddap_file_withcycle'
 
-multi_write_erddap_file_withcycle_v2(TreeSetUp)
+multi_write_erddap_file_withcycle_v21(TreeSetUp)
 toc./60./60
 
 % %% if you use loess_sal_erdap then you need to run 
 % stablize_t_and_sl_loess_errdap netiher of which have been tested
 'loess_sal_errdap'
-loess_sal_errdap_fast_v2(TreeSetUp)
+loess_sal_errdap_fast_v21(TreeSetUp)
 toc./60./60
-%%
-'stablize_t_and_sl_loess_errdap'
 
-% % % % stablize_t_and_sl_errdap(TreeSetUp)
-% % % stablize_t_and_sl_loess_errdap(TreeSetUp)
+%make the 1x1 grid
 
-stablize_t_and_sl_loess_errdap_fast_v2(TreeSetUp)
+'make 1x1 grid'
+make_1x1xmonth_files_v21_paige(TreeSetUp)
 
-toc./60./60
+
+% % % %%
+% % % 'stablize_t_and_sl_loess_errdap'
+% % % 
+% % % % % % % stablize_t_and_sl_errdap(TreeSetUp)
+% % % % % % stablize_t_and_sl_loess_errdap(TreeSetUp)
+% % % 
+% % % stablize_t_and_sl_loess_errdap_fast_v2(TreeSetUp)
+% % % 
+% % % toc./60./60
 
 
 % %%
