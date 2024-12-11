@@ -1,4 +1,4 @@
-function [global_basins]=find_basin_paige(lon,lat)
+function [global_basins]=find_basin_paige_new(lon,lat)
 
 
 
@@ -100,8 +100,21 @@ in_cp=inpolygon(lon,lat,x_cp,y_cp);
 in_gl=inpolygon(lon,lat,x_gl,y_gl);
 
 in_atl(in_gl)=0;
-%Save coordinate pairs found in each basin to separate arrays
 
+pos_sulu=[8,117.4;11,119;11,121;14,121;14.1,123.5;11.8,124.8;10,125.8;8,125.8;8,123.5;8,122.6;7,122.2;6,120.6;5.5,118.5;5,118;8,117.4];
+x_sulu=pos_sulu(:,2)';
+y_sulu=pos_sulu(:,1)';
+% plot(pos_sulu(:,2),pos_sulu(:,1))
+
+
+pos_celebes=[5,118;-6,116;-6,120;.5,120;.8,120.3;.8,121;.7,123.6;1,124.6;1.2,125.15;3.3,125.8;8,125.8;8,123.5;8,122.6;7,122.2;6,120.6;5.5,118.5;5,118;];
+x_celebes=pos_celebes(:,2)';
+y_celebes=pos_celebes(:,1)';
+%Save coordinate pairs found in each basin to separate arrays
+in_sulu=inpolygon(lon,lat,x_sulu,y_sulu);
+in_celebes=inpolygon(lon,lat,x_celebes,y_celebes);
+
+in_pac(in_sulu|in_celebes)=0;
 
 not_in_basin=~(in_ind|in_pac|in_arc|in_med|in_atl|in_bs|in_cs|in_bb|in_rs|in_cp);
 
@@ -130,3 +143,9 @@ global_basins(10).name='caspain sea';
 global_basins(10).pos=in_cp;
 global_basins(11).name='atric_360';
 global_basins(11).pos=in_arc;
+global_basins(12).name='sulu';
+global_basins(12).pos=in_sulu;
+global_basins(13).name='celebes';
+global_basins(13).pos=in_celebes;
+
+
