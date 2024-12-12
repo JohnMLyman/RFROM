@@ -19,7 +19,7 @@ tree_prefix=TreeSetUp.tree_prefix;
 tree_model_file_name_season=TreeSetUp.tree_model_file_name_season;
 tree_model_file_name_yearly=TreeSetUp.tree_model_file_name_yearly;
 tree_model_file_name_all_year=TreeSetUp.tree_model_file_name_all_year;
-tree_model_file_name_all_year_season=TreeSetUp.tree_model_file_name_all_year_season;
+% tree_model_file_name_all_year_season=TreeSetUp.tree_model_file_name_all_year_season;
 tree_model_file_name_combined=TreeSetUp.tree_model_file_name_combined;
 % 
 % file_name_season=[file_name,'_seasonal'];
@@ -62,7 +62,7 @@ start_year_trans=TreeSetUp.start_year_trans;
 end_year_trans=TreeSetUp.end_year_trans;
 %%
 
-tree_model_file_name=tree_model_file_name_all_year_season;
+tree_model_file_name=tree_model_file_name_season;
 path_new_tree=path_tree_junk;
 start_year=start_year;
 end_year=end_year;

@@ -15,7 +15,10 @@ path_OHCA_data_in='D:\';
 
 
 file_name='argo_2024_9_9_QC'
+file_name_out_deep=[file_name,'_deep_topo']
+
 file_name_season=[file_name,'_seasonal']
+file_name_season_out_deep=[file_name_out_deep,'_seasonal'];
 var_type='s'
 %layer_bounds=[0,40,90,190,290,450,700,950,1450,1950,2000]% layer_bounds must be in assending order
 %layer_bounds=[0,100,300,700,900,1800] % layer_bounds must be in assending order
@@ -244,6 +247,10 @@ OcoSetUp.path_EN4_in=path_EN4_in;
 OcoSetUp.path_EN4_out=path_EN4_out;
 OcoSetUp.file_path_in=file_path_in;
 
+OcoSetUp.file_name_out_deep=file_name_out_deep;
+OcoSetUp.file_name_season_out_deep=file_name_season_out_deep;
+
+
 OcoSetUp.max_year_maps=max_year_maps;
 OcoSetUp.min_year_maps=min_year_maps;
 OcoSetUp.allsal_extra=allsal_extra;
@@ -317,3 +324,6 @@ interptpx_argo_mean_oco_WOD_2021_new_layers_seasonal_orca_sal(OcoSetUp)
 'mapdiff_argo_mean_oco_EN4_2021_new_layers_seasonal_orca_sal'
 
 mapdiff_argo_mean_oco_EN4_2021_new_layers_seasonal_orca_sal(OcoSetUp)
+
+'mapdiff_seasonal_orca_sal_topo_deep'
+mapdiff_seasonal_orca_sal_topo_deep(OcoSetUp)

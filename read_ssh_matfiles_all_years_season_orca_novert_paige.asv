@@ -70,7 +70,7 @@ end_year_trans=TreeSetUp.end_year_trans;
 
 start_year=start_year;
 end_year=end_year;
-path_new_tree=path_new_tree_season;
+path_new_tree=path_new_tree_all_year_season;
 tree_model=tree_model_file_name_season;
 
 % set up the files sytem for reading ssh and sst
