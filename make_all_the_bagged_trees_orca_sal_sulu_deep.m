@@ -118,7 +118,7 @@ toc./60./60
 
 multi_write_erddap_file_withcycle_v22(TreeSetUp)
 toc./60./60
-
+ 'write 1x1 no loess'
 make_1x1xmonth_files_v22_paige(TreeSetUp)
 
 
@@ -128,7 +128,7 @@ make_1x1xmonth_files_v22_paige(TreeSetUp)
 loess_sal_errdap_fast_v22(TreeSetUp)
 toc./60./60
 
-
+'write 1x1 with loess'
 make_1x1xmonth_files_v22_paige_loess(TreeSetUp)
 %%
 'stablize_t_and_sl_loess_errdap'

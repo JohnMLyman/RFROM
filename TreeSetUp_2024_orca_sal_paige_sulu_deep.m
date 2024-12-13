@@ -33,6 +33,8 @@ tree_model_file_name_all_year=[tree_prefix,'_all_year_seasonal_anom'];
 tree_model_file_name_combined=[tree_prefix,'_combined_seasonal_anom'];
 tree_model_file_name_combined_withcycle=[tree_prefix,'_combined_seasonal_anom_wc'];
 
+% Because only the all year model is made set it to the combined name
+tree_model_file_name_combined=tree_model_file_name_all_year;
 
 tree_model_file_name_season_temp=[tree_prefix_temp,'_yearly_overlap_seasonal'];
 tree_model_file_name_all_year_season_temp=[tree_prefix_temp,'_all_year_seasonal'];
@@ -125,8 +127,11 @@ center_year=(max_year_fit+min_year_fit)./2;
 start_year_trans=2006;
 end_year_trans=2007;
 
-start_year_trans=3000;
-end_year_trans=3001;
+%  Because there is no yearly model and only a all year model in this run I set the year of
+%  transition into the distant future
+
+start_year_trans=4000;
+end_year_trans=4001;
 
 
 diff_trans=end_year_trans-start_year_trans+1;
