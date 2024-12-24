@@ -68,8 +68,8 @@ end_year_trans=TreeSetUp.end_year_trans;
 
 %%
 
-start_year=start_year;
-end_year=end_year;
+start_year=start_all_year;
+end_year=end_all_year;
 path_new_tree=path_new_tree_all_year;
 tree_model=tree_model_file_name_all_year;
 
@@ -187,7 +187,7 @@ end
 % myCluster=parcluster('local'); myCluster.NumWorkers=Nclusters; parpool(myCluster,Nclusters);
 
 parfor year_load=time_ssh_load
-%     for year_load=time_ssh_load
+% for year_load=time_ssh_load
 
 
     display(year_load)
@@ -198,12 +198,14 @@ parfor year_load=time_ssh_load
 
     
     for ilayer=2:nlayer
-    
+        
         layer_name=[num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer))];
         tree_file_name_out=[tree_model,'_',layer_name,'_',num2str(year_load)];
         
         ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);  
         
+        if ~exist([path_new_tree,tree_file_name_out,'_split_7day.mat'] ,'file')
+            display(tree_file_name_out)
   
         if ilayer<=ilayer_depth_use_sst
                 
@@ -273,7 +275,7 @@ parfor year_load=time_ssh_load
 %         ht_estimate=ht_estimate_a.*weight_a+ht_estimate_b.*weight_b+ht_estimate_c.*weight_c+ht_estimate_d.*weight_d;
        
         parsave_tree_year([path_new_tree,tree_file_name_out,'_split_7day.mat'] ,ht_estimate,lon_tpx, lat_tpx,time_aviso)
-       
+        end
         
     end
 end
