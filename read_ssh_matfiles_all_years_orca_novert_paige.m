@@ -203,9 +203,17 @@ parfor year_load=time_ssh_load
         tree_file_name_out=[tree_model,'_',layer_name,'_',num2str(year_load)];
         
         ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);  
-        
-        if ~exist([path_new_tree,tree_file_name_out,'_split_7day.mat'] ,'file')
-            display(tree_file_name_out)
+
+%         IF THE CODE IS STOPPED AND YOU ONLY WHAT TO CONTINTU IT!!! you 
+%           remove all the old files from path_new_tree and comment
+%           the "if 1" and uncomment the 'if
+%           ~exist([path_new_tree,tree_file_name_out,'_split_7day.mat']
+%           ,'file')'
+
+
+%         if ~exist([path_new_tree,tree_file_name_out,'_split_7day.mat'] ,'file')
+        if 1
+%             display(tree_file_name_out)
   
         if ilayer<=ilayer_depth_use_sst
                 
