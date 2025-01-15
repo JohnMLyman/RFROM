@@ -1,4 +1,4 @@
-function []=make_seasonal_cycle_tree_split_orca_vert(TreeSetUp)
+function []=make_seasonal_cycle_tree_split_orca_vert_paige(TreeSetUp)
 
 
 
@@ -105,8 +105,8 @@ load([path_new_tree_season,tree_file_name_out,'_split_7day.mat'] ,'lon_tpx', 'la
 [LON,LAT]=ndgrid(lon_tpx,lat_tpx);
 [global_basins_aviso]=find_basin_paige(LON,LAT);
 
-% parfor ilayer=2:nlayer
-for ilayer=2:nlayer
+parfor ilayer=2:nlayer
+% for ilayer=2:nlayer
 
     
 
@@ -122,8 +122,8 @@ for ilayer=2:nlayer
     nlat=length(lat_tpx);
     
     
-    [ht_estimate]=mask_bad_year_basin(ht_estimate,time_aviso,file_basin_mask,...
-        nbasins_use,global_basins_aviso,ilayer,nlon,nlat);
+%     [ht_estimate]=mask_bad_year_basin(ht_estimate,time_aviso,file_basin_mask,...
+%         nbasins_use,global_basins_aviso,ilayer,nlon,nlat);
 
 
     nlon=length(lon_tpx);

@@ -21,77 +21,24 @@ max_day_Dshh=OcoSetUp.max_day_Dshh;
 % 11-3-05 new2 and different!  removes old mat files and then recomputes the
 %   offset over two months than loads the realtime data to fill in the gap
 % % % 
-% % % %move all the new SSH files out of their subdirecories
-% % % file_name_argo='pfloat_sal_greg_oct_2021_QC'
-% % % path_OHCA_data_out='C:\data\OHCA\'
-% % % path_OHCA_data_in='C:\OHCA\'
-% % % %%  YOU MUST DOWNLOAD ARGO AND AVISO DATA AND PUT THEM IN THE CORRECT LOCATIONS!!!!
-% % % %%%%  Do I need the next line I dont think so!!!  11/14/2017
-% % % 
-% % % %%
-% % % % YOU MUST CHANE THE FILE_NAME TO THE CURRNET DATE EVERY TIME YOU CHANGE
-% % % % LAYERBOUNDS AND/OR FILE_NAME_ARGO SO THAT THE FILES DO NOT GET OVER WRITEN!!!!!
-% % % % file_nmae=argo_year_month_day_qc
-% % % 
-% % % file_name='argo_2020_10_14_QC';
-% % % file_name_season=[file_name,'_seasonal']
-% % % layer_bounds=[0,40,90,190,290,450,700,950,1450,1950,2000] % layer_bounds must be in assending order
-% % % %layer_bounds=[0,100,300,700,900,1800] % layer_bounds must be in assending order
-% % % 
-% % % 
-% % % % grid for first-order large scale mean
-% % % lon_grid_mean=[-180:5:180];
-% % % lat_grid_mean=[-90:5:90];
-% % % 
-% % % % range for the large scale mean in Avsio and Argo
-% % % %   it is also the time range for which the Aviso and Argo
-% % % %   are correlated for means of infilling
-% % % 
-% % % max_year_mean=2021;
-% % % min_year_mean=2005;
-% % % 
-% % % 
-% % % %range for annual maps
-% % % 
-% % % 
-% % % max_year_maps=2021;
-% % % min_year_maps=1990;
-% % % 
-% % % %% NEED TO CHANGE THE PLOT INFO AT THE BOTTOM OF THIS FILE!!!!!
-% % % 
-% % % 
-% % % 
-% % % 
-% % % %set paths
-% % % % file_path='/Volumes/ThunderBay/Data/Globalhc/Floats/Argo/CORIOLIS/'
-% % % % file_path_out='/Volumes/ThunderBay/Data/Globalhc/Floats/Argo/CORIOLIS/depth_grid/'
-% % % file_path=[path_OHCA_data_out,'OHCA_profiles\'];
-% % % file_path_out=[path_OHCA_data_out,'OHCA_grided\'];
-% % % file_path_in=path_OHCA_data_in;
-% % % % I think you can change file_anme_mean if you want to run a diffent mean but not
-% % % % 100% sure doubble check
-% % % file_name_mean=file_name;
-% % % file_path_hdata=[path_OHCA_data_out,'OHCA_maps\'];
-% % % 
-% % % file_EN3_type='_cheng_EN4_2014'
-% % % path_EN4_in=[path_OHCA_data_in,'EN4\Cheng_2014\'];
-% % % path_EN4_out=[path_OHCA_data_out,'EN4\Cheng_2014\'];
-% % % allheat_extra='_new'
-% % % file_WOD_suf=file_EN3_type;
+
+%  this code converts 
+convert_realtime_ssh_125_2_25(OcoSetUp)
+convert_delayed_ssh_125_2_25(OcoSetUp)
 
 path_OHCA_data_in=file_path_in;
 
-dnew_real=dir([path_OHCA_data_in,'\Mtpers\realtime_oco\*\*\*.nc']);
+dnew_real=dir([path_OHCA_data_in,'Mtpers\realtime_oco\*\*\*.nc']);
 for ifile_real=1:length(dnew_real)
     movefile([dnew_real(ifile_real).folder,'\',dnew_real(ifile_real).name],[path_OHCA_data_in,'\Mtpers\realtime_oco'])
 end
 
-dnew_dt=dir([path_OHCA_data_in,'\Mtpers\delayed_oco\*\*\*.nc']);
+dnew_dt=dir([path_OHCA_data_in,'Mtpers\delayed_oco\*\*\*.nc']);
 for ifile_dt=1:length(dnew_dt)
     movefile([dnew_dt(ifile_dt).folder,'\',dnew_dt(ifile_dt).name],[path_OHCA_data_in,'\Mtpers\delayed_oco'])
 end
 
-cd([path_OHCA_data_in,'\Mtpers\delayed_oco'])
+cd([path_OHCA_data_in,'Mtpers\delayed_oco'])
 % cd /Volumes/ThunderBay/Data/Globalhc/Mtpers/delayed_oco
 d=[sdir('*.nc')];
 dy=strjust(strvcat(d(:).name),'right');
@@ -153,7 +100,7 @@ lat=ncread([d(1).folder,'/',d(1).name],'latitude');
 arw=areavec(lon,lat);
 nlat=length(lat);
 nlon=length(lon);
-cd([path_OHCA_data_in,'/Mtpers'])
+cd([path_OHCA_data_in,'Mtpers'])
 d_realtime=sdir([prefex_realtime_dir,'*.nc']);
 dy_realtime=strjust(strvcat(d_realtime(:).name),'right');
 year_realtime=str2num(dy_realtime(:,26:29));

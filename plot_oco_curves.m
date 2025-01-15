@@ -35,8 +35,8 @@ path_curves='H:\Figs\OHC\data\curves\';
 path_figs='H:\Figs\OHC\';
 min_year=1993;
 min_year_deep=1993;
-max_year=2024;
-max_year_deep=2024;
+max_year=2025;
+max_year_deep=2025;
 %load in error bars
 % 
 % load '/Volumes/ThunderBay/Data/Globalhc/SAL/Floats/nature_2010_ohca_curve'
@@ -67,7 +67,7 @@ hc_se=hc_se(good_se);
 %area of the earth used to compute w/m^2
 area_of_earth=5.1e14;
 
-year_of_oco_pub=2023;
+year_of_oco_pub=2025;
 slope_min_year=1993;
 
 
@@ -101,7 +101,7 @@ time=time(good_pos);
 hc_one=hc_one(good_pos);
 
 %%
-save([path_curves,'pmel_hc_2023.mat'],'time', 'hc_one', 'hc_se')
+save([path_curves,'pmel_hc_2024.mat'],'time', 'hc_one', 'hc_se')
 %%
 load([path_curves,'simon_hc_2023.mat'])
 good_simon=find(simon_time> min_year);
@@ -310,7 +310,7 @@ ylabel('0-700 m OHC (ZJ)','Fontsize',16,'Fontname','Arial')
 
 
 axes
-save_ascii_oco_hc_2023_orca
+save_ascii_oco_hc_2024_orca
 % compute the deep OHCA curves
 
 
@@ -372,7 +372,7 @@ time_deep=time_deep(pos_deep);
 hc_se_deep=hc_se_deep(pos_deep);
 
 %
-save([path_curves,'pmel_hc_2023_deep.mat'], 'hc_one_deep', 'time_deep', 'hc_se_deep')
+save([path_curves,'pmel_hc_2024_deep.mat'], 'hc_one_deep', 'time_deep', 'hc_se_deep')
 
 
 pos_ishii_deep_off=find(ishii_time_deep> 2004  & ishii_time_deep <=max_year_deep);
@@ -424,7 +424,7 @@ abocean_year=[1992.4282:2011.5194];
 abocean_year=[1992.4282:2011.6416];
 abocean_year=[1992.7:2012];
 abocean_year=[1992.7:2013];
-abocean_year==[1992.7:2013.5532];  
+abocean_year=[1992.7:2013.5532];  
 area_of_earth=5.1e14;
 abo_wm2=0.0438;
 abo_wm2=0.0693;

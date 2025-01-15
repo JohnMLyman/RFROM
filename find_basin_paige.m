@@ -1,4 +1,4 @@
-function [global_basins]=find_basin_paige_new(lon,lat)
+function [global_basins]=find_basin_paige(lon,lat)
 
 
 

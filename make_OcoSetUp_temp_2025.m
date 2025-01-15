@@ -1,8 +1,13 @@
+function OcoSetUp=make_OcoSetUp_temp_2025
+
+
 %% set the path and file names be ware
 
-file_name_argo='pfloat_sal_greg_sep_2025_QC'
+file_name_argo='pfloat_sal_greg_jan_2025_QC'
 path_OHCA_data_out='D:\';
 path_OHCA_data_in='D:\';
+
+path_in_125_ssh='C:\junk_ssh\';
 %%  YOU MUST DOWNLOAD ARGO AND AVISO DATA AND PUT THEM IN THE CORRECT LOCATIONS!!!!
 %%%%  Do I need the next line I dont think so!!!  11/14/2017
 
@@ -14,15 +19,14 @@ path_OHCA_data_in='D:\';
 
 file_name='argo_2025_1_3_QC'
 file_name_season=[file_name,'_seasonal']
-var_type='h'
+var_type='t'
 %layer_bounds=[0,40,90,190,290,450,700,950,1450,1950,2000]% layer_bounds must be in assending order
 %layer_bounds=[0,100,300,700,900,1800] % layer_bounds must be in assending order
-% layer_bounds=[0, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125,...
-%     135, 145, 155, 165, 175, 190, 210, 230, 250, 270, 290, 310, 330 , ...
-%     350, 370 , 390, 410,  430, 450, 475, 525, 575, 625, 675, 725, 775,...
-%     825, 875, 925, 975, 1025, 1075, 1125, 1175, 1225, 1275, 1325, 1375,...
-%     1450, 1550, 1650, 1750, 1850, 1950, 2000]% layer_bounds must be in assending order
-layer_bounds=[0,40,90,190,290,450,700,950,1450,1950,2000] % layer_bounds must be in assending order
+layer_bounds=[0, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125,...
+    135, 145, 155, 165, 175, 190, 210, 230, 250, 270, 290, 310, 330 , ...
+    350, 370 , 390, 410,  430, 450, 475, 525, 575, 625, 675, 725, 775,...
+    825, 875, 925, 975, 1025, 1075, 1125, 1175, 1225, 1275, 1325, 1375,...
+    1450, 1550, 1650, 1750, 1850, 1950, 2000]% layer_bounds must be in assending order
 
 % grid for first-order large scale mean
 lon_grid_mean=[-180:5:180];
@@ -41,13 +45,11 @@ min_year_mean=2005;
 
 max_year_maps=2025;
 min_year_maps=1990;
-
 % set the dates for when there is the end of the delayed mode ssh
 
 max_year_Dssh=2023;
 max_month_Dssh=6;
 max_day_Dshh=1;
-
 %% NEED TO CHANGE THE PLOT INFO AT THE BOTTOM OF THIS FILE!!!!!
 
 
@@ -80,7 +82,7 @@ end
 file_EN3_type='_cheng_EN4_2014'
 path_EN4_in=[path_OHCA_data_in,'EN4\Cheng_2014\'];
 path_EN4_out=[path_OHCA_data_out,'EN4\Cheng_2014\'];
-allheat_extra='_new'
+alltemp_extra='_new'
 file_WOD_suf=file_EN3_type;
 
 
@@ -90,15 +92,15 @@ max_year=max_year_mean;
 
 % define the varibiles to be saved and read
 
-heat_var_name=[];
+temp_var_name=[];
 
 for ilayer=2:length(layer_bounds)
     
-    heat_var_name=[heat_var_name,' heat_',num2str(layer_bounds(ilayer-1)),...
+    temp_var_name=[temp_var_name,' temp_',num2str(layer_bounds(ilayer-1)),...
         '_',num2str(layer_bounds(ilayer))];
     
 end
-heat_var_name=[heat_var_name,' '];
+temp_var_name=[temp_var_name,' '];
     
 ind_var_name=[];
 
@@ -110,81 +112,84 @@ for ilayer=2:length(layer_bounds)
 end
 ind_var_name=[ind_var_name,' '];
 
-bad_heat_var_name=[];
+bad_temp_var_name=[];
 
 for ilayer=2:length(layer_bounds)
     
-    bad_heat_var_name=[bad_heat_var_name,' bad_heat_',num2str(layer_bounds(ilayer-1)),...
+    bad_temp_var_name=[bad_temp_var_name,' bad_temp_',num2str(layer_bounds(ilayer-1)),...
         '_',num2str(layer_bounds(ilayer))];
     
 end
-bad_heat_var_name=[bad_heat_var_name,' '];
+bad_temp_var_name=[bad_temp_var_name,' '];
 
-mean_heat_var_name=[];
+mean_temp_var_name=[];
 
 for ilayer=2:length(layer_bounds)
     
-    mean_heat_var_name=[mean_heat_var_name,' mean_heat_',num2str(layer_bounds(ilayer-1)),...
+    mean_temp_var_name=[mean_temp_var_name,' mean_temp_',num2str(layer_bounds(ilayer-1)),...
         '_',num2str(layer_bounds(ilayer))];
     
 end
-mean_heat_var_name=[mean_heat_var_name,' '];
+mean_temp_var_name=[mean_temp_var_name,' '];
 
 
-heat_anom_var_name=[];
+temp_anom_var_name=[];
 
 for ilayer=2:length(layer_bounds)
     
-    heat_anom_var_name=[heat_anom_var_name,' heat_',num2str(layer_bounds(ilayer-1)),...
+    temp_anom_var_name=[temp_anom_var_name,' temp_',num2str(layer_bounds(ilayer-1)),...
         '_',num2str(layer_bounds(ilayer)),'_anom'];
     
 end
-heat_anom_var_name=[heat_anom_var_name,' '];
+temp_anom_var_name=[temp_anom_var_name,' '];
     
-heat_wod_var_name=[];
+temp_wod_var_name=[];
 
 for ilayer=2:length(layer_bounds)
     
-    heat_wod_var_name=[heat_wod_var_name,' heat_',num2str(layer_bounds(ilayer-1)),...
+    temp_wod_var_name=[temp_wod_var_name,' temp_',num2str(layer_bounds(ilayer-1)),...
         '_',num2str(layer_bounds(ilayer)),'_wod'];
     
 end
-heat_wod_var_name=[heat_wod_var_name,' '];
+temp_wod_var_name=[temp_wod_var_name,' '];
     
-h_var_name=[];
+t_var_name=[];
 
 for ilayer=2:length(layer_bounds)
     
-    h_var_name=[h_var_name,' h_',num2str(layer_bounds(ilayer-1)),...
+    t_var_name=[t_var_name,' t_',num2str(layer_bounds(ilayer-1)),...
         '_',num2str(layer_bounds(ilayer))];
     
 end
-h_var_name=[h_var_name,' '];
+t_var_name=[t_var_name,' '];
     
-mean_heat_oa_name=[];
+mean_temp_oa_name=[];
 
 for ilayer=2:length(layer_bounds)
     
-    mean_heat_oa_name=[mean_heat_oa_name,' mean_heat_oa_',num2str(layer_bounds(ilayer-1)),...
+    mean_temp_oa_name=[mean_temp_oa_name,' mean_temp_oa_',num2str(layer_bounds(ilayer-1)),...
         '_',num2str(layer_bounds(ilayer))];
     
 end
-mean_heat_oa_name=[mean_heat_oa_name,' '];
+mean_temp_oa_name=[mean_temp_oa_name,' '];
 
-hdiffvar_name=[];
+tdiffvar_name=[];
 
 for ilayer=2:length(layer_bounds)
     
-    hdiffvar_name=[hdiffvar_name,' hdiff',num2str(layer_bounds(ilayer-1)),...
+    tdiffvar_name=[tdiffvar_name,' tdiff',num2str(layer_bounds(ilayer-1)),...
         '_',num2str(layer_bounds(ilayer))];
     
 end
-hdiffvar_name=[hdiffvar_name,' '];
+tdiffvar_name=[tdiffvar_name,' '];
 
 %%
 OcoSetUp.file_path_prof=file_path_prof;
 OcoSetUp.file_path=file_path;
 OcoSetUp.file_path_out=file_path_out;
+OcoSetUp.path_in_125_ssh=path_in_125_ssh;
+
+
 OcoSetUp.path_OHCA_data_out=path_OHCA_data_out;
 OcoSetUp.file_name=file_name;
 OcoSetUp.file_name_mean=file_name_mean;
@@ -198,77 +203,26 @@ OcoSetUp.file_path_in=file_path_in;
 
 OcoSetUp.max_year_maps=max_year_maps;
 OcoSetUp.min_year_maps=min_year_maps;
-OcoSetUp.allheat_extra=allheat_extra;
+OcoSetUp.alltemp_extra=alltemp_extra;
 OcoSetUp.layer_bounds=layer_bounds;
-OcoSetUp.bad_heat_var_name=bad_heat_var_name;
+OcoSetUp.bad_temp_var_name=bad_temp_var_name;
 OcoSetUp.ind_var_name=ind_var_name;
-OcoSetUp.heat_var_name=heat_var_name;
+OcoSetUp.temp_var_name=temp_var_name;
 OcoSetUp.lon_grid_mean=lon_grid_mean;
 OcoSetUp.lat_grid_mean=lat_grid_mean;
-OcoSetUp.mean_heat_var_name=mean_heat_var_name;
-OcoSetUp.heat_anom_var_name=heat_anom_var_name;
-OcoSetUp.heat_wod_var_name=heat_wod_var_name;
-OcoSetUp.h_var_name=h_var_name;
-OcoSetUp.mean_heat_oa_name=mean_heat_oa_name;
-OcoSetUp.hdiffvar_name=hdiffvar_name; 
+OcoSetUp.mean_temp_var_name=mean_temp_var_name;
+OcoSetUp.temp_anom_var_name=temp_anom_var_name;
+OcoSetUp.temp_wod_var_name=temp_wod_var_name;
+OcoSetUp.t_var_name=t_var_name;
+OcoSetUp.mean_temp_oa_name=mean_temp_oa_name;
+OcoSetUp.tdiffvar_name=tdiffvar_name; 
 OcoSetUp.file_EN3_type=file_EN3_type;
 OcoSetUp.file_name_argo=file_name_argo;
 OcoSetUp.min_year_mean=min_year_mean;
 OcoSetUp.max_year_mean=max_year_mean;
 OcoSetUp.file_name_season=file_name_season;
 
+
 OcoSetUp.max_year_Dssh=max_year_Dssh;
 OcoSetUp.max_month_Dssh=max_month_Dssh;
 OcoSetUp.max_day_Dshh=max_day_Dshh;
-
-%% YOU ONLY NEED TO UNCOMMENT THIS SECTION IF YOU HAVEN'T RUN THE NORMAL OLD VERSION FIRST WITH THE SAME file_name AND file_name_argo
-
-% % % % Make the SSH files
-% % % 'getalltp_oco_realtime_oco_2022_orca_new'
-% % %  getalltp_oco_realtime_oco_2022_orca_new(OcoSetUp)
- 
-
-% Make the argo float filedata
-'getprofiles_greg_QC_oco_orca_new'
-  getprofiles_greg_QC_oco_orca_new(OcoSetUp)
-
-%%
-%% This section makes the heat files 
-
-%Make the depth grided heaterature files for Argo 
-'pfloat_heat_oco_itp_TEOS10_new_layers_1_orca_new'
- 
-pfloat_heat_oco_itp_TEOS10_new_layers_1_ocra_new(OcoSetUp)
-
-% QC the argo data temperature on depth levels
-'qc_argo_temp_oco_new_layers_1_orca_new'
-qc_argo_heat_oco_new_layers_1_orca_new(OcoSetUp) 
-   
-% Make EN4 files (I know the code is called En3 :) depth grided temperature
-%   files
-'getwod_heat_oco_EN3_teos10_new_layers_1_orca'
-getwod_heat_oco_EN3_teos10_new_layers_1_orca_new(OcoSetUp)
-
-
-
-% Remove bad argo profiles
-
-'argo_remove_bad_profiles_layers_seasonal_orca_heat'
-
-argo_remove_bad_profiles_layers_seasonal_orca_heat(OcoSetUp)
-
-
-% combine EN4 and Argo
-'bin_EN4_2021_new_layers_orca_seasonal_heat(OcoSetUp)'
-bin_EN4_2021_new_layers_orca_seasonal_heat(OcoSetUp)
-
-% add mean SSH from CMEMS (new Aviso)
-
-'interptpx_argo_mean_oco_WOD_2021_new_layers_seasonal_orca_temp'
-
-interptpx_argo_mean_oco_WOD_2021_new_layers_seasonal_orca_heat(OcoSetUp)
-% make file form that works with 
-
-'mapdiff_argo_mean_oco_EN4_2021_new_layers_seasonal_orca_temp'
-
-mapdiff_argo_mean_oco_EN4_2021_new_layers_seasonal_orca_heat(OcoSetUp)

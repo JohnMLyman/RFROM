@@ -16,88 +16,81 @@
 % to update load_TreeSetUp.m and also comment out
 % nbasins_use=TreeSetUp.nbasins_use
 % 
-[TreeSetUp]=TreeSetUp_2024_orca_temp_press_novert_paige_sulu;
+% [TreeSetUp]=TreeSetUp_2024_orca_temp_press_novert_paige_sulu;
 
-
+[TreeSetUp]=TreeSetUp_2025_orca_temp_press_novert_paige_sulu;
 tic
 
 
-% % % %% compute the seasonal cycle 
-% % % 
-% % % 'Delete Junk directory'
-% % % delete([TreeSetUp.path_tree_junk,'*.mat']);
-% % % toc./60/60
-% % % 
-% % % % 'baggedtree_yearly_overlap_seasonal_orca_novert'
-% % % % baggedtree_yearly_overlap_seasonal_orca_novert(TreeSetUp)
-% % % % toc./60./60
-% % % % 
-% % % % 'read_ssh_matfiles_yearly_seasonal_orca_novert'
-% % % % read_ssh_matfiles_yearly_seasonal_orca_novert(TreeSetUp)
-% % % % toc./60./60
-% % % 
-% % % 'baggedtree_hold_out_all_years_seasonal_orca_novert_paige'
-% % % baggedtree_hold_out_all_years_seasonal_orca_novert_paige(TreeSetUp)
-% % % 
-% % % toc./60/60
-% % % 
-% % % 'read_ssh_matfiles_all_years_season_orca_novert_paige'
-% % % read_ssh_matfiles_all_years_season_orca_novert_paige(TreeSetUp)
-% % % % 
-% % % 
-% % % 'compute_basin_coverage'
-% % % compute_basin_coverage(TreeSetUp)
-% % % toc./60./60
-% % % 
-% % % 'make_seasonal_cycle_tree_split_orca_vert'
-% % % make_seasonal_cycle_tree_split_orca_vert(TreeSetUp)
-% % % toc./60./60
-% % % 
-% % % % 'make_model_stats_yearly_seasonal_orca_vert_nosshsst_newcycle'
-% % % % make_model_stats_yearly_seasonal_orca_vert_nosshsst_newcycle(TreeSetUp)
-% % % % toc./60./60
-% % % 
-% % % 
-% % % %% Make the anomaly tree for all years
-% % % 
-% % % % Clear out the junkdir
-% % % 'Delete Junk directory'
-% % % delete([TreeSetUp.path_tree_junk,'*.mat']);
-% % % toc./60/60
-% % % 
-% % % 
-% % % 'baggedtree_hold_out_all_years_orca_novert'
-% % % baggedtree_hold_out_all_years_orca_novert_paige(TreeSetUp)
-% % % toc./60./60theioa
-% % % 
-% % % 'read_ssh_matfiles_all_years_orca_novert'
-% % % read_ssh_matfiles_all_years_orca_novert_paige(TreeSetUp)
-% % % toc./60./60
-% % % 
-% % % 'read_ssh_matfiles_all_years_orca_novert_extra'
-% % % read_ssh_matfiles_all_years_orca_novert_extra_paige(TreeSetUp)
-% % % toc./60./60
-% % % 
-% % % % 'make_model_stats_all_years_orca_vert_nosshsst'
-% % % % make_model_stats_all_years_orca_vert_nosshsst_fast(TreeSetUp)
-% % % % toc./60./60
-% % % 
-% % % %% Make the yearlly anomally tree
-% % % % 
-% % % 
-% % % % Clear out the junkdir
-% % % 'Delete Junk directory'
-% % % delete([TreeSetUp.path_tree_junk,'*.mat']);
-% % % toc./60/60
-% % % 
-% % % 
-% % % 'baggedtree_hold_out_yearlyseasonal_anom_orca_novert'
-% % % baggedtree_hold_out_yearlyseasonal_anom_orca_novert_fast(TreeSetUp)
-% % % toc./60./60
-% % % 
-% % % 'read_ssh_matfiles_yearly_seasonal_anom_orca_novert'
-% % % read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast(TreeSetUp)
-% % % toc./60./60
+%% compute the seasonal cycle 
+
+'Delete Junk directory'
+delete([TreeSetUp.path_tree_junk,'*.mat']);
+toc./60/60
+
+
+'baggedtree_hold_out_all_years_seasonal_orca_novert_paige'
+baggedtree_hold_out_all_years_seasonal_orca_novert_paige(TreeSetUp)
+
+toc./60/60
+
+'read_ssh_matfiles_all_years_season_orca_novert_paige'
+read_ssh_matfiles_all_years_season_orca_novert_paige(TreeSetUp)
+% 
+
+'compute_basin_coverage'
+compute_basin_coverage(TreeSetUp)
+toc./60./60
+
+'make_seasonal_cycle_tree_split_orca_vert'
+make_seasonal_cycle_tree_split_orca_vert_paige(TreeSetUp)
+toc./60./60
+
+% 'make_model_stats_yearly_seasonal_orca_vert_nosshsst_newcycle'
+% make_model_stats_yearly_seasonal_orca_vert_nosshsst_newcycle(TreeSetUp)
+% toc./60./60
+
+
+%% Make the anomaly tree for all years
+
+% Clear out the junkdir
+'Delete Junk directory'
+delete([TreeSetUp.path_tree_junk,'*.mat']);
+toc./60/60
+
+
+'baggedtree_hold_out_all_years_orca_novert'
+baggedtree_hold_out_all_years_orca_novert_paige(TreeSetUp)
+toc./60./60
+
+'read_ssh_matfiles_all_years_orca_novert'
+read_ssh_matfiles_all_years_orca_novert_paige(TreeSetUp)
+toc./60./60
+
+'read_ssh_matfiles_all_years_orca_novert_extra'
+read_ssh_matfiles_all_years_orca_novert_extra_paige(TreeSetUp)
+toc./60./60
+
+% 'make_model_stats_all_years_orca_vert_nosshsst'
+% make_model_stats_all_years_orca_vert_nosshsst_fast(TreeSetUp)
+% toc./60./60
+
+%% Make the yearlly anomally tree
+% 
+
+% Clear out the junkdir
+'Delete Junk directory'
+delete([TreeSetUp.path_tree_junk,'*.mat']);
+toc./60/60
+
+
+'baggedtree_hold_out_yearlyseasonal_anom_orca_novert'
+baggedtree_hold_out_yearlyseasonal_anom_orca_novert_fast(TreeSetUp)
+toc./60./60
+
+'read_ssh_matfiles_yearly_seasonal_anom_orca_novert'
+read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast(TreeSetUp)
+toc./60./60
 
 % 'make_model_stats_yearly_seasonal_anom_orca_vert_nosshsst'
 % make_model_stats_yearly_seasonal_anom_orca_vert_nosshsst(TreeSetUp)

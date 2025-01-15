@@ -87,7 +87,7 @@ for ifile=1:nfile
            
             heat_junk=nan(nprof,1);
             
-            [heat_junk]=compute_depth_heat_depth_range_teos10_2016(data,heat_junk,coords,layer_bounds(player),layer_bounds(player+1));
+            [heat_junk]=compute_depth_heat_depth_range_teos10_2016_tuna(data,heat_junk,coords,layer_bounds(player),layer_bounds(player+1));
 
            heat_junk_total(:,player)=heat_junk;
         end

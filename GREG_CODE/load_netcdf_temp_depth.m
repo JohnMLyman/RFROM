@@ -1,8 +1,7 @@
-function [good_total]=fixed_area_mask(TreeSetUp,min_depth,max_depth)
+function [lon,lat,pres,time,temp]=load_netcdf_temp_depth(ilayer,TreeSetUp)
 
 
-% min_depth and max_depth must be a layer bounds
-tic
+
 nbasins_use=TreeSetUp.nbasins_use;
 file_name=TreeSetUp.file_name;
 var_type=TreeSetUp.var_type;
@@ -16,7 +15,6 @@ fname_nc=TreeSetUp.fname_nc;
 
 path_ERDDAP=TreeSetUp.path_ERDDAP;
 
-path_Fig_data=TreeSetUp.path_Fig_data;
 
 tree_prefix=TreeSetUp.tree_prefix;
 tree_model_file_name_season=TreeSetUp.tree_model_file_name_season;
@@ -65,12 +63,12 @@ end_all_year=TreeSetUp.end_all_year;
 start_year_trans=TreeSetUp.start_year_trans;
 end_year_trans=TreeSetUp.end_year_trans;
 
-OUTOUT_type=TreeSetUp.OUTOUT_type;
+
 
 %%
-
-%%
-subdir='yearly_withcycle_no_mean';
+% tree_model=[tree_model_file_name_yearly,'_withcycle'];
+% path_new_tree=[path_new_tree_yearly,'withcycle/'];
+subdir='yearly_withcycle';
 start_year_file=start_year;
 end_year_file=end_year;
 path_new_tree=path_new_tree_combined_withcycle;
@@ -83,47 +81,87 @@ if var_type=='s'
      file_prefix='RFROMV22_SAL_';
 elseif var_type=='t'
      file_prefix='RFROMV22_TEMP_';
-else
-    file_prefix='RFROMV22_OHC_';
+elseif var_type=='h'
+     file_prefix='RFROMV22_OHC_';
 end
+
+if ~exist(path_nc_erddap,'dir')
+    mkdir(path_nc_erddap)
+end
+% because the data is geroup by year if the start year is a whole number
+% then the files will start in the pervious year
+start_year_ssh=floor(start_year_file);
+if floor(start_year_file)==start_year_file
+    start_year_ssh=start_year_file-1;
+end
+end_year_ssh=floor(end_year_file);
+time_ssh_load=start_year_ssh:end_year_ssh;
+
+% Load in latitude and Longitude and depth only once from a "random" file
+
+imonth=10;
+year_load=time_ssh_load(2);
+
+file_name_nc= [path_nc_erddap,file_prefix,num2str(year_load),'_',num2str(imonth),'.nc'];
+
+lat=ncread(file_name_nc,'latitude');
+lon=ncread(file_name_nc,'longitude');
+pres=ncread(file_name_nc,'mean_pressure');
+pres=pres(ilayer);
+
+time=[];
+temp=[];
+
+
 %%
 
-% endlayer=length(layer_bounds)-1;
-% startlayer=1;
 
-time_load=floor(start_year):floor(end_year);
-% load('D:\data\old_mask_tree.mat','nan_mask')
-% load('D:\data\topo_tpx_new.mat','topo_tpx_new')
-%  topo_tpx_new=-1.*topo_tpx_new;
+for year_load=time_ssh_load
 
-file_name_nc= [path_nc_erddap,file_prefix,num2str(2010),'_',num2str(10),'.nc'];
-
-ht_estimate=ncread(file_name_nc,'ocean_heat_content_anomaly');
-depth_bounds=double(ncread(file_name_nc,'mean_depth_bnds'));
-pos_min=find(depth_bounds(1,:)==min_depth);
-pos_max=find(depth_bounds(2,:)==max_depth);
-
-ht_estimate=ht_estimate(:,:,pos_min:pos_max,:);
-good_total=~any(~isfinite(ht_estimate),4);
-
-for year_load=time_load
-     display(year_load)
-     for imonth=1:12
+   
+   
+ 
+    
+    for imonth=1:12
         
-        
-        if imonth>=10
-              file_name_nc= [path_nc_erddap,file_prefix,num2str(year_load),'_',num2str(imonth),'.nc'];
-           else
-              file_name_nc= [path_nc_erddap,file_prefix,num2str(year_load),'_0',num2str(imonth),'.nc'];
-        end
-        
+
+       
+
         if exist(file_name_nc,'file')
-            ht_estimate=(ncread(file_name_nc,'ocean_heat_content_anomaly'));
-            ht_estimate=ht_estimate(:,:,pos_min:pos_max,:);
-            good=~any(~isfinite(ht_estimate),4);
-            good_total=good&good_total;
+
+
+            temp_junk=ncread(file_name_nc,'ocean_temperature');
+            time_junk=ncread(file_name_nc,'time');
+
+            temp_junk=squeeze(temp_junk(:,:,ilayer,:));
            
+
+            
+            time=cat(1,time,time_junk);
+            temp=cat(3,temp,temp_junk);
+
+
         end
-     end
+
+    end
+       
+    
 end
-toc
+
+i1=find(lon>30);
+i2=find(lon<30);
+lon=[lon(i1);lon(i2)+360];
+
+temp=cat(1,temp(i1,:,:),temp(i2,:,:));
+
+
+time=double(time);
+lat=double(lat);
+lon=double(lon);
+temp=double(temp);
+
+end
+
+
+
+
