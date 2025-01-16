@@ -54,11 +54,11 @@ in_atl = inpolygon(lon,lat,x_atl,y_atl);
 % Gregs origonal definitions had high latitude Atlantic loactions in the
 % Indian Ocean
 
-in_pac_ind=in_ind&lat>60;
-
-in_ind(in_pac_ind)=0;
-in_pac(in_pas_ind)=1;
-
+% in_atl_ind=in_ind&lat>60;
+% 
+% in_ind(in_atl_ind)=0;
+% in_atl(in_atl_ind)=1;
+% in_pac(in_atl_ind)=0;
 
 in_else=~(in_ind|in_pac|in_atl);
 
