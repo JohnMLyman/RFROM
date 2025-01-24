@@ -124,7 +124,12 @@ for year_load=time_ssh_load
     
     for imonth=1:12
         
-
+        if imonth>=10
+     
+                  file_name_nc= [path_nc_erddap,file_prefix,num2str(year_load),'_',num2str(imonth),'.nc'];
+           else
+                  file_name_nc= [path_nc_erddap,file_prefix,num2str(year_load),'_0',num2str(imonth),'.nc'];
+         end
        
 
         if exist(file_name_nc,'file')

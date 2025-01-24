@@ -103,19 +103,19 @@ hc_one=hc_one(good_pos);
 %%
 save([path_curves,'pmel_hc_2024.mat'],'time', 'hc_one', 'hc_se')
 %%
-load([path_curves,'simon_hc_2023.mat'])
+load([path_curves,'simon_hc_2024.mat'])
 good_simon=find(simon_time> min_year);
 simon_time=simon_time(good_simon);
 simon_se=simon_se(good_simon);
 simon_hc=simon_hc(good_simon);
 
-load([path_curves,'tim_hc_2023.mat'])
+load([path_curves,'tim_hc_2024.mat'])
 good_tim=find(tim_time> min_year);
 tim_time=tim_time(good_tim);
 tim_se=tim_se(good_tim);
 tim_hc=tim_hc(good_tim);
 
-load([path_curves,'ishii_hc_2023.mat'])
+load([path_curves,'ishii_hc_2024.mat'])
 good_ishii=find(ishii_time> min_year);
 ishii_time=ishii_time(good_ishii);
 ishii_se=ishii_se(good_ishii);
@@ -127,13 +127,13 @@ catia_time=catia_time(good_catia);
 catia_se=catia_se(good_catia);
 catia_hc=catia_hc(good_catia);
 
-load([path_curves,'cheng_hc_2023.mat'])
+load([path_curves,'cheng_hc_2024.mat'])
 good_cheng=find(cheng_time> min_year);
 cheng_time=cheng_time(good_cheng);
 cheng_se=cheng_se(good_cheng);
 cheng_hc=cheng_hc(good_cheng);
 
-load([path_curves,'donata_hc_2023.mat'])
+load([path_curves,'donata_hc_2024.mat'])
 good_donata=find(donata_time> min_year);
 donata_time=donata_time(good_donata);
 donata_se=donata_se(good_donata);
@@ -316,18 +316,18 @@ save_ascii_oco_hc_2024_orca
 
 %compute offsett
 
-load([path_curves,'tim_hc_2023_deep.mat'], 'tim_hc_deep', 'tim_time_deep', 'tim_se_deep')
+load([path_curves,'tim_hc_2024_deep.mat'], 'tim_hc_deep', 'tim_time_deep', 'tim_se_deep')
 % load /Volumes/ThunderBay/Data/Globalhc/SAL/Floats/tim_hc_2016_deep_pen.mat tim_hc_deep_pen tim_time_deep_pen tim_se_deep_pen
 
 
-load([path_curves,'ishii_hc_2023_deep.mat'],'ishii_hc_deep', 'ishii_time_deep', 'ishii_se_deep')
-load([path_curves,'donata_hc_2023_deep.mat'],'donata_hc_deep', 'donata_time_deep', 'donata_se_deep')
+load([path_curves,'ishii_hc_2024_deep.mat'],'ishii_hc_deep', 'ishii_time_deep', 'ishii_se_deep')
+load([path_curves,'donata_hc_2024_deep.mat'],'donata_hc_deep', 'donata_time_deep', 'donata_se_deep')
 % tim_hc_deep=hc_one_deep';
 % tim_time_deep=time_deep;
 % tim_se_deep=hc_se_deep;
-load([path_curves,'cheng_hc_2023_deep.mat'], 'cheng_hc_deep', 'cheng_time_deep','cheng_se_deep')
+load([path_curves,'cheng_hc_2024_deep.mat'], 'cheng_hc_deep', 'cheng_time_deep','cheng_se_deep')
 
-load([path_curves,'simon_hc_2023_deep.mat'], 'simon_hc_deep', 'simon_time_deep', 'simon_se_deep')
+load([path_curves,'simon_hc_2024_deep.mat'], 'simon_hc_deep', 'simon_time_deep', 'simon_se_deep')
 
 %load /Volumes/ThunderBay/Data/Globalhc/SAL/Floats/ishii_hc_2016_deep.mat ishii_hc_deep ishii_time_deep ishii_se_deep
 
@@ -417,35 +417,45 @@ donata_hc_deep=donata_hc_deep-offset;
 % % % temp_abocean_heat(ind)=35e12*24*3600*365.25;
 % % % temp_abocean_unct(ind)=11e12*24*3600*365.25;
 
+% 
+% abocean_year=[1992.0939:2010.3223];
+% abocean_year=[1992.7:2011.4];
+% abocean_year=[1992.4282:2011.5194];
+% abocean_year=[1992.4282:2011.6416];
+% abocean_year=[1992.7:2012];
+% abocean_year=[1992.7:2013];
+% abocean_year=[1992.7:2013.5532];  
+% area_of_earth=5.1e14;
+% abo_wm2=0.0438;
+% abo_wm2=0.0693;
+% abo_wm2=0.0637;
+% abo_wm2=0.0639;
+% abo_wm2=0.071;
+% abo_wm2=0.0725;
+% abo_wm2=0.0710;
+% dof_abo=1054;
+% % abo_wm2_unct is a standard error
+% abo_wm2_unct=0.0384./student90(dof_abo);
+% abo_wm2_unct=0.0233;
+% abo_wm2_unct=0.0214;
+% abo_wm2_unct=0.0194;
+% abo_wm2_unct=0.0194;
+% abo_wm2_unct=0.0193;
+% abo_wm2_unct=0.0192;
+% abo_wm2_unct=0.0188;
+% ind=find(abocean_year>1992);
+% temp_abocean_heat(ind)=abo_wm2*24*3600*365.25*area_of_earth;
+% temp_abocean_unct(ind)=abo_wm2_unct*24*3600*365.25*area_of_earth;
 
-abocean_year=[1992.0939:2010.3223];
-abocean_year=[1992.7:2011.4];
-abocean_year=[1992.4282:2011.5194];
-abocean_year=[1992.4282:2011.6416];
-abocean_year=[1992.7:2012];
-abocean_year=[1992.7:2013];
-abocean_year=[1992.7:2013.5532];  
-area_of_earth=5.1e14;
-abo_wm2=0.0438;
-abo_wm2=0.0693;
-abo_wm2=0.0637;
-abo_wm2=0.0639;
-abo_wm2=0.071;
-abo_wm2=0.0725;
-abo_wm2=0.0710;
-dof_abo=1054;
-% abo_wm2_unct is a standard error
-abo_wm2_unct=0.0384./student90(dof_abo);
-abo_wm2_unct=0.0233;
-abo_wm2_unct=0.0214;
-abo_wm2_unct=0.0194;
-abo_wm2_unct=0.0194;
-abo_wm2_unct=0.0193;
-abo_wm2_unct=0.0192;
-abo_wm2_unct=0.0188;
+% if given in TW
+abocean_year=[1988.0183:2013.7914]; 
 ind=find(abocean_year>1992);
-temp_abocean_heat(ind)=abo_wm2*24*3600*365.25*area_of_earth;
-temp_abocean_unct(ind)=abo_wm2_unct*24*3600*365.25*area_of_earth;
+abo_TW=36.9;
+abo_TW_unct=8.3;
+temp_abocean_heat(ind)=abo_TW.*1e12*24*3600*365.25;
+temp_abocean_unct(ind)=abo_TW_unct*1e12*24*3600*365.25;
+
+
 
 % now get the index years
 
@@ -554,7 +564,7 @@ plot([year_text-2 year_text-1],[text_off+text_del*7 text_off+text_del*7],'color'
 
 
 % 
-%   eval(['print -dpng -r600 -f3 ',path_figs,'curve_oco_new5_',num2str(year_of_oco_pub)])
+  eval(['print -dpng -r600 -f3 ',path_figs,'curve_oco_new5_',num2str(year_of_oco_pub)])
     eval(['print -depsc2 -f3 ',path_figs,'curve_oco_final_new_',num2str(year_of_oco_pub)])
 % 
 %       eval(['print  -dtiff -r600 -f3 ',path_figs,'curve_oco_2022'])

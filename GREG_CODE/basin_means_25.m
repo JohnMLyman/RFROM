@@ -2,21 +2,25 @@
 
 
 
-TreeSetUp=TreeSetUp_2024_orca_temp_press_novert_paige_sulu;
+TreeSetUp=TreeSetUp_2025_orca_temp_press_novert_paige_sulu;
 [lon,lat,~,time,~]=load_netcdf_temp_depth(1,TreeSetUp);
 
 
 dprs=[5,10+0*[1:17],15,20+0*[19:31],25,50+0*[33:50],75,100+0*[52:56],50];
+prs=cumsum(dprs)-.5*dprs;
 m=length(lon);
 n=length(lat);
 o=length(dprs);
 p=length(time);
-for i1=1:m
-    for i2=1:n
-        surf_area=ones(360,1)*cosd(lat)'*dist([-0.5 0.5],[0 0])*dist([0 0],[-.5 .5]);
-    end 
-end
+surf_area=nan(m,n);     
 
+% for i2=1:n
+%      surf_area(:,i2)=dist([lat(i2) lat(i2)],[-0.25 0.25]).*dist([lat(i2)-0.25,lat(i2)+0.25],[0 0]);
+% end 
+
+for i2=1:n
+     surf_area(:,i2)=dist([lat(i2) lat(i2)],[-0.125 0.125]).*dist([lat(i2)-0.125,lat(i2)+0.125],[0 0]);
+end 
 
 
 mn_ct_res=NaN*ones(o,p);
@@ -48,31 +52,41 @@ hc_trnd_med=mn_ct;
 [LON,LAT]=ndgrid(lon,lat);
 [global_basins]=find_basin_greg(LON,LAT);
 
-pac_mask2=NaN(m,n);
-else_mask2=pac_mask2;
-ind_mask2=pac_mask2;
-atl_mask2=pac_mask2;
+pac_mask=NaN(m,n);
+else_mask=pac_mask;
+ind_mask=pac_mask;
+atl_mask=pac_mask;
 
-pac_mask2(global_basins(2).pos)=1;
-else_mask2(global_basins(4).pos)=1;
-atl_mask2(global_basins(3).pos)=1;
-ind_mask2(global_basins(1).pos)=1;
+pac_mask(global_basins(2).pos)=1;
+else_mask(global_basins(4).pos)=1;
+atl_mask(global_basins(3).pos)=1;
+ind_mask(global_basins(1).pos)=1;
 
 mn_ct_trend_1d=nan(1,o);
 mn_hc_trend_1d=mn_ct_trend_1d;
 ct_res_std_total=nan(m,n,o);
-
+ct_mod_coeffs1=nan(m,n,o);
+ct_mod_coeffs2=nan(m,n,o);
+% % 
+tic
 for i1=1:o
-    [ct_mod_coeffs,ct_res_std]=fit_trend_layer(TreeSetUp,i1);
+  
+  disp(['working on depth layer ', num2str(i1),' ',num2str(toc./60)])
+    [ct_mod_coeffs_small,ct_res_std]=fit_trend_layer(TreeSetUp,i1);
+    
+    ct_mod_coeffs1(:,:,i1)=ct_mod_coeffs_small(:,:,1);
+    ct_mod_coeffs2(:,:,i1)=ct_mod_coeffs_small(:,:,2);
+
+
 
     ct_res_std_total(:,:,i1)=ct_res_std;
 
 
     temp_to_W_per_dbar=1e4/(365.25*24*3600)*cp0*surf_area./(sw_g(-sw_dpth(prs(i1)+0*y,y),y));
-    ju2=squeeze(ct_mod_coeffs(:,:,2));
-    ju1=squeeze(ct_mod_coeffs(:,:,1));
+    ju2=squeeze(ct_mod_coeffs_small(:,:,2));
+    ju1=squeeze(ct_mod_coeffs_small(:,:,1));
     ju3=squeeze(temp_to_W_per_dbar);
-   
+
     mn_ct(:,i1)=nanmean(ju1,1);
     mn_ct_trnd(:,i1)=nanmean(ju2,1);
     mn_ct_atl(:,i1)=nanmean(ju1.*atl_mask,1);
@@ -87,15 +101,18 @@ for i1=1:o
     hc_trnd_atl(:,i1)=nansum(ju2.*atl_mask.*temp_to_W_per_dbar,1);
     hc_trnd_pac(:,i1)=nansum(ju2.*pac_mask.*temp_to_W_per_dbar,1);
     hc_trnd_ind(:,i1)=nansum(ju2.*ind_mask.*temp_to_W_per_dbar,1);
-    hc_trnd_med(:,i1)=nansum(ju2.*else_mask.*temp_to_W_per_dba,1);
+    hc_trnd_med(:,i1)=nansum(ju2.*else_mask.*temp_to_W_per_dbar,1);
     ii=isfinite(ju2);
     mn_ct_trend_1d(i1)=sum(ju2(ii).*surf_area(ii))/sum(surf_area(ii));
     mn_hc_trend_1d(i1)=sum(ju2(ii).*ju3(ii));
 end
 
+ct_mod_coeffs=nan(m,n,o,2);
 
 
-
+ct_mod_coeffs(:,:,:,1)=ct_mod_coeffs1;
+ct_mod_coeffs(:,:,:,2)=ct_mod_coeffs2;
+% ct_mod_coeffs(ct_mod_coeffs==0)=nan;
 figure
 orient portrait
 wysiwyg
@@ -112,7 +129,7 @@ figure
 orient landscape
 wysiwyg
 
-bar_junk=[nansum(hc_trnd_pac.*(ones(180,1)*dprs),2)/1e12,nansum(hc_trnd_atl.*(ones(180,1)*dprs),2)/1e12,nansum(hc_trnd_ind.*(ones(180,1)*dprs),2)/1e12,nansum(hc_trnd_med.*(ones(180,1)*dprs),2)/1e12];
+bar_junk=[nansum(hc_trnd_pac.*(ones(180*4,1)*dprs),2)/1e12,nansum(hc_trnd_atl.*(ones(180*4,1)*dprs),2)/1e12,nansum(hc_trnd_ind.*(ones(180*4,1)*dprs),2)/1e12,nansum(hc_trnd_med.*(ones(180*4,1)*dprs),2)/1e12];
 ii=find(isfinite(bar_junk)==0);
 bar_junk(ii)=0;
 bar(lat,bar_junk,'stacked')
