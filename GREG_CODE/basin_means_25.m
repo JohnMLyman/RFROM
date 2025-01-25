@@ -65,8 +65,7 @@ ind_mask(global_basins(1).pos)=1;
 mn_ct_trend_1d=nan(1,o);
 mn_hc_trend_1d=mn_ct_trend_1d;
 ct_res_std_total=nan(m,n,o);
-ct_mod_coeffs1=nan(m,n,o);
-ct_mod_coeffs2=nan(m,n,o);
+ct_mod_coeffs=nan(m,n,o,13);
 % % 
 tic
 for i1=1:o
@@ -74,9 +73,8 @@ for i1=1:o
   disp(['working on depth layer ', num2str(i1),' ',num2str(toc./60)])
     [ct_mod_coeffs_small,ct_res_std]=fit_trend_layer(TreeSetUp,i1);
     
-    ct_mod_coeffs1(:,:,i1)=ct_mod_coeffs_small(:,:,1);
-    ct_mod_coeffs2(:,:,i1)=ct_mod_coeffs_small(:,:,2);
-
+    ct_mod_coeffs(:,:,i1,:)=ct_mod_coeffs_small;
+    
 
 
     ct_res_std_total(:,:,i1)=ct_res_std;
@@ -107,11 +105,8 @@ for i1=1:o
     mn_hc_trend_1d(i1)=sum(ju2(ii).*ju3(ii));
 end
 
-ct_mod_coeffs=nan(m,n,o,2);
 
 
-ct_mod_coeffs(:,:,:,1)=ct_mod_coeffs1;
-ct_mod_coeffs(:,:,:,2)=ct_mod_coeffs2;
 % ct_mod_coeffs(ct_mod_coeffs==0)=nan;
 figure
 orient portrait
@@ -125,7 +120,7 @@ print -dpng -r300 fig1
 print -depsc2 fig1
 
 
-figure
+figure(2)
 orient landscape
 wysiwyg
 
@@ -135,8 +130,8 @@ bar_junk(ii)=0;
 bar(lat,bar_junk,'stacked')
 set(gca,'box','on','tickdir','out','xlim',[-68 72],'fontsize',16,'FontName','Arial')
 xlabel('Latitude')
-ylabel('Heat Content Trends (TW °latitude^{-1})')
-legend('Pacific','Atlantic','Indian','Seas')
+ylabel('Heat Content Trends (TW 0.25°latitude^{-1})')
+legend('Pacific','Atlantic','Indian','Seas','Location','north')
 
 print -dpng -r300 fig2
 print -depsc2 fig2
@@ -253,10 +248,10 @@ wysiwyg
 cc=lines(7);
 
 m_proj('Moll','lon',[30 390],'lat',[-90 90]);
-[cs1,h1]=m_contour(lon,lat,squeeze(ct_mod_coeffs(:,:,20,1)-15*ct_mod_coeffs(:,:,20,2))',[15 15]);
+[cs1,h1]=m_contour(lon,lat,squeeze(ct_mod_coeffs(:,:,20,1)-16*ct_mod_coeffs(:,:,20,2))',[15 15]);
 % j1=clabel(cs1,h1);
 hold on
-[cs2,h2]=m_contour(lon,lat,squeeze(ct_mod_coeffs(:,:,20,1)+15*ct_mod_coeffs(:,:,20,2))',[15 15]);
+[cs2,h2]=m_contour(lon,lat,squeeze(ct_mod_coeffs(:,:,20,1)+16*ct_mod_coeffs(:,:,20,2))',[15 15]);
 % j2=clabel(cs2,h2);
 set(h2,'color',cc(2,:));
 set(h1,'color',cc(1,:))
@@ -270,10 +265,10 @@ print -dpng -r300 fig5
 
 
 
-jf15=squeeze(ct_mod_coeffs(:,:,20,1)+15*ct_mod_coeffs(:,:,20,2))';
+jf15=squeeze(ct_mod_coeffs(:,:,20,1)+16*ct_mod_coeffs(:,:,20,2))';
 jf15=[jf15,jf15];
 
-ji15=squeeze(ct_mod_coeffs(:,:,20,1)-15*ct_mod_coeffs(:,:,20,2))';
+ji15=squeeze(ct_mod_coeffs(:,:,20,1)-16*ct_mod_coeffs(:,:,20,2))';
 ji15=[ji15,ji15];
 
 
@@ -417,3 +412,10 @@ xlabel('C_T trend (m°C yr^{-1})')
 
 print -depsc2 -vector fig6
 print -dpng -r300 fig6
+
+jul=datenum(1950,1,1); % julian days at 1 Jan 1950
+greg=datevec(jul+double(time)); % get gregorian days
+dyr=decyear(greg(:,1),greg(:,2),greg(:,3)); % change to decimal years
+
+file_name=[TreeSetUp.path_Fig_data,TreeSetUp.tree_model_file_name_combined_withcycle,'_fit_maps.mat'];
+save(file_name,'lon','lat','dyr','ct_mod_coeffs','ct_res_std_total','-v7.3')

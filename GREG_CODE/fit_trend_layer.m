@@ -16,7 +16,8 @@ dyr=decyear(greg(:,1),greg(:,2),greg(:,3)); % change to decimal years
 clear dd jul greg q ii
 
 mid_year=2008.5;
-
+mid_year=2009;
+mid_year=(max(dyr)+min(dyr))./2;
 [m,n,p]=size(ct);
 
 
