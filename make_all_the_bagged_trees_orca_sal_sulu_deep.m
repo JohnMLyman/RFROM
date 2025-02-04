@@ -45,7 +45,7 @@ compute_basin_coverage(TreeSetUp)
 toc./60./60
 
 'make_seasonal_cycle_tree_split_orca_vert'
-make_seasonal_cycle_tree_split_orca_vert(TreeSetUp)
+make_seasonal_cycle_tree_split_orca_vert_paige(TreeSetUp)
 toc./60./60
 
 % 'make_model_stats_yearly_seasonal_orca_vert_newcycle_sal'
