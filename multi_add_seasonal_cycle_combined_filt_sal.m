@@ -104,8 +104,8 @@ end
 %%
 nlayer=length(layer_bounds);
 
-% parfor year_load=time_ssh_load
-for year_load=time_ssh_load
+parfor year_load=time_ssh_load
+% for year_load=time_ssh_load
 
 
 
