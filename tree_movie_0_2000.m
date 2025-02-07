@@ -106,11 +106,11 @@ tree_model=tree_model_file_name_combined_withcycle;
 
 path_nc_erddap=[path_ERDDAP,'netcdf\',tree_prefix,'\',subdir,'\'];
 if var_type=='s'
-     file_prefix='RFROMv21_SAL_';
+     file_prefix='RFROMv22_SAL_';
 elseif var_type=='t'
-     file_prefix='RFROMV21_TEMP_';
+     file_prefix='RFROMV22_TEMP_';
 elseif var_type=='h'
-     file_prefix='RFROMV21_OHC_';
+     file_prefix='RFROMV22_OHC_';
 end
 %%
 

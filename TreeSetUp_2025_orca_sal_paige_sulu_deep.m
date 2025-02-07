@@ -79,6 +79,7 @@ path_new_error_season=[path_error,tree_model_file_name_season,'\'];
 path_new_error_yearly=[path_error,tree_model_file_name_yearly,'\'];
 path_new_error_all_year=[path_error,tree_model_file_name_all_year,'\'];
 
+path_new_tree_combined=path_new_tree_all_year;
 fname_nc_season=[file_path_hdata,var_type,'data_new_layers_',file_WOD_suf,'_',file_name_season];
 fname_nc=[file_path_hdata,var_type,'data_new_layers_',file_WOD_suf,'_',file_name_season_anom];
 
