@@ -35,7 +35,9 @@ ct_res_std=nan(m,n);
 
 
 
-parfor i1=1:m
+ parfor i1=1:m
+%     for i1=1:m
+
     for i2=1:n
 %         surf_area(:,i2)=dist([lat(i2) lat(i2)],[-0.5 0.5])*dist([lat(i2)-0.5,lat(i2)+0.5],[0 0]);
 
@@ -43,7 +45,7 @@ parfor i1=1:m
            
             ii=find(isfinite(ct_temp));
            
-            if length(ii)==p
+            if length(ii)>=.85*p
                 [mod_temp,res_temp]=fit_trend_seasonal_cycle(dyr(ii),ct_temp(ii),2,mid_year);
                 ct_mod_coeffs(i1,i2,:)=mod_temp;
                 ct_res_std(i1,i2)=std(res_temp);

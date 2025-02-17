@@ -163,8 +163,8 @@ donata_hc=donata_hc-nanmean(donata_hc(pos_donata_argo));
 
 % hc_all=[hc_one;tim_hc;simon_hc;catia_hc;ishii_hc;cheng_hc];
 hc_all=[hc_one(1);tim_hc(1);simon_hc(1);catia_hc(1);ishii_hc(1);cheng_hc(1)];
-hc_all=[hc_one(1);tim_hc(1);simon_hc(1);ishii_hc(1);cheng_hc(1);donata_hc(1);catia_hc(1)];
-
+% hc_all=[hc_one(1);tim_hc(1);simon_hc(1);ishii_hc(1);cheng_hc(1);donata_hc(1);catia_hc(1)];
+hc_all=[hc_one(1);tim_hc(1);simon_hc(1);ishii_hc(1);cheng_hc(1);donata_hc(1)];
 offset=nanmean(hc_all);
 
 
@@ -179,10 +179,10 @@ donata_hc=donata_hc-offset;
 %%     
 figure(3); clf;orient tall; wysiwyg_tuna
 
-
-pc=plot(catia_time,catia_hc,'-*','color',mycor(7,:));
-ec=errorbar(catia_time,catia_hc,catia_se,'color',mycor(7,:));set(ec,'linewidth',3);
-hold on
+% 
+% pc=plot(catia_time,catia_hc,'-*','color',mycor(7,:));
+% ec=errorbar(catia_time,catia_hc,catia_se,'color',mycor(7,:));set(ec,'linewidth',3);
+% hold on
 
 pdon=plot(donata_time,donata_hc,'-*','color',mycor(2,:));
 edon=errorbar(donata_time,donata_hc,donata_se,'color',mycor(2,:));set(edon,'linewidth',3);
@@ -205,8 +205,8 @@ hold on
 pt=plot(tim_time,tim_hc,'-*','color',mycor(3,:));
 et=errorbar(tim_time,tim_hc,tim_se,'color',mycor(3,:));set(et,'linewidth',3);
 hold on
-p2=plot(time,hc_one,'-*','color',mycor(1,:));
-e=errorbar(time,hc_one,hc_se,'color',mycor(1,:));set(e,'linewidth',3);
+p2=plot(time,hc_one,'-*','color',mycor(7,:));
+e=errorbar(time,hc_one,hc_se,'color',mycor(7,:));set(e,'linewidth',3);
 
 hold on
 ps=plot(simon_time,simon_hc,'-*','color',mycor(4,:));
@@ -259,19 +259,19 @@ plot([year_text-2 year_text-1],[text_off+text_del*3 text_off+text_del*3],'color'
 % text(year_text,text_off+text_del*5,'Nature 1993-2008','color',mycor(2,:),'FontName','Arial','FontSize',text_size)
 % plot([year_text-2 year_text-1],[text_off+text_del*5 text_off+text_del*5],'color',mycor(2,:),'linewidth',2)
 
-text(year_text,text_off+text_del*4,'PMEL/JPL/JIMAR ','color',mycor(1,:),'FontName','Arial','FontSize',text_size)
-plot([year_text-2 year_text-1],[text_off+text_del*4 text_off+text_del*4],'color',mycor(1,:),'linewidth',3)
+text(year_text,text_off+text_del*4,'PMEL/JPL/JIMAR ','color',mycor(7,:),'FontName','Arial','FontSize',text_size)
+plot([year_text-2 year_text-1],[text_off+text_del*4 text_off+text_del*4],'color',mycor(7,:),'linewidth',3)
+% 
+% text(year_text,text_off+text_del*5,'NOC/CSIRO/WHOI ','color',mycor(7,:),'FontName','Arial','FontSize',text_size)
+% plot([year_text-2 year_text-1],[text_off+text_del*5 text_off+text_del*5],'color',mycor(7,:),'linewidth',3)
 
-text(year_text,text_off+text_del*5,'NOC/CSIRO/WHOI ','color',mycor(7,:),'FontName','Arial','FontSize',text_size)
-plot([year_text-2 year_text-1],[text_off+text_del*5 text_off+text_del*5],'color',mycor(7,:),'linewidth',3)
 
 
+text(year_text,text_off+text_del*5,'JMA ','color',mycor(5,:),'FontName','Arial','FontSize',text_size)
+plot([year_text-2 year_text-1],[text_off+text_del*5 text_off+text_del*5],'color',mycor(5,:),'linewidth',3)
 
-text(year_text,text_off+text_del*6,'JMA ','color',mycor(5,:),'FontName','Arial','FontSize',text_size)
-plot([year_text-2 year_text-1],[text_off+text_del*6 text_off+text_del*6],'color',mycor(5,:),'linewidth',3)
-
-text(year_text,text_off+text_del*7,'CU/CMU','color',mycor(2,:),'FontName','Arial','FontSize',text_size)
-plot([year_text-2 year_text-1],[text_off+text_del*7 text_off+text_del*7],'color',mycor(2,:),'linewidth',3)
+text(year_text,text_off+text_del*6,'CU/CMU','color',mycor(2,:),'FontName','Arial','FontSize',text_size)
+plot([year_text-2 year_text-1],[text_off+text_del*6 text_off+text_del*6],'color',mycor(2,:),'linewidth',3)
 
 
 
@@ -287,7 +287,7 @@ off2=40;
 max_ohca=175-off2;
 min_ohca=-100-off2 ;
 
-max_ohca=260;
+max_ohca=240;
 min_ohca=-40 ;
 max_ohca_deep=120;
 min_ohca_deep=-60;
@@ -508,8 +508,8 @@ pt=plot(tim_time_deep,tim_hc_deep,'-*','color',mycor(3,:));
 et=errorbar(tim_time_deep,tim_hc_deep,tim_se_deep,'color',mycor(3,:));set(et,'linewidth',3);
 
 
-p2=plot(time_deep,hc_one_deep,'-*','color',mycor(1,:));
-e=errorbar(time_deep,hc_one_deep,hc_se_deep,'color',mycor(1,:));set(e,'linewidth',3);
+p2=plot(time_deep,hc_one_deep,'-*','color',mycor(7,:));
+e=errorbar(time_deep,hc_one_deep,hc_se_deep,'color',mycor(7,:));set(e,'linewidth',3);
 save_ascii_oco_hc_deep_2020
 % pt_2=plot(tim_time,tim_hc,'-*','color',mycor(3,:));
 % hold on
@@ -552,8 +552,8 @@ plot([year_text-2 year_text-1],[text_off+text_del*3 text_off+text_del*3],'color'
 % text(year_text,text_off+text_del*5,'Nature 1993-2008','color',mycor(2,:),'FontName','Arial','FontSize',text_size)
 % plot([year_text-2 year_text-1],[text_off+text_del*5 text_off+text_del*5],'color',mycor(2,:),'linewidth',2)
 
-text(year_text,text_off+text_del*4,'700m > z > 2000m','color',mycor(1,:),'FontName','Arial','FontSize',text_size)
-plot([year_text-2 year_text-1],[text_off+text_del*4 text_off+text_del*4],'color',mycor(1,:),'linewidth',3)
+text(year_text,text_off+text_del*4,'700m > z > 2000m','color',mycor(7,:),'FontName','Arial','FontSize',text_size)
+plot([year_text-2 year_text-1],[text_off+text_del*4 text_off+text_del*4],'color',mycor(7,:),'linewidth',3)
 
 
 text(year_text,text_off+text_del*5,'700m > z > 2000m','color',mycor(5,:),'FontName','Arial','FontSize',text_size)
@@ -569,6 +569,7 @@ plot([year_text-2 year_text-1],[text_off+text_del*7 text_off+text_del*7],'color'
 % 
   eval(['print -dpng -r600 -f3 ',path_figs,'curve_oco_new5_',num2str(year_of_oco_pub)])
     eval(['print -depsc2 -f3 ',path_figs,'curve_oco_final_new_',num2str(year_of_oco_pub)])
+    eval(['print -dpdf -f3 ',path_figs,'curve_oco_final_new_',num2str(year_of_oco_pub)])
 % 
 %       eval(['print  -dtiff -r600 -f3 ',path_figs,'curve_oco_2022'])
 %       eval(['print  -dpng -r600 -f3 ',path_figs,'curve_oco_2022'])

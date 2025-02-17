@@ -82,7 +82,7 @@ end_year_trans=TreeSetUp.end_year_trans;
 
 OUTOUT_type=TreeSetUp.OUTOUT_type;%%
 
-movie_name=['ohca_0_2000_v21_',num2str(floor(end_year)),'.mp4'];
+movie_name=['ohca_0_2000_v22_',num2str(floor(end_year)),'.mp4'];
 
 v=VideoWriter([path_Figs,movie_name],'MPEG-4');
 v.FrameRate=2;
