@@ -12,7 +12,7 @@ depth_range_name=[num2str(min_depth),'_',num2str(max_depth)];
 curve_name=['curve_',tree_prefix,'_',depth_range_name,'_ohca_nomean_',OUTOUT_type,'.mat'];
 file_new=[path_Fig_data,curve_name];
 
-file_txt=[path_Fig_data,'RFROMv21_OHU_',num2str(end_year.*10),'.txt'];
+file_txt=[path_Fig_data,'RFROMv22_OHU_',num2str(end_year.*10),'.txt'];
 
 
 load(file_new,'tgrid','ht_curve')

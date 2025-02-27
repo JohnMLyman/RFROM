@@ -1,4 +1,4 @@
-function []=make_1x1xmonth_files_v21_paige(TreeSetUp)
+function []=make_1x1xmonth_files_v22_paige_loess(TreeSetUp)
 
 % MUST MAKE NETCDF WITH MEAN FIRST!!!!!
 

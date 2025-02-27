@@ -23,74 +23,81 @@ tic
 
 
 
-%% compute the seasonal cycle 
+% % % %% compute the seasonal cycle 
+% % % 
+% % % 'Delete Junk directory'
+% % % delete([TreeSetUp.path_tree_junk,'*.mat']);
+% % % toc./60/60
+% % % 
+% % % 'baggedtree_all_year_orca_sal_novert_season_paige'
+% % %  baggedtree_all_year_orca_sal_novert_season_paige(TreeSetUp)
+% % % 
+% % % 
+% % % toc./60./60
+% % % 
+% % % 'read_ssh_matfiles_all_years_orca_novert_sal_season_paige'
+% % % read_ssh_matfiles_all_years_orca_novert_sal_season_paige(TreeSetUp)
+% % % % read_ssh_matfiles_yearly_seasonal_orca_vert_sal_newcycle(TreeSetUp)
+% % % 
+% % % toc./60./60
+% % % 
+% % % 'compute_basin_coverage'
+% % % compute_basin_coverage(TreeSetUp)
+% % % toc./60./60
+% % % 
+% % % 'make_seasonal_cycle_tree_split_orca_vert'
+% % % make_seasonal_cycle_tree_split_orca_vert_paige(TreeSetUp)
+% % % toc./60./60
+% % % 
+% % % % 'make_model_stats_yearly_seasonal_orca_vert_newcycle_sal'
+% % % % make_model_stats_yearly_seasonal_orca_vert_newcycle_sal(TreeSetUp)
+% % % % toc./60./60
+% % % %% Make the yearlly anomally tree
+% % % 
+% % % 
+% % % % % Clear out the junkdir
+% % % % 'Delete Junk directory'
+% % % % delete([path_tree_junk,'*.mat']);
+% % % % delete([path_tree_junk2,'*.mat']);
+% % % % toc./60/60
+% % % % 
+% % % % 
+% % % % 'baggedtree_yearly_overlap_seasonal_anom_orca_sal_redo'
+% % % % baggedtree_yearly_overlap_seasonal_anom_orca_sal_anomt(TreeSetUp)
+% % % % % baggedtree_yearly_overlap_seasonal_anom_orca_sal_anomt_redo(TreeSetUp)
+% % % % toc./60./60
+% % % % 
+% % % % 'read_ssh_matfiles_yearly_seasonal_anom_orca_vert_sal'
+% % % % read_ssh_matfiles_yearly_anom_orca_vert_sal_anomt(TreeSetUp)e
+% % % % toc./60./60
+% % % % 
+% % % % 'make_model_stats_yearly_seasonal_anom_orca_vert_sal'
+% % % % make_model_stats_yearly_seasonal_anom_orca_vert_sal(TreeSetUp)
+% % % % 
+% % % % toc./60./60
+% % % 
+% % % %% Make the anomaly tree for all years
+% % %                
+% % % % Clear out the junkdir
+% % % 'Delete Junk directory'
+% % % delete([TreeSetUp.path_tree_junk,'*.mat']);
+% % % delete([TreeSetUp.path_tree_junk2,'*.mat']);
+% % % toc./60/60
+% % % 
+% % % 
+% % % 'baggedtree_all_year_orca_sal_newcycle'
+% % % baggedtree_all_year_orca_sal_novert_paige(TreeSetUp)
+% % % toc./60./60
+% % % 
+% % % 'read_ssh_matfiles_all_years_orca_novert_sal_paige'
+% % % 
+% % % 
+% % % read_ssh_matfiles_all_years_orca_novert_sal_paige(TreeSetUp)
 
-'Delete Junk directory'
-delete([TreeSetUp.path_tree_junk,'*.mat']);
-toc./60/60
-
-'baggedtree_all_year_orca_sal_novert_season_paige'
- baggedtree_all_year_orca_sal_novert_season_paige(TreeSetUp)
-
-
-toc./60./60
-
-'read_ssh_matfiles_all_years_orca_novert_sal_season_paige'
-read_ssh_matfiles_all_years_orca_novert_sal_season_paige(TreeSetUp)
-% read_ssh_matfiles_yearly_seasonal_orca_vert_sal_newcycle(TreeSetUp)
-
-toc./60./60
-
-'compute_basin_coverage'
-compute_basin_coverage(TreeSetUp)
-toc./60./60
-
-'make_seasonal_cycle_tree_split_orca_vert'
-make_seasonal_cycle_tree_split_orca_vert_paige(TreeSetUp)
-toc./60./60
-
-% 'make_model_stats_yearly_seasonal_orca_vert_newcycle_sal'
-% make_model_stats_yearly_seasonal_orca_vert_newcycle_sal(TreeSetUp)
-% toc./60./60
-%% Make the yearlly anomally tree
-
-
-% % Clear out the junkdir
-% 'Delete Junk directory'
-% delete([path_tree_junk,'*.mat']);
-% delete([path_tree_junk2,'*.mat']);
-% toc./60/60
-% 
-% 
-% 'baggedtree_yearly_overlap_seasonal_anom_orca_sal_redo'
-% baggedtree_yearly_overlap_seasonal_anom_orca_sal_anomt(TreeSetUp)
-% % baggedtree_yearly_overlap_seasonal_anom_orca_sal_anomt_redo(TreeSetUp)
-% toc./60./60
-% 
-% 'read_ssh_matfiles_yearly_seasonal_anom_orca_vert_sal'
-% read_ssh_matfiles_yearly_anom_orca_vert_sal_anomt(TreeSetUp)e
-% toc./60./60
-% 
-% 'make_model_stats_yearly_seasonal_anom_orca_vert_sal'
-% make_model_stats_yearly_seasonal_anom_orca_vert_sal(TreeSetUp)
-% 
-% toc./60./60
-
-%% Make the anomaly tree for all years
-               
-% Clear out the junkdir
-'Delete Junk directory'
-delete([TreeSetUp.path_tree_junk,'*.mat']);
-delete([TreeSetUp.path_tree_junk2,'*.mat']);
-toc./60/60
-
-
-'baggedtree_all_year_orca_sal_newcycle'
-baggedtree_all_year_orca_sal_novert_paige(TreeSetUp)
-toc./60./60
-
-'read_ssh_matfiles_all_years_orca_vert_sal_newcycle'
-read_ssh_matfiles_all_years_orca_novert_sal_paige(TreeSetUp)
+'read_ssh_matfiles_all_years_orca_novert_sal_paige_stoped'
+% only used _stoped if you have erased all the files in the salinty
+% directory.  It is ment to only be used if the code fails
+read_ssh_matfiles_all_years_orca_novert_sal_paige_stoped(TreeSetUp)
 
 toc./60./60
 
