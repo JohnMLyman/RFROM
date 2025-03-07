@@ -98,6 +98,16 @@ percent_good_fit=.5;% the percent of good times you need to make fit an annual c
 ilayer_depth_use_ssh=find(layer_bounds>3000,1,'first');
 ilayer_depth_use_sst=find(layer_bounds>500,1,'first');
 
+% This insures that the ilayer_depth_use_ssh and _sst are not empty
+if isempty(ilayer_depth_use_ssh)
+    ilayer_depth_use_ssh=length(layer_bounds);
+end
+
+if isempty(ilayer_depth_use_sst)
+    ilayer_depth_use_sst=length(layer_bounds);
+end
+
+
 % these are the years of the data that are used for making the all years bagged trees
 %       it is also sets the start when all_year makes maps, and the end
 %       when yearly makes maps.  except for the transintion from allyears

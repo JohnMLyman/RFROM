@@ -1,9 +1,12 @@
-function read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_1deg(TreeSetUp)
+function read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox(TreeSetUp)
 
 % Loads Set up
 % load_TreeSetUp
 %%
-scale_box_deg=TreeSetUp.scale_box_deg;
+scale_box_deg_lat=TreeSetUp.scale_box_deg_lat;
+scale_box_eq=TreeSetUp.scale_box_eq;
+lat_change=TreeSetUp.lat_change;
+
 nbasins_use=TreeSetUp.nbasins_use;
 file_name=TreeSetUp.file_name;
 
@@ -130,7 +133,7 @@ clear lon lat
 
 
 
-[weight_a,weight_b,weight_c,weight_d]=round_floor_weight_maps_1deg(lon_tpx,lat_tpx,TreeSetUp);
+[weight_a,weight_b,weight_c,weight_d]=round_floor_weight_maps_eqbox(lon_tpx,lat_tpx,TreeSetUp);
 
 nlat_tpx=length(lat_tpx);
 nlon_tpx=length(lon_tpx);
@@ -160,6 +163,9 @@ time_ssh_load=start_year_ssh:end_year_ssh;
 
 
 
+TreePredictInfo.scale_box_deg_lat=scale_box_deg_lat;
+TreePredictInfo.scale_box_eq=scale_box_eq;
+TreePredictInfo.lat_change=lat_change;
 
 
 TreePredictInfo.start_year=start_year;
@@ -174,7 +180,7 @@ TreePredictInfo.w_atl=w_atl;
 TreePredictInfo.nbasin_use=nbasins_use;
 TreePredictInfo.path_new_tree=path_new_tree;
 TreePredictInfo.tree_model=tree_model;
-TreePredictInfo.scale_box_deg=scale_box_deg;
+TreePredictInfo.scale_box_deg=scale_box_deg_lat;
 
 if ~exist(path_new_tree,'dir')
 
@@ -226,44 +232,44 @@ parfor year_load=time_ssh_load
             if ilayer<=ilayer_depth_use_sst
                     
                 file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name,'_',year_file_name];
-                [ht_estimate_a]=bagged_yearly_tree_temp_SSH_SST_fast_1deg(iyear_mod,...
+                [ht_estimate_a]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox(iyear_mod,...
                     time_aviso,ssh_total,sst_total,...
                     nfiles,ht_estimate_a,TreePredictInfo,file_big_model,'a') ;
 
                 file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name,'_',year_file_name];
-                [ht_estimate_b]=bagged_yearly_tree_temp_SSH_SST_fast_1deg(iyear_mod,...
+                [ht_estimate_b]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox(iyear_mod,...
                     time_aviso,ssh_total,sst_total,...
                     nfiles,ht_estimate_b,TreePredictInfo,file_big_model,'b') ;
 
                 file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name,'_',year_file_name];
-                [ht_estimate_c]=bagged_yearly_tree_temp_SSH_SST_fast_1deg(iyear_mod,...
+                [ht_estimate_c]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox(iyear_mod,...
                     time_aviso,ssh_total,sst_total,...
                     nfiles,ht_estimate_c,TreePredictInfo,file_big_model,'c') ;
 
                 file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name,'_',year_file_name];
-                [ht_estimate_d]=bagged_yearly_tree_temp_SSH_SST_fast_1deg(iyear_mod,...
+                [ht_estimate_d]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox(iyear_mod,...
                     time_aviso,ssh_total,sst_total,...
                     nfiles,ht_estimate_d,TreePredictInfo,file_big_model,'d') ;
     
             else
                 
                file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name,'_',year_file_name];
-                [ht_estimate_a]=bagged_yearly_tree_temp_SSH_fast_1deg(iyear_mod,...
+                [ht_estimate_a]=bagged_yearly_tree_temp_SSH_fast_eqbox(iyear_mod,...
                     time_aviso,ssh_total,...
                     nfiles,ht_estimate_a,TreePredictInfo,file_big_model,'a') ;
 
                 file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name,'_',year_file_name];
-                [ht_estimate_b]=bagged_yearly_tree_temp_SSH_fast_1deg(iyear_mod,...
+                [ht_estimate_b]=bagged_yearly_tree_temp_SSH_fast_eqbox(iyear_mod,...
                     time_aviso,ssh_total,...
                     nfiles,ht_estimate_b,TreePredictInfo,file_big_model,'b') ;
 
                 file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name,'_',year_file_name];
-                [ht_estimate_c]=bagged_yearly_tree_temp_SSH_fast_1deg(iyear_mod,...
+                [ht_estimate_c]=bagged_yearly_tree_temp_SSH_fast_eqbox(iyear_mod,...
                     time_aviso,ssh_total,...
                     nfiles,ht_estimate_c,TreePredictInfo,file_big_model,'c') ;
 
                 file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name,'_',year_file_name];
-                [ht_estimate_d]=bagged_yearly_tree_temp_SSH_fast_1deg(iyear_mod,...
+                [ht_estimate_d]=bagged_yearly_tree_temp_SSH_fast_eqbox(iyear_mod,...
                     time_aviso,ssh_total,...
                     nfiles,ht_estimate_d,TreePredictInfo,file_big_model,'d') ;
 

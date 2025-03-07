@@ -114,6 +114,16 @@ percent_good_fit=.5;% the percent of good times you need to make fit an annual c
 ilayer_depth_use_ssh=find(layer_bounds>1000,1,'first');
 ilayer_depth_use_sst=find(layer_bounds>100,1,'first');
 
+% This insures that the ilayer_depth_use_ssh and _sst are not empty
+if isempty(ilayer_depth_use_ssh)
+    ilayer_depth_use_ssh=length(layer_bounds);
+end
+
+if isempty(ilayer_depth_use_sst)
+    ilayer_depth_use_sst=length(layer_bounds);
+end
+
+
 start_year=1993.5;
 end_year=2024;
 

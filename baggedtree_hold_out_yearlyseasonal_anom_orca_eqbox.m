@@ -1,6 +1,10 @@
-function []=baggedtree_hold_out_yearlyseasonal_anom_orca_1deg(TreeSetUp)
+function []=baggedtree_hold_out_yearlyseasonal_anom_orca_eqbox(TreeSetUp)
 
 % Loads Set up
+
+scale_box_deg_lat=TreeSetUp.scale_box_deg_lat;
+scale_box_eq=TreeSetUp.scale_box_eq;
+lat_change=TreeSetUp.lat_change;
 
 nbasins_use=TreeSetUp.nbasins_use;
 file_name=TreeSetUp.file_name;
@@ -176,37 +180,45 @@ parfor ilayer=2:nlayer
 
         if ilayer<=ilayer_depth_use_sst
             good_prof=isfinite(ht_use)&isfinite(sst)&isfinite(tpx);
-            [model_all]=make_trees_mean_1deg(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'a');
+            [model_all]=make_trees_mean_eqbox(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'a',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name,'_',year_file_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_1deg(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'b');
+            [model_all]=make_trees_mean_eqbox(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'b',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name,'_',year_file_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_1deg(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'c');
+            [model_all]=make_trees_mean_eqbox(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'c',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name,'_',year_file_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_1deg(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'d');
+            [model_all]=make_trees_mean_eqbox(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'d',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name,'_',year_file_name];
             parsave_model_all(file_big_model,model_all)
 
         else
             good_prof=isfinite(ht_use)&isfinite(tpx);
-            [model_all]=make_trees_mean_nosst_1deg(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'a');
+            [model_all]=make_trees_mean_nosst_eqbox(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'a',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name,'_',year_file_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_nosst_1deg(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'b');
+            [model_all]=make_trees_mean_nosst_eqbox(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'b',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name,'_',year_file_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_nosst(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'c');
+            [model_all]=make_trees_mean_nosst_eqbox(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'c',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name,'_',year_file_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_nosst(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'d');
+            [model_all]=make_trees_mean_nosst_eqbox(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'d',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name,'_',year_file_name];
             parsave_model_all(file_big_model,model_all)
        

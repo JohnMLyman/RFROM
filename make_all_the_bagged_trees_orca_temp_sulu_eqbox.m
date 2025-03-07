@@ -18,7 +18,7 @@
 % 
 % [TreeSetUp]=TreeSetUp_2024_orca_temp_press_novert_paige_sulu;
 
-[TreeSetUp]=TreeSetUp_2025_orca_temp_press_novert_paige_sulu_1deg;
+[TreeSetUp]=TreeSetUp_2025_orca_temp_press_novert_paige_sulu_eqbox;
 tic
 
 
@@ -74,8 +74,8 @@ tic
 % % % 'make_model_stats_all_years_orca_vert_nosshsst'
 % % % make_model_stats_all_years_orca_vert_nosshsst_fast(TreeSetUp)
 % % % toc./60./60
-% % 
-% % %% Make the yearlly anomally tree
+% % % % % 
+% % % % Make the yearlly anomally tree
 % % % 
 % % % 
 % % % % Clear out the junkdir
@@ -85,11 +85,11 @@ tic
 % % % 
 % % % 
 % % % 'baggedtree_hold_out_yearlyseasonal_anom_orca_novert'
-% % % baggedtree_hold_out_yearlyseasonal_anom_orca_1deg(TreeSetUp)
+% % % baggedtree_hold_out_yearlyseasonal_anom_orca_eqbox(TreeSetUp)
 % % % toc./60./60
 
-'read_ssh_matfiles_yearly_seasonal_anom_orca_novert'
-read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_1deg(TreeSetUp)
+'read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox'
+read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox(TreeSetUp)
 toc./60./60
 
 % 'make_model_stats_yearly_seasonal_anom_orca_vert_nosshsst'
