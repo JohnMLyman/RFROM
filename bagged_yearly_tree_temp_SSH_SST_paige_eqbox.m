@@ -1,12 +1,11 @@
-function [ht_estimate]=bagged_yearly_tree_temp_SSH_fast_eqbox(iyear_mod,...
-                time_aviso,ssh_total,...
+function [ht_estimate]=bagged_yearly_tree_temp_SSH_SST_paige_eqbox(iyear_mod,...
+                time_aviso,ssh_total,sst_total,...
                 nfiles,ht_estimate,TreePredictInfo,file_big_model_short,large_scale,tree_type) 
-
-
 
 scale_box_deg_lat=TreePredictInfo.scale_box_deg_lat;
 scale_box_eq=TreePredictInfo.scale_box_eq;
 lat_change=TreePredictInfo.lat_change;
+
 
 start_year=TreePredictInfo.start_year;
 end_year=TreePredictInfo.end_year;
@@ -35,7 +34,7 @@ yr_av=time_aviso;
 pos_2d_atl_ind=global_basins_aviso(5).pos & global_basins_aviso(1).pos;
 pos_2d_pac_atl=global_basins_aviso(5).pos & global_basins_aviso(2).pos;
 
- 
+%% Section changed for speed up also change file_big_model to file_big_model_short out
 % year_file_name=num2str(10*iyear_mod);
 % file_big_model=[path_new_tree,tree_model,'_model_',layer_name,'_',year_file_name,'_split.mat'];
 
@@ -46,10 +45,11 @@ pos_2d_pac_atl=global_basins_aviso(5).pos & global_basins_aviso(2).pos;
 for ibasin=1:max(nbasins_use)
  
 %  if ibasin<= n_mod_basin
-      filename=[file_big_model_short,'basin_',num2str(ibasin),'.mat'];
+     filename=[file_big_model_short,'basin_',num2str(ibasin),'.mat'];
  if exist(filename,'file')
      load(filename,'ModelTree')
      M=ModelTree.model;
+%%
      if ~isempty(M)
 
         pos_2d=global_basins_aviso(ibasin).pos;
@@ -57,7 +57,7 @@ for ibasin=1:max(nbasins_use)
         
         npos_2d=length(find(pos_2d(:)));
         pos_3d=repmat(pos_2d,1,1,nfiles);
-
+        jsst=double(sst_total(pos_3d));
         jssh=double(ssh_total(pos_3d));
     
         jyr=repmat(yr_av,npos_2d,1);
@@ -131,20 +131,20 @@ for ibasin=1:max(nbasins_use)
     
              
             good_yr=(jyr>=iyear_mod-.5 & jyr< iyear_mod+.5);
-            good=isfinite(jyr) &isfinite(jssh)&good_yr;
+            good=isfinite(jyr) & isfinite(jsst)&isfinite(jssh)&good_yr;
             pos_use=find(pos_3d);
             pos_3d_use=pos_3d;
             pos_3d_use(pos_use(~good))=0;
             jyr_yearly=jyr(good);
         
-            input_mat=nans(length(jyr_yearly),4);
+            input_mat=nans(length(jyr_yearly),7);
             input_mat(:,1)=jyr_yearly;
             if ibasin==2
                % use lon 0 to 360 for the pacific basin
                jj_lon=jlon(good);
                jj_lon(jj_lon<0)=jj_lon(jj_lon<0)+360;
               switch large_scale
-                  case 'a'
+                   case 'a'
                        input_mat(:,3)=scale_box_deg_lat.*floor(jlat(good)./scale_box_deg_lat);
                        %compute the longitudnal scale
                        A=scale_box_deg_lat.*abs(sind(lat_change)./(cosd(lat_change).*sind(input_mat(:,3))));
@@ -186,10 +186,11 @@ for ibasin=1:max(nbasins_use)
                       
                    case 'none'
                        input_mat(:,2)=jj_lon;
-                       input_mat(:,3)=jj_lat(good);
+                       input_mat(:,3)=jlat(good);
                    otherwise
                        'error: wrong type of smoothing'
                end
+
           
            else
                switch large_scale
@@ -241,10 +242,13 @@ for ibasin=1:max(nbasins_use)
                    otherwise
                        'error: wrong type of smoothing'
                end
-           end
-            
-            input_mat(:,4)=jssh(good);
 
+           end
+            month_angle=(jyr_yearly-floor(jyr_yearly)).*2*pi;
+            input_mat(:,4)=jssh(good);
+            input_mat(:,5)=jsst(good);
+            input_mat(:,6)=cos(month_angle);
+            input_mat(:,7)=sin(month_angle);
             jw_use=jw(good);
 
             % now weight for the yearly overlap

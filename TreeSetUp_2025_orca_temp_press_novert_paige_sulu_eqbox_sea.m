@@ -1,4 +1,4 @@
-function [TreeSetUp]=TreeSetUp_2025_orca_temp_press_novert_paige_sulu_eqbox
+function [TreeSetUp]=TreeSetUp_2025_orca_temp_press_novert_paige_sulu_eqbox_sea
 
 
 % this sets up the structure of the boxes used for maps a,b,c,and d.
@@ -39,7 +39,7 @@ var_type='t';
 tree_prefix='tree_temp_novert';
 
 % tree_prefix='tree_temp_vert_nosshsst';
-path_ERDDAP='N:\erddap_filt\temp_novert_sulu_2025_eqbox';
+path_ERDDAP='N:\erddap_filt\temp_novert_sulu_2025_eqbox_sea';
 
 tree_model_file_name_season=[tree_prefix,'_yearly_overlap_seasonal'];
 tree_model_file_name_yearly=[tree_model_file_name_season,'_anom'];
@@ -162,7 +162,11 @@ end_all_year=start_year_trans+diff_trans+.5;
 
 %% load vars into TreeSetUp
 
-TreeSetUp.scale_box_deg=scale_box_deg;
+
+TreeSetUp.scale_box_deg_lat=scale_box_deg_lat;
+TreeSetUp.scale_box_eq=scale_box_eq;
+TreeSetUp.lat_change=lat_change;
+
 TreeSetUp.nbasins_use=nbasins_use;
 TreeSetUp.nbasins_use_extra_all_years=nbasins_use_extra_all_years;
 
