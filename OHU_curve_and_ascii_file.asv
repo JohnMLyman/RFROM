@@ -49,7 +49,7 @@ fac_year=1./(sec_in_day*area_of_earth.*ndays);
 
 tgrid_12mon=[(1993.5-1/24):1./12.:end_year-1/24];
 ht_12mon=nans(1,length(tgrid_12mon));
-% ht_12mon_nofilt=nans(1,length(tgrid_12mon));
+ht_12mon_nofilt=nans(1,length(tgrid_12mon));
 for iyear=tgrid_12mon
 
     good=tgrid>=iyear-.5 & tgrid<=iyear+.5;
@@ -57,12 +57,11 @@ for iyear=tgrid_12mon
     
 
     ht_12mon(tgrid_12mon==iyear)=mean(ht_all_no_cycle(good),'omitnan');
-%     ht_12mon_nofilt(tgrid_12mon==iyear)=mean(ht_tree_all(good),'omitnan');
+    ht_12mon_nofilt(tgrid_12mon==iyear)=mean(ht_all_no_cycle(good),'omitnan');
 end
 
 
 rate_12mon=-1.*(ht_12mon(1:end-12)-ht_12mon(13:end)).*fac_year;
-% rate_12mon_nofilt=-1.*(ht_12mon_nofilt(1:end-12)-ht_12mon_nofilt(13:end)).*fac_year;
 
 tgrid_rate_12mon=(tgrid_12mon(1:end-12)+tgrid_12mon(13:end))./2;
 

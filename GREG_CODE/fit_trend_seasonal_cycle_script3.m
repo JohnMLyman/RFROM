@@ -1,7 +1,7 @@
 clear
 close all
-TreeSetUp=TreeSetUp_2024_orca_temp_press_novert_paige_sulu;
-% ilayer=1;
+TreeSetUp=TreeSetUp_2025_orca_temp_press_novert_paige_sulu_eqbox_sea;
+ilayer=1;
 [lon,lat,~,tim,~]=load_netcdf_temp_depth(ilayer,TreeSetUp);
 
 

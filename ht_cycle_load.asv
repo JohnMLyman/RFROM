@@ -1,7 +1,6 @@
-function [lon_tpx,lat_tpx,time_aviso,depth,ht_cycle_all,ht_mean_all]=ht_cycle_load(TreeSetUp,path_junk,tree_model_junk)
+function [lon_tpx,lat_tpx,time_aviso,depth,ht_cycle_all,ht_mean_all]=ht_cycle_load(TreeSetUp,path_junk)
 
-% path_junk is obtional
-% tree_model_junk is obtional
+% path_junk is an obtional 
 
 tree_model_file_name_season=TreeSetUp.tree_model_file_name_season;
 
@@ -21,11 +20,6 @@ depth=.5*(layer_bounds(1:end-1)+layer_bounds(2:end));
 tree_model=tree_model_file_name_combined;
 path_new_tree=path_new_tree_combined;
 center_year=TreeSetUp.center_year;
-
-
-if exist("tree_model_junk",'var')
-   tree_model_file_name_season=tree_model_junk;
-end
 
 ilayer=2;
 year_load=2010;

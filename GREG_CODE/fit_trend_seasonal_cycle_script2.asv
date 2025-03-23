@@ -1,7 +1,7 @@
 % clear
 % close all
-temp_file='N:\erddap_filt\temp_novert_sulu_2025_1degnetcdf_1x1\tree_temp_novert\yearly_withcycle\RFROM_TEMP_1x1xmonth_v22_paige.nc';
-temp_file='N:\erddap_filt\temp_novert_sulu_2025_eqboxnetcdf_1x1\tree_temp_novert\yearly_withcycle\RFROM_TEMP_1x1xmonth_v22_paige.nc';
+temp_file='N:\erddap_filt\temp_novert_2024netcdf_loess_stable_1x1\tree_temp_novert\yearly_withcycle\RFROM_TEMP_1x1xmonth_v21_paige.nc';
+
 % temp_file='N:\erddap_filt\temp_novert_sulu_2025_eqbox_seanetcdf_1x1\tree_temp_novert\yearly_withcycle\RFROM_TEMP_1x1xmonth_v22_paige.nc';
 % temp_file='G:\H_error_netcdf_drive\erddap_filt\temp_novert_2023netcdf_loess_stable_1x1\tree_temp_novert\yearly_withcycle\RFROM_TEMP_1x1xmonth_v21.nc';
 % temp_file='G:\H_error_netcdf_drive\erddap_filt\temp_vert_2023netcdf_loess_stable_1x1\tree_temp_vert_nosshsst_newcycle\yearly_withcycle\RFROM_TEMP_1x1xmonth_v2.nc';
@@ -14,11 +14,11 @@ path_nino='C:\Users\jlyma\OneDrive\Documents\MATLAB\RFROM\GREG_CODE\';
 
 % ee=dir('/Users/gjohnson/RFROM/Salinity/RFROM_SAL_STABLE_1x1xmonth.nc');
 
-lat3=double(ncread(temp_file,'latitude'));
-lon3=double(ncread(temp_file,'longitude'));
-prs3=double(ncread(temp_file,'mean_pressure'));
-tim3=double(ncread(temp_file,'time'));
-ct3=double(ncread(temp_file,'ocean_temperature'));
+lat2=double(ncread(temp_file,'latitude'));
+lon=double(ncread(temp_file,'longitude'));
+prs=double(ncread(temp_file,'mean_pressure'));
+tim=double(ncread(temp_file,'time'));
+ct=double(ncread(temp_file,'ocean_temperature'));
 % sa=double(ncread(['/Users/gjohnson/RFROM/Salinity/',ee(1).name],'ocean_salinity'));
 
 % KLUDGE FOR v21_paige

@@ -1,4 +1,4 @@
-function OHU_curve_and_ascii_file(TreeSetUp,min_depth,max_depth)
+function OHU_curve_and_ascii_file_3mon(TreeSetUp,min_depth,max_depth)
 % TreeSetUp=TreeSetUp_2024_orca_heat_novert_test_mid;
 
 end_year=TreeSetUp.end_year;
@@ -52,7 +52,7 @@ ht_12mon=nans(1,length(tgrid_12mon));
 % ht_12mon_nofilt=nans(1,length(tgrid_12mon));
 for iyear=tgrid_12mon
 
-    good=tgrid>=iyear-.5 & tgrid<=iyear+.5;
+    good=tgrid>=iyear-(1.5/12) & tgrid<=iyear+(1.5/12);
   
     
 
