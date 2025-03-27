@@ -1,6 +1,7 @@
-function [ht_estimate]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox(iyear_mod,...
-                time_aviso,ssh_total,sst_total,...
+function [ht_estimate]=bagged_yearly_tree_temp_SSH_fast_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,...
                 nfiles,ht_estimate,TreePredictInfo,file_big_model_short,large_scale,tree_type) 
+
 
 
 scale_box_deg_lat=TreePredictInfo.scale_box_deg_lat;
@@ -30,7 +31,7 @@ end
 
 yr_av=time_aviso;
 
-pos_2d_pac_ind=global_basins_aviso(2).pos & global_basins_aviso(1).pos;
+ pos_2d_pac_ind=global_basins_aviso(2).pos & global_basins_aviso(1).pos;
 pos_2d_atl_ind=global_basins_aviso(5).pos & global_basins_aviso(1).pos;
 pos_2d_pac_atl=global_basins_aviso(5).pos & global_basins_aviso(2).pos;
 
@@ -38,7 +39,7 @@ pos_2d_pac_atl=global_basins_aviso(5).pos & global_basins_aviso(2).pos;
 % year_file_name=num2str(10*iyear_mod);
 % file_big_model=[path_new_tree,tree_model,'_model_',layer_name,'_',year_file_name,'_split.mat'];
 
-
+% 
 % load(file_big_model,'model_all')
 % n_mod_basin=length(model_all);
 
@@ -49,8 +50,6 @@ for ibasin=1:max(nbasins_use)
  if exist(filename,'file')
      load(filename,'ModelTree')
      M=ModelTree.model;
-     
-     
      if ~isempty(M)
 
         pos_2d=global_basins_aviso(ibasin).pos;
@@ -58,7 +57,7 @@ for ibasin=1:max(nbasins_use)
         
         npos_2d=length(find(pos_2d(:)));
         pos_3d=repmat(pos_2d,1,1,nfiles);
-        jsst=double(sst_total(pos_3d));
+
         jssh=double(ssh_total(pos_3d));
     
         jyr=repmat(yr_av,npos_2d,1);
@@ -132,20 +131,20 @@ for ibasin=1:max(nbasins_use)
     
              
             good_yr=(jyr>=iyear_mod-.5 & jyr< iyear_mod+.5);
-            good=isfinite(jyr) & isfinite(jsst)&isfinite(jssh)&good_yr;
+            good=isfinite(jyr) &isfinite(jssh)&good_yr;
             pos_use=find(pos_3d);
             pos_3d_use=pos_3d;
             pos_3d_use(pos_use(~good))=0;
             jyr_yearly=jyr(good);
         
-            input_mat=nans(length(jyr_yearly),5);
+            input_mat=nans(length(jyr_yearly),4);
             input_mat(:,1)=jyr_yearly;
-           
             input_mat=smooth_lat_lon_eqbox_read(input_mat,jlon,jlat,good,ibasin,...
                large_scale,scale_box_deg_lat,scale_box_eq,lat_change);
-   
+
+            
             input_mat(:,4)=jssh(good);
-            input_mat(:,5)=jsst(good);
+
             jw_use=jw(good);
 
             % now weight for the yearly overlap

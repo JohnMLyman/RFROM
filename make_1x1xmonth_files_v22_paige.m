@@ -273,7 +273,7 @@ function [heat,lon,lat,mean_depth,time_1950,mean_depth_bnds]=load_heat_estimate_
     lat=ncread(filename,'latitude');
     lon=ncread(filename,'longitude');
     mean_depth=ncread(filename,'mean_depth');
-    heat=ncread(filename,'ocean_heat_content_anomaly');
+    heat=ncread(filename,'ocean_heat_content_anomaly').*1e9;
     time_1950=ncread(filename,'time');
     mean_depth_bnds=ncread(filename,'mean_depth_bnds');
 end

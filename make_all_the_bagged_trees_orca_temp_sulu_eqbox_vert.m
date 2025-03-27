@@ -30,13 +30,17 @@ delete([TreeSetUp.path_tree_junk,'*.mat']);
 toc./60/60
 
 
-'baggedtree_hold_out_all_years_seasonal_orca_novert_paige'
-baggedtree_hold_out_all_years_seasonal_orca_novert_paige_eqbox(TreeSetUp)
+'baggedtree_hold_out_all_years_seasonal_orca_vert'
+% baggedtree_hold_out_all_years_seasonal_orca_novert_paige_eqbox(TreeSetUp)
+baggedtree_hold_out_all_years_seasonal_orca_vert(TreeSetUp)
+
 
 toc./60/60
 
-'read_ssh_matfiles_all_years_season_orca_novert_paige_eqbox'
-read_ssh_matfiles_all_years_season_orca_novert_paige_eqbox(TreeSetUp)
+'read_ssh_matfiles_all_years_season_orca_vert_eqbox'
+% read_ssh_matfiles_all_years_season_orca_novert_paige_eqbox(TreeSetUp)
+read_ssh_matfiles_all_years_season_orca_vert_eqbox(TreeSetUp)
+
 % 
 
 'compute_basin_coverage'
@@ -75,51 +79,51 @@ toc./60./60
 % % % 'make_model_stats_all_years_orca_vert_nosshsst'
 % % % make_model_stats_all_years_orca_vert_nosshsst_fast(TreeSetUp)
 % % % toc./60./60
-% % 
-% Make the yearlly anomally tree
-
-
-% Clear out the junkdir
-'Delete Junk directory'
-delete([TreeSetUp.path_tree_junk,'*.mat']);
-toc./60/60
-
-
-'baggedtree_hold_out_yearlyseasonal_anom_orca_novert'
-baggedtree_hold_out_yearlyseasonal_anom_orca_eqbox(TreeSetUp)
-toc./60./60
-
-'read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox'
-read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox(TreeSetUp)
-% 
-% 'read_ssh_matfiles_yearly_seasonal_anom_orca_novert_eqbox_skip'
-% read_ssh_matfiles_yearly_seasonal_anom_orca_novert_eqbox_skip(TreeSetUp)
-
-toc./60./60
-
-% 'make_model_stats_yearly_seasonal_anom_orca_vert_nosshsst'
-% make_model_stats_yearly_seasonal_anom_orca_vert_nosshsst(TreeSetUp)
-
-toc./60./60
-
-'make_combined_files'
-make_combined_files(TreeSetUp)
-toc./60./60
-
-'multi_add_seasonal_cycle'
-
-
-multi_add_seasonal_cycle_combined_filt(TreeSetUp)
-toc./60./60
-
-'multi_write_erddap_file_withcycle'
-
-multi_write_erddap_file_withcycle_v22(TreeSetUp)
-toc./60./60
-
-'make_1x1xmonth_files_v2'
-make_1x1xmonth_files_v22_paige(TreeSetUp)
-toc./60./60
+% % % % % 
+% % % % Make the yearlly anomally tree
+% % % 
+% % % 
+% % % % Clear out the junkdir
+% % % 'Delete Junk directory'
+% % % delete([TreeSetUp.path_tree_junk,'*.mat']);
+% % % toc./60/60
+% % % 
+% % % 
+% % % 'baggedtree_hold_out_yearlyseasonal_anom_orca_novert'
+% % % baggedtree_hold_out_yearlyseasonal_anom_orca_eqbox(TreeSetUp)
+% % % toc./60./60
+% % % 
+% % % 'read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox'
+% % % read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox(TreeSetUp)
+% % % % 
+% % % % 'read_ssh_matfiles_yearly_seasonal_anom_orca_novert_eqbox_skip'
+% % % % read_ssh_matfiles_yearly_seasonal_anom_orca_novert_eqbox_skip(TreeSetUp)
+% % % 
+% % % toc./60./60
+% % % 
+% % % % 'make_model_stats_yearly_seasonal_anom_orca_vert_nosshsst'
+% % % % make_model_stats_yearly_seasonal_anom_orca_vert_nosshsst(TreeSetUp)
+% % % 
+% % % toc./60./60
+% % % 
+% % % 'make_combined_files'
+% % % make_combined_files(TreeSetUp)
+% % % toc./60./60
+% % % 
+% % % 'multi_add_seasonal_cycle'
+% % % 
+% % % 
+% % % multi_add_seasonal_cycle_combined_filt(TreeSetUp)
+% % % toc./60./60
+% % % 
+% % % 'multi_write_erddap_file_withcycle'
+% % % 
+% % % multi_write_erddap_file_withcycle_v22(TreeSetUp)
+% % % toc./60./60
+% % % 
+% % % 'make_1x1xmonth_files_v2'
+% % % make_1x1xmonth_files_v22_paige(TreeSetUp)
+% % % toc./60./60
 
 
 % multi_write_erddap_file(TreeSetUp,[TreeSetUp.path_new_tree_yearly,'withcycle/'],...

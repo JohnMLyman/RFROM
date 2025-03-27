@@ -72,7 +72,6 @@ start_year=start_year;
 end_year=end_year;
 fname_nc=fname_nc_season;
 
-\
 
 
 coords=[];

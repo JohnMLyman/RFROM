@@ -1,6 +1,8 @@
-function [ht_estimate]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox(iyear_mod,...
+function [ht_estimate]=bagged_yearly_tree_temp_SSH_SST_vert_eqbox(iyear_mod,...
                 time_aviso,ssh_total,sst_total,...
-                nfiles,ht_estimate,TreePredictInfo,file_big_model_short,large_scale,tree_type) 
+                nfiles,ht_estimate,ht_estimate_old,TreePredictInfo,...
+                file_big_model_short,large_scale,tree_type) 
+
 
 
 scale_box_deg_lat=TreePredictInfo.scale_box_deg_lat;
@@ -17,6 +19,10 @@ LAT=TreePredictInfo.LAT;
 w_art=TreePredictInfo.w_art;
 w_atl=TreePredictInfo.w_atl;
 nbasins_use=TreePredictInfo.nbasin_use;
+
+
+
+
 if ~exist("large_scale",'var')
     large_scale='none';
 end
@@ -30,11 +36,11 @@ end
 
 yr_av=time_aviso;
 
-pos_2d_pac_ind=global_basins_aviso(2).pos & global_basins_aviso(1).pos;
+ pos_2d_pac_ind=global_basins_aviso(2).pos & global_basins_aviso(1).pos;
 pos_2d_atl_ind=global_basins_aviso(5).pos & global_basins_aviso(1).pos;
 pos_2d_pac_atl=global_basins_aviso(5).pos & global_basins_aviso(2).pos;
 
- 
+%  
 % year_file_name=num2str(10*iyear_mod);
 % file_big_model=[path_new_tree,tree_model,'_model_',layer_name,'_',year_file_name,'_split.mat'];
 
@@ -43,13 +49,12 @@ pos_2d_pac_atl=global_basins_aviso(5).pos & global_basins_aviso(2).pos;
 % n_mod_basin=length(model_all);
 
 for ibasin=1:max(nbasins_use)
- 
 %  if ibasin<= n_mod_basin
-      filename=[file_big_model_short,'basin_',num2str(ibasin),'.mat'];
+     filename=[file_big_model_short,'basin_',num2str(ibasin),'.mat'];    
+ 
  if exist(filename,'file')
      load(filename,'ModelTree')
      M=ModelTree.model;
-     
      
      if ~isempty(M)
 
@@ -60,6 +65,7 @@ for ibasin=1:max(nbasins_use)
         pos_3d=repmat(pos_2d,1,1,nfiles);
         jsst=double(sst_total(pos_3d));
         jssh=double(ssh_total(pos_3d));
+        jhtvert=double(ht_estimate_old(pos_3d));
     
         jyr=repmat(yr_av,npos_2d,1);
         jyr=jyr(:);
@@ -132,20 +138,23 @@ for ibasin=1:max(nbasins_use)
     
              
             good_yr=(jyr>=iyear_mod-.5 & jyr< iyear_mod+.5);
-            good=isfinite(jyr) & isfinite(jsst)&isfinite(jssh)&good_yr;
+            good=isfinite(jyr) & isfinite(jsst)&isfinite(jssh)&good_yr&isfinite(jhtvert);
             pos_use=find(pos_3d);
             pos_3d_use=pos_3d;
             pos_3d_use(pos_use(~good))=0;
             jyr_yearly=jyr(good);
         
-            input_mat=nans(length(jyr_yearly),5);
+            input_mat=nans(length(jyr_yearly),8);
             input_mat(:,1)=jyr_yearly;
-           
-            input_mat=smooth_lat_lon_eqbox_read(input_mat,jlon,jlat,good,ibasin,...
+             input_mat=smooth_lat_lon_eqbox_read(input_mat,jlon,jlat,good,ibasin,...
                large_scale,scale_box_deg_lat,scale_box_eq,lat_change);
-   
+             month_angle=(jyr_yearly-floor(jyr_yearly)).*2*pi;
             input_mat(:,4)=jssh(good);
             input_mat(:,5)=jsst(good);
+            input_mat(:,6)=jhtvert(good);
+            input_mat(:,7)=cos(month_angle);
+            input_mat(:,8)=sin(month_angle);
+            
             jw_use=jw(good);
 
             % now weight for the yearly overlap
@@ -164,6 +173,7 @@ for ibasin=1:max(nbasins_use)
             if ~strcmp(tree_type,'all')
                 jw_use=jw_use.*w_year;
             end
+
          
 
                  

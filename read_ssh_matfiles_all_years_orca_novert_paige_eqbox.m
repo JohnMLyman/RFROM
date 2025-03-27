@@ -1,4 +1,4 @@
-function read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox(TreeSetUp)
+function read_ssh_matfiles_all_years_orca_novert_paige_eqbox(TreeSetUp)
 
 % Loads Set up
 % load_TreeSetUp
@@ -6,6 +6,7 @@ function read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox(TreeSetUp
 scale_box_deg_lat=TreeSetUp.scale_box_deg_lat;
 scale_box_eq=TreeSetUp.scale_box_eq;
 lat_change=TreeSetUp.lat_change;
+
 
 nbasins_use=TreeSetUp.nbasins_use;
 file_name=TreeSetUp.file_name;
@@ -20,6 +21,8 @@ fname_nc=TreeSetUp.fname_nc;
 tree_prefix=TreeSetUp.tree_prefix;
 tree_model_file_name_season=TreeSetUp.tree_model_file_name_season;
 tree_model_file_name_yearly=TreeSetUp.tree_model_file_name_yearly;
+% tree_model_file_name_all_year_season=TreeSetUp.tree_model_file_name_all_year_season;
+
 tree_model_file_name_all_year=TreeSetUp.tree_model_file_name_all_year;
 tree_model_file_name_combined=TreeSetUp.tree_model_file_name_combined;
 % 
@@ -34,6 +37,8 @@ path_ssh=TreeSetUp.path_ssh;
 path_tree=TreeSetUp.path_tree;
 path_new_tree_season=TreeSetUp.path_new_tree_season;
 path_new_tree_yearly=TreeSetUp.path_new_tree_yearly;
+% path_new_tree_all_year_season=TreeSetUp.path_new_tree_all_year_season;
+
 path_new_tree_all_year=TreeSetUp.path_new_tree_all_year;
 
 path_tree_junk=TreeSetUp.path_tree_junk;
@@ -67,10 +72,10 @@ end_year_trans=TreeSetUp.end_year_trans;
 
 %%
 
-start_year=start_yearly_maps;
-end_year=end_yearly_maps;
-path_new_tree=path_new_tree_yearly;
-tree_model=tree_model_file_name_yearly;
+start_year=start_all_year;
+end_year=end_all_year;
+path_new_tree=path_new_tree_all_year;
+tree_model=tree_model_file_name_all_year;
 
 % set up the files sytem for reading ssh and sst
 if ~exist(path_new_tree,'dir')
@@ -83,6 +88,8 @@ s=s_allfiles;
 sday_allfiles=strjust(strvcat(s_allfiles(:).name),'right');
 sday_allfiles=str2num(sday_allfiles(:,end-8:end-4));
 diff_sday_allfiles=sday_allfiles(3)-sday_allfiles(2);
+
+
 %% NEW NCAR SECTION
 if diff_sday_allfiles==7 ||diff_sday_allfiles==5 
     sday=sday_allfiles;
@@ -122,6 +129,7 @@ end
 
 
 %%
+
 clear sday
 
 load([s(1).folder,'\',s(1).name],'lat','lon')
@@ -152,13 +160,10 @@ LAT=single(LAT);
 
 
 nlayer=length(layer_bounds);
-start_year_ssh=floor(start_year);
 
-if floor(start_year)==start_year
-    start_year_ssh=start_year-1;
-end
-end_year_ssh=floor(end_year);
-time_ssh_load=start_year_ssh:end_year_ssh;
+time_ssh_load=floor(start_year):floor(end_year);
+
+
 
 
 
@@ -180,113 +185,118 @@ TreePredictInfo.w_atl=w_atl;
 TreePredictInfo.nbasin_use=nbasins_use;
 TreePredictInfo.path_new_tree=path_new_tree;
 TreePredictInfo.tree_model=tree_model;
-TreePredictInfo.scale_box_deg=scale_box_deg_lat;
-
 if ~exist(path_new_tree,'dir')
 
     mkdir(path_new_tree)
 end
+% poolobj = gcp('nocreate');
+% delete(poolobj);
+
+% Nclusters=7;
+% myCluster=parcluster('local'); myCluster.NumWorkers=Nclusters; parpool(myCluster,Nclusters);
 
 parfor year_load=time_ssh_load
-% for year_load=time_ssh_load(end)
+% for year_load=time_ssh_load
 
 
     display(year_load)
-
-   
-    
-    %this section makes it so the you only load 2 years when you are
-    %at the start and end of the years where models were made
-    
-    if year_load == start_year-.5
-        start_year_mod = start_year;
-    elseif year_load== start_year-1
-        start_year_mod=year_load+1;
-    else
-        start_year_mod=year_load;
-    end
-    
-    if year_load == end_year-.5
-        end_year_mod=year_load+.5;
-    elseif year_load == end_year
-        end_year_mod=year_load;
-    else
-        end_year_mod=year_load+1;
-    end
-    
+    iyear_mod=year_load+.5;
+%     [ssh_total,sst_total,time_aviso,nfiles]=read_totalssh_sshanom_sstanom_year(s,syr,aviso_day,path_oisst,nlon_tpx,nlat_tpx,year_load,TreeSetUp) ;
+%         [ssh_total,sst_total,time_aviso,nfiles]=read_totalssh_totalsst_year(s,syr,aviso_day,path_oisst,nlon_tpx,nlat_tpx,year_load,TreePredictInfo);
     [ssh_total,sst_total,time_aviso,nfiles]=read_totalssh_sshanom_sstanom_year(s,syr,aviso_day,path_oisst,nlon_tpx,nlat_tpx,year_load,TreeSetUp) ;
 
-    for ilayer=2:nlayer
     
+    for ilayer=2:nlayer
+        
         layer_name=[num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer))];
         tree_file_name_out=[tree_model,'_',layer_name,'_',num2str(year_load)];
-%         [ssh_total,sst_total,time_aviso,nfiles]=read_totalssh_sshanom_sstanom_year(s,syr,aviso_day,path_oisst,nlon_tpx,nlat_tpx,year_load,TreeSetUp) ;
-        ht_estimate_a=nan(nlon_tpx,nlat_tpx,nfiles);        
-        ht_estimate_b=nan(nlon_tpx,nlat_tpx,nfiles);        
-        ht_estimate_c=nan(nlon_tpx,nlat_tpx,nfiles);       
-        ht_estimate_d=nan(nlon_tpx,nlat_tpx,nfiles);
         
-        for iyear_mod=start_year_mod:.5:end_year_mod
-            year_file_name=num2str(10*iyear_mod);
+        ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);  
 
-            if ilayer<=ilayer_depth_use_sst
-                    
-                file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name,'_',year_file_name];
-                [ht_estimate_a]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,sst_total,...
-                    nfiles,ht_estimate_a,TreePredictInfo,file_big_model,'a') ;
+%         IF THE CODE IS STOPPED AND YOU ONLY WHAT TO CONTINTU IT!!! you 
+%           remove all the old files from path_new_tree and comment
+%           the "if 1" and uncomment the 'if
+%           ~exist([path_new_tree,tree_file_name_out,'_split_7day.mat']
+%           ,'file')'
 
-                file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name,'_',year_file_name];
-                [ht_estimate_b]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,sst_total,...
-                    nfiles,ht_estimate_b,TreePredictInfo,file_big_model,'b') ;
 
-                file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name,'_',year_file_name];
-                [ht_estimate_c]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,sst_total,...
-                    nfiles,ht_estimate_c,TreePredictInfo,file_big_model,'c') ;
-
-                file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name,'_',year_file_name];
-                [ht_estimate_d]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,sst_total,...
-                    nfiles,ht_estimate_d,TreePredictInfo,file_big_model,'d') ;
-    
-            else
+%         if ~exist([path_new_tree,tree_file_name_out,'_split_7day.mat'] ,'file')
+        if 1
+%             display(tree_file_name_out)
+  
+        if ilayer<=ilayer_depth_use_sst
                 
-               file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name,'_',year_file_name];
-                [ht_estimate_a]=bagged_yearly_tree_temp_SSH_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,...
-                    nfiles,ht_estimate_a,TreePredictInfo,file_big_model,'a') ;
+             file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_SST_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,sst_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'a','all') ;
+            ht_estimate=ht_estimate_m.*weight_a;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
 
-                file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name,'_',year_file_name];
-                [ht_estimate_b]=bagged_yearly_tree_temp_SSH_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,...
-                    nfiles,ht_estimate_b,TreePredictInfo,file_big_model,'b') ;
 
-                file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name,'_',year_file_name];
-                [ht_estimate_c]=bagged_yearly_tree_temp_SSH_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,...
-                    nfiles,ht_estimate_c,TreePredictInfo,file_big_model,'c') ;
+            file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_SST_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,sst_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'b','all') ;
+            ht_estimate=ht_estimate_m.*weight_b+ht_estimate;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
 
-                file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name,'_',year_file_name];
-                [ht_estimate_d]=bagged_yearly_tree_temp_SSH_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,...
-                    nfiles,ht_estimate_d,TreePredictInfo,file_big_model,'d') ;
+            file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_SST_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,sst_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'c','all') ;
+            ht_estimate=ht_estimate_m.*weight_c+ht_estimate;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
 
-           
-     
-           
-     
-            end
+            file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_SST_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,sst_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'d','all') ;
+            ht_estimate=ht_estimate_m.*weight_d+ht_estimate;
+            
+            
+
+        else
+            
+           file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'a','all') ;
+            ht_estimate=ht_estimate_m.*weight_a;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
+
+
+            file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'b','all') ;
+            ht_estimate=ht_estimate_m.*weight_b+ht_estimate;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
+
+            file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'c','all') ;
+            ht_estimate=ht_estimate_m.*weight_c+ht_estimate;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
+
+            file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'d','all') ;
+            ht_estimate=ht_estimate_m.*weight_d+ht_estimate;
+        
         end
+        
 
-        ht_estimate=ht_estimate_a.*weight_a+ht_estimate_b.*weight_b+ht_estimate_c.*weight_c+ht_estimate_d.*weight_d;
+%         ht_estimate=ht_estimate_a.*weight_a+ht_estimate_b.*weight_b+ht_estimate_c.*weight_c+ht_estimate_d.*weight_d;
        
         parsave_tree_year([path_new_tree,tree_file_name_out,'_split_7day.mat'] ,ht_estimate,lon_tpx, lat_tpx,time_aviso)
+        end
         
     end
-
 end
+
 
 
 
@@ -296,7 +306,8 @@ end
 function parsave_tree_year(filename,ht_estimate_year,lon_tpx, lat_tpx,time_aviso)
          ht_estimate_year=single(ht_estimate_year);
 
-         save (filename,'ht_estimate_year','lon_tpx', 'lat_tpx','time_aviso','-v7')
+%          save (filename,'ht_estimate_year','lon_tpx', 'lat_tpx','time_aviso','-v7.3')
+          save (filename,'ht_estimate_year','lon_tpx', 'lat_tpx','time_aviso','-v7')
 
 end
 

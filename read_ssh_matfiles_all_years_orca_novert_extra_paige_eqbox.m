@@ -1,4 +1,4 @@
-function read_ssh_matfiles_yearly_seasonal_anom_orca_novert_fast_eqbox(TreeSetUp)
+function read_ssh_matfiles_all_years_orca_novert_extra_paige_eqbox(TreeSetUp)
 
 % Loads Set up
 % load_TreeSetUp
@@ -8,6 +8,8 @@ scale_box_eq=TreeSetUp.scale_box_eq;
 lat_change=TreeSetUp.lat_change;
 
 nbasins_use=TreeSetUp.nbasins_use;
+nbasins_use_extra_all_years=TreeSetUp.nbasins_use_extra_all_years;
+
 file_name=TreeSetUp.file_name;
 
 file_name_season=TreeSetUp.file_name_season;
@@ -67,15 +69,12 @@ end_year_trans=TreeSetUp.end_year_trans;
 
 %%
 
-start_year=start_yearly_maps;
-end_year=end_yearly_maps;
-path_new_tree=path_new_tree_yearly;
-tree_model=tree_model_file_name_yearly;
-
+start_year=end_all_year;
+end_year=end_year;
+path_new_tree=path_new_tree_all_year;
+tree_model=tree_model_file_name_all_year;
+nbasins_use=nbasins_use_extra_all_years;
 % set up the files sytem for reading ssh and sst
-if ~exist(path_new_tree,'dir')
-    mkdir(path_new_tree)
-end
 
 s_allfiles=dir([path_ssh,'matlab_files\new_ssh*.mat']);
 s=s_allfiles;
@@ -83,6 +82,7 @@ s=s_allfiles;
 sday_allfiles=strjust(strvcat(s_allfiles(:).name),'right');
 sday_allfiles=str2num(sday_allfiles(:,end-8:end-4));
 diff_sday_allfiles=sday_allfiles(3)-sday_allfiles(2);
+
 %% NEW NCAR SECTION
 if diff_sday_allfiles==7 ||diff_sday_allfiles==5 
     sday=sday_allfiles;
@@ -122,6 +122,7 @@ end
 
 
 %%
+
 clear sday
 
 load([s(1).folder,'\',s(1).name],'lat','lon')
@@ -152,20 +153,16 @@ LAT=single(LAT);
 
 
 nlayer=length(layer_bounds);
-start_year_ssh=floor(start_year);
 
-if floor(start_year)==start_year
-    start_year_ssh=start_year-1;
-end
-end_year_ssh=floor(end_year);
-time_ssh_load=start_year_ssh:end_year_ssh;
-
+time_ssh_load=floor(start_year):floor(end_year);
 
 
 
 TreePredictInfo.scale_box_deg_lat=scale_box_deg_lat;
 TreePredictInfo.scale_box_eq=scale_box_eq;
 TreePredictInfo.lat_change=lat_change;
+
+
 
 
 TreePredictInfo.start_year=start_year;
@@ -180,113 +177,100 @@ TreePredictInfo.w_atl=w_atl;
 TreePredictInfo.nbasin_use=nbasins_use;
 TreePredictInfo.path_new_tree=path_new_tree;
 TreePredictInfo.tree_model=tree_model;
-TreePredictInfo.scale_box_deg=scale_box_deg_lat;
-
 if ~exist(path_new_tree,'dir')
 
     mkdir(path_new_tree)
 end
 
 parfor year_load=time_ssh_load
-% for year_load=time_ssh_load(end)
-
 
     display(year_load)
-
-   
-    
-    %this section makes it so the you only load 2 years when you are
-    %at the start and end of the years where models were made
-    
-    if year_load == start_year-.5
-        start_year_mod = start_year;
-    elseif year_load== start_year-1
-        start_year_mod=year_load+1;
-    else
-        start_year_mod=year_load;
-    end
-    
-    if year_load == end_year-.5
-        end_year_mod=year_load+.5;
-    elseif year_load == end_year
-        end_year_mod=year_load;
-    else
-        end_year_mod=year_load+1;
-    end
-    
+    iyear_mod=year_load+.5;
     [ssh_total,sst_total,time_aviso,nfiles]=read_totalssh_sshanom_sstanom_year(s,syr,aviso_day,path_oisst,nlon_tpx,nlat_tpx,year_load,TreeSetUp) ;
 
+    
+    
     for ilayer=2:nlayer
     
         layer_name=[num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer))];
         tree_file_name_out=[tree_model,'_',layer_name,'_',num2str(year_load)];
-%         [ssh_total,sst_total,time_aviso,nfiles]=read_totalssh_sshanom_sstanom_year(s,syr,aviso_day,path_oisst,nlon_tpx,nlat_tpx,year_load,TreeSetUp) ;
-        ht_estimate_a=nan(nlon_tpx,nlat_tpx,nfiles);        
-        ht_estimate_b=nan(nlon_tpx,nlat_tpx,nfiles);        
-        ht_estimate_c=nan(nlon_tpx,nlat_tpx,nfiles);       
-        ht_estimate_d=nan(nlon_tpx,nlat_tpx,nfiles);
         
-        for iyear_mod=start_year_mod:.5:end_year_mod
-            year_file_name=num2str(10*iyear_mod);
-
-            if ilayer<=ilayer_depth_use_sst
-                    
-                file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name,'_',year_file_name];
-                [ht_estimate_a]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,sst_total,...
-                    nfiles,ht_estimate_a,TreePredictInfo,file_big_model,'a') ;
-
-                file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name,'_',year_file_name];
-                [ht_estimate_b]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,sst_total,...
-                    nfiles,ht_estimate_b,TreePredictInfo,file_big_model,'b') ;
-
-                file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name,'_',year_file_name];
-                [ht_estimate_c]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,sst_total,...
-                    nfiles,ht_estimate_c,TreePredictInfo,file_big_model,'c') ;
-
-                file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name,'_',year_file_name];
-                [ht_estimate_d]=bagged_yearly_tree_temp_SSH_SST_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,sst_total,...
-                    nfiles,ht_estimate_d,TreePredictInfo,file_big_model,'d') ;
-    
-            else
+        ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);        
+  
+        if ilayer<=ilayer_depth_use_sst
                 
-               file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name,'_',year_file_name];
-                [ht_estimate_a]=bagged_yearly_tree_temp_SSH_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,...
-                    nfiles,ht_estimate_a,TreePredictInfo,file_big_model,'a') ;
+              file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_SST_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,sst_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'a','all') ;
+            ht_estimate=ht_estimate_m.*weight_a;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
 
-                file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name,'_',year_file_name];
-                [ht_estimate_b]=bagged_yearly_tree_temp_SSH_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,...
-                    nfiles,ht_estimate_b,TreePredictInfo,file_big_model,'b') ;
 
-                file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name,'_',year_file_name];
-                [ht_estimate_c]=bagged_yearly_tree_temp_SSH_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,...
-                    nfiles,ht_estimate_c,TreePredictInfo,file_big_model,'c') ;
+            file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_SST_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,sst_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'b','all') ;
+            ht_estimate=ht_estimate_m.*weight_b+ht_estimate;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
 
-                file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name,'_',year_file_name];
-                [ht_estimate_d]=bagged_yearly_tree_temp_SSH_fast_eqbox_test(iyear_mod,...
-                    time_aviso,ssh_total,...
-                    nfiles,ht_estimate_d,TreePredictInfo,file_big_model,'d') ;
+            file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_SST_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,sst_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'c','all') ;
+            ht_estimate=ht_estimate_m.*weight_c+ht_estimate;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
 
-           
-     
-           
-     
-            end
-        end
+            file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_SST_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,sst_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'d','all') ;
+            ht_estimate=ht_estimate_m.*weight_d+ht_estimate;
+            
 
-        ht_estimate=ht_estimate_a.*weight_a+ht_estimate_b.*weight_b+ht_estimate_c.*weight_c+ht_estimate_d.*weight_d;
+        else
+            
+            file_big_model=[path_tree_junk,tree_model,'_model_a_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'a','all') ;
+            ht_estimate=ht_estimate_m.*weight_a;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
+
+
+            file_big_model=[path_tree_junk,tree_model,'_model_b_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'b','all') ;
+            ht_estimate=ht_estimate_m.*weight_b+ht_estimate;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
+
+            file_big_model=[path_tree_junk,tree_model,'_model_c_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'c','all') ;
+            ht_estimate=ht_estimate_m.*weight_c+ht_estimate;
+            ht_estimate_m=nan(nlon_tpx,nlat_tpx,nfiles);
+
+            file_big_model=[path_tree_junk,tree_model,'_model_d_',layer_name];
+            [ht_estimate_m]=bagged_yearly_tree_temp_SSH_paige_eqbox_test(iyear_mod,...
+                time_aviso,ssh_total,...
+                nfiles,ht_estimate_m,TreePredictInfo,file_big_model,'d','all') ;
+            ht_estimate=ht_estimate_m.*weight_d+ht_estimate;
+        
        
-        parsave_tree_year([path_new_tree,tree_file_name_out,'_split_7day.mat'] ,ht_estimate,lon_tpx, lat_tpx,time_aviso)
+ 
+        end
+        
+
+%         ht_estimate=ht_estimate_a.*weight_a+ht_estimate_b.*weight_b+ht_estimate_c.*weight_c+ht_estimate_d.*weight_d;
+       
+        parsave_tree_year([path_new_tree,tree_file_name_out,'_extra_split_7day.mat'] ,ht_estimate,lon_tpx, lat_tpx,time_aviso)
+     
         
     end
-
 end
+
 
 
 

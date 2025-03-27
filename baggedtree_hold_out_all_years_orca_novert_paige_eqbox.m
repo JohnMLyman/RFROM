@@ -1,6 +1,7 @@
-function []=baggedtree_hold_out_all_years_seasonal_orca_vert(TreeSetUp)
+function []=baggedtree_hold_out_all_years_orca_novert_paige_eqbox(TreeSetUp)
 
 % Loads Set up
+
 scale_box_deg_lat=TreeSetUp.scale_box_deg_lat;
 scale_box_eq=TreeSetUp.scale_box_eq;
 lat_change=TreeSetUp.lat_change;
@@ -22,6 +23,7 @@ tree_prefix=TreeSetUp.tree_prefix;
 tree_model_file_name_season=TreeSetUp.tree_model_file_name_season;
 tree_model_file_name_yearly=TreeSetUp.tree_model_file_name_yearly;
 tree_model_file_name_all_year=TreeSetUp.tree_model_file_name_all_year;
+% tree_model_file_name_all_year_season=TreeSetUp.tree_model_file_name_all_year_season;
 tree_model_file_name_combined=TreeSetUp.tree_model_file_name_combined;
 % 
 % file_name_season=[file_name,'_seasonal'];
@@ -64,12 +66,11 @@ start_year_trans=TreeSetUp.start_year_trans;
 end_year_trans=TreeSetUp.end_year_trans;
 %%
 
-tree_model_file_name=tree_model_file_name_season;
+tree_model_file_name=tree_model_file_name_all_year;
 path_new_tree=path_tree_junk;
 start_year=start_year;
 end_year=end_year;
-fname_nc=fname_nc_season;
-
+fname_nc=fname_nc_all;
 
 nlayer=length(layer_bounds);
 
@@ -81,20 +82,34 @@ sst=[];
 
 
 
+% load(fname_nc);
+
+nlayer=length(layer_bounds);
 
 
+% % if ~exist([fname_nc,'.mat'],'file')
+% 
 
-% if ~exist([fname_nc,'.mat'],'file')
-
+if isfield(TreeSetUp,'data_type')
+    switch TreeSetUp.data_type
+        case ('NCAR') %no leapyear
+            interptpx_seasonal_anom_tuna_split_new_NCAR
+      
+        otherwise
+           interptpx_seasonal_anom_tuna_split_new
+            
+    end
+else
     interptpx_seasonal_anom_tuna_split_new
+end
 % else
 %     load(fname_nc);
 % end
 
 
 % if ~exist([fname_nc,'_sst.mat'],'file')
-    [sst]=find_oisst_4_orca(coords(:,1),coords(:,2),yr,path_oisst);
-    save([fname_nc,'_sst.mat'],'sst','coords','yr','-v7.3')
+   [sst]=find_oisst_4_orca_model(coords(:,1),coords(:,2),yr,path_oisst,TreeSetUp);
+    save([fname_nc,'_sst.mat'],'sst','coords','yr','-v7')
 % else
 %     load([fname_nc,'_sst.mat'],'sst')
 % end
@@ -173,85 +188,53 @@ parfor ilayer=2:nlayer
 
 
 
-        if ilayer==2
+        if ilayer<=ilayer_depth_use_sst
             good_prof=isfinite(ht_use)&isfinite(sst)&isfinite(tpx);
-            [model_all]=make_trees_mean(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'a');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name,'_split.mat'];
+            [model_all]=make_trees_mean_paige_eqbox_test(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'a',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
+            file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'b');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name,'_split.mat'];
+            [model_all]=make_trees_mean_paige_eqbox_test(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'b',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
+            file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'c');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name,'_split.mat'];
+            [model_all]=make_trees_mean_paige_eqbox_test(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'c',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
+            file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'d');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name,'_split.mat'];
+            [model_all]=make_trees_mean_paige_eqbox_test(use,ht_use,tpx,sst,coords,yr,nbasins_use,good_yr,good_prof,'d',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
+            file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name];
             parsave_model_all(file_big_model,model_all)
 
-        elseif ilayer<=ilayer_depth_use_sst
-            ht_predict=ht_all_junk{ilayer-2}; 
-%             good_prof=isfinite(ht_use)&isfinite(ht_predict);
-            good_prof=isfinite(ht_use)&isfinite(sst)&isfinite(tpx)&isfinite(ht_predict);
-        
-            [model_all]=make_trees_mean_vert(use,ht_use,tpx,sst,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'a');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name,'_split.mat'];
-            parsave_model_all(file_big_model,model_all)
-        
-            [model_all]=make_trees_mean_vert(use,ht_use,tpx,sst,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'b');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name,'_split.mat'];
-            parsave_model_all(file_big_model,model_all)
-        
-            [model_all]=make_trees_mean_vert(use,ht_use,tpx,sst,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'c');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name,'_split.mat'];
-            parsave_model_all(file_big_model,model_all)
-
-            [model_all]=make_trees_mean_vert(use,ht_use,tpx,sst,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'d');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name,'_split.mat'];
-            parsave_model_all(file_big_model,model_all)
-
-        elseif ilayer<=ilayer_depth_use_ssh
-            ht_predict=ht_all_junk{ilayer-2}; 
-%             good_prof=isfinite(ht_use)&isfinite(ht_predict);
-            good_prof=isfinite(ht_use)&isfinite(tpx)&isfinite(ht_predict);
-        
-            [model_all]=make_trees_mean_vert_nosst(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'a');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name,'_split.mat'];
-            parsave_model_all(file_big_model,model_all)
-        
-            [model_all]=make_trees_mean_vert_nosst(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'b');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name,'_split.mat'];
-            parsave_model_all(file_big_model,model_all)
-        
-            [model_all]=make_trees_mean_vert_nosst(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'c');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name,'_split.mat'];
-            parsave_model_all(file_big_model,model_all)
-        
-            [model_all]=make_trees_mean_vert_nosst(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'d');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name,'_split.mat'];
-            parsave_model_all(file_big_model,model_all)
-        
         else
-            ht_predict=ht_all_junk{ilayer-2}; 
-            good_prof=isfinite(ht_use)&isfinite(ht_predict);
-        
-            [model_all]=make_trees_mean_vert_nosst_nossh(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'a');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name,'_split.mat'];
+            good_prof=isfinite(ht_use)&isfinite(tpx);
+            [model_all]=make_trees_mean_nosst_paige_eqbox_test(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'a',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
+            file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_vert_nosst_nossh(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'b');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name,'_split.mat'];
+            [model_all]=make_trees_mean_nosst_paige_eqbox_test(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'b',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
+            file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_vert_nosst_nossh(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'c');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name,'_split.mat'];
+            [model_all]=make_trees_mean_nosst_paige_eqbox_test(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'c',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
+            file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_vert_nosst_nossh(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'d');
-            file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name,'_split.mat'];
+            [model_all]=make_trees_mean_nosst_paige_eqbox_test(use,ht_use,tpx,coords,yr,nbasins_use,good_yr,good_prof,'d',...
+            scale_box_deg_lat,scale_box_eq,lat_change);
+            file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name];
             parsave_model_all(file_big_model,model_all)
+       
+        
+        
+        
         
         end
 
@@ -262,14 +245,39 @@ end
 
 function parsave_holdout(filename,hold_out_mat,ht_hold_out)
          
+              warning('error','MATLAB:save:sizeTooBigForMATFile');
+%          save (filename,'hold_out_mat','ht_hold_out','-v7.3')
 
-         save (filename,'hold_out_mat','ht_hold_out','-v7.3')
+
+
+
+
+
+
+
+               try
+                  save (filename,'hold_out_mat','ht_hold_out','-v7')
+               catch
+                   save (filename,'hold_out_mat','ht_hold_out','-v7.3')
+               end
+
 
 end
 
-function parsave_model_all(filename,model_all)
-         
+function parsave_model_all(filename_short,model_all)
+         warning('error','MATLAB:save:sizeTooBigForMATFile');
 
-         save (filename,'model_all','-v7.3')
+%          save (filename,'model_all','-v7.3')
+     nbasins=length(model_all);
+    for ibasin=1:nbasins
+    
+             ModelTree=model_all(ibasin);
+             filename=[filename_short,'basin_',num2str(ibasin),'.mat'];
+             try 
+                 save (filename,'ModelTree','-v7')
+             catch
+                 save (filename,'ModelTree','-v7.3')
+             end
+    end
 
 end

@@ -66,8 +66,8 @@ end_year_trans=TreeSetUp.end_year_trans;
 
 tree_model_file_name=tree_model_file_name_season;
 path_new_tree=path_tree_junk;
-start_year=start_year;
-end_year=end_year;
+start_year=start_yearly_maps;
+end_year=end_yearly_maps;
 fname_nc=fname_nc_season;
 
 
@@ -227,22 +227,22 @@ parfor ilayer=2:nlayer
 %             good_prof=isfinite(ht_use)&isfinite(ht_predict);
             good_prof=isfinite(ht_use)&isfinite(tpx)&isfinite(ht_predict);
         
-            [model_all]=make_trees_mean_vert_nosst(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'a',...
+            [model_all]=make_trees_mean_vert_nosst_eqbox(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'a',...
             scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name,'_split.mat'];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_vert_nosst(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'b',...
+            [model_all]=make_trees_mean_vert_nosst_eqbox(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'b',...
             scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name,'_split.mat'];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_vert_nosst(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'c',...
+            [model_all]=make_trees_mean_vert_nosst_eqbox(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'c',...
             scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name,'_split.mat'];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_vert_nosst(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'d',...
+            [model_all]=make_trees_mean_vert_nosst_eqbox(use,ht_use,tpx,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'d',...
             scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name,'_split.mat'];
             parsave_model_all(file_big_model,model_all)
@@ -251,22 +251,22 @@ parfor ilayer=2:nlayer
             ht_predict=ht_all_junk{ilayer-2}; 
             good_prof=isfinite(ht_use)&isfinite(ht_predict);
         
-            [model_all]=make_trees_mean_vert_nosst_nossh(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'a',...
+            [model_all]=make_trees_mean_vert_nosst_nossh_eqbox(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'a',...
             scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_a_',layer_name,'_split.mat'];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_vert_nosst_nossh(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'b',...
+            [model_all]=make_trees_mean_vert_nosst_nossh_eqbox(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'b',...
             scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_b_',layer_name,'_split.mat'];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_vert_nosst_nossh(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'c',...
+            [model_all]=make_trees_mean_vert_nosst_nossh_eqbox(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'c',...
             scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_c_',layer_name,'_split.mat'];
             parsave_model_all(file_big_model,model_all)
         
-            [model_all]=make_trees_mean_vert_nosst_nossh(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'d',...
+            [model_all]=make_trees_mean_vert_nosst_nossh_eqbox(use,ht_use,ht_predict,coords,yr,nbasins_use,good_yr,good_prof,'d',...
             scale_box_deg_lat,scale_box_eq,lat_change);
             file_big_model=[path_new_tree,tree_model_file_name,'_model_d_',layer_name,'_split.mat'];
             parsave_model_all(file_big_model,model_all)
