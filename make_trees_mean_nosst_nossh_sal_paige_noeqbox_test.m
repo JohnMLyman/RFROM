@@ -1,5 +1,5 @@
-function [model_all]=make_trees_mean_paige_eqbox_test(use,ht_use,tpx,...
-    sst,coords,yr,nbasins_use,good_yr,good_prof,large_scale,...
+function [model_all]=make_trees_mean_nosst_nossh_sal_paige_noeqbox_test(use,ht_use,...
+    temp_use,layer_offset,coords,yr,nbasins_use,good_yr,good_prof,large_scale,...
     scale_box_deg_lat,scale_box_eq,lat_change)
         
 if ~exist("large_scale",'var')
@@ -10,7 +10,7 @@ model_all=[];
 
 global_basins=find_basin_paige(coords(:,1),coords(:,2));
 
-
+ntree_fact=(max(layer_offset(:))-min(layer_offset)+1)/2;
 
 
 paroptions = statset('UseParallel',true);
@@ -27,17 +27,18 @@ for ibasin=nbasins_use
        ht_mat=ht_use(good)';
        
        if ~isempty(ht_mat)
-           input_mat=nans(length(ht_mat),7);
+           input_mat=nans(length(ht_mat),6);
            input_mat(:,1)=yr(good);
            
            input_mat=smooth_lat_lon_eqbox_model(input_mat,coords,good,ibasin,...
                large_scale,scale_box_deg_lat,scale_box_eq,lat_change);
 
            month_angle=(yr(good)-floor(yr(good))).*2*pi;
-           input_mat(:,4)=tpx(good);
-           input_mat(:,5)=sst(good);
-           input_mat(:,6)=cos(month_angle);
-           input_mat(:,7)=sin(month_angle);
+           
+           input_mat(:,4)=temp_use(good);
+           input_mat(:,5)=cos(month_angle);
+           input_mat(:,6)=sin(month_angle);
+
            ntrees=30;
 
     
@@ -46,7 +47,7 @@ for ibasin=nbasins_use
            end
 
 
-           m=TreeBagger(ntrees,input_mat,ht_mat','Method','regression','MinLeafSize',10,...
+           m=TreeBagger(ntrees,input_mat,ht_mat','Method','regression','MinLeafSize',10*ntree_fact,...
                 'OOBPrediction','on','PredictorSelection','curvature','OOBPredictorImportance','on',...
                  'Options',paroptions);
 %            cmod=compact(m);

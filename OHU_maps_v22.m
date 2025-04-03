@@ -38,7 +38,9 @@ nlon=length(lon);
 nlat=length(lat);
 
 arw=areavec(lon,lat);
+% ht_2000=squeeze(jnansum(ht(:,:,1:2,:),3));
 ht_2000=squeeze(jnansum(ht,3));
+
 curve_heat=jnansum(ht_2000,1);
 curve_heat=squeeze(jnansum(curve_heat,2));
 % arw=areavec(lon,lat);
