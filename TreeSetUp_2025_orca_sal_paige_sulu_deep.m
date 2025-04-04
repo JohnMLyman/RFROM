@@ -1,4 +1,7 @@
 function [TreeSetUp]=TreeSetUp_2025_orca_sal_paige_sulu_deep()
+scale_box_deg_lat=1;
+scale_box_eq=10;
+lat_change=20;
 
 
 nbasins_use=[1:10,12:13];
@@ -173,6 +176,14 @@ end_all_year=end_year;
 nlayer_use=3;
 
 %% load vars into TreeSetUp
+
+
+
+
+TreeSetUp.scale_box_deg_lat=scale_box_deg_lat;
+TreeSetUp.scale_box_eq=scale_box_eq;
+TreeSetUp.lat_change=lat_change;
+
 TreeSetUp.nbasins_use=nbasins_use;
 TreeSetUp.nbasins_use_extra_all_years=nbasins_use_extra_all_years;
 

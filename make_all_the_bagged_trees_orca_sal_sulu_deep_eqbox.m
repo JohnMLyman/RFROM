@@ -36,7 +36,7 @@ toc./60/60
 toc./60./60
 
 'read_ssh_matfiles_all_years_orca_novert_sal_season_paige'
-read_ssh_matfiles_all_years_orca_novert_sal_season_paige(TreeSetUp)
+read_ssh_matfiles_all_years_orca_novert_sal_season_paige_eqbox(TreeSetUp)
 % read_ssh_matfiles_yearly_seasonal_orca_vert_sal_newcycle(TreeSetUp)
 
 toc./60./60
@@ -86,18 +86,18 @@ toc./60/60
 
 
 'baggedtree_all_year_orca_sal_newcycle'
-baggedtree_all_year_orca_sal_novert_paige(TreeSetUp)
+baggedtree_all_year_orca_sal_novert_paige_eqbox(TreeSetUp)
 toc./60./60
 
 'read_ssh_matfiles_all_years_orca_novert_sal_paige'
 
 
-read_ssh_matfiles_all_years_orca_novert_sal_paige(TreeSetUp)
+read_ssh_matfiles_all_years_orca_novert_sal_paige_eqbox(TreeSetUp)
 
-'read_ssh_matfiles_all_years_orca_novert_sal_paige_stoped'
+% 'read_ssh_matfiles_all_years_orca_novert_sal_paige_stoped'
 % only used _stoped if you have erased all the files in the salinty
 % directory.  It is ment to only be used if the code fails
-read_ssh_matfiles_all_years_orca_novert_sal_paige_stoped(TreeSetUp)
+% read_ssh_matfiles_all_years_orca_novert_sal_paige_stoped(TreeSetUp)
 
 toc./60./60
 
