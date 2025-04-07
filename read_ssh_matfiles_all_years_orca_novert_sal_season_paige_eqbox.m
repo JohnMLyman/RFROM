@@ -216,7 +216,7 @@ parfor year_load=time_ssh_load
 
         tree_file_name_out_withcycle_temp=[tree_model_withcycle_temp,'_',layer_name,'_',num2str(year_load)];
         file_name_temp=[path_new_tree_withcycle_temp,tree_file_name_out_withcycle_temp,'_split_7day.mat'] ;
-        [temp_use]=read_temp_use(file_name_temp);
+
 
          [temp_use]=read_temp_use(file_name_temp);
 
