@@ -160,6 +160,11 @@ time_ssh_load=start_year_ssh:end_year_ssh;
 
 
 
+TreePredictInfo.scale_box_deg_lat=scale_box_deg_lat;
+TreePredictInfo.scale_box_eq=scale_box_eq;
+TreePredictInfo.lat_change=lat_change;
+
+
 
 TreePredictInfo.start_year=start_year;
 TreePredictInfo.end_year=end_year;

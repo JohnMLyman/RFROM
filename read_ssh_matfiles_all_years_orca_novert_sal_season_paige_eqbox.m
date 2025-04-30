@@ -192,7 +192,7 @@ TreePredictInfo.nbasin_use=nbasins_use;
 TreePredictInfo.path_new_tree=path_new_tree;
 TreePredictInfo.tree_model=tree_model;
 
-parfor year_load=time_ssh_load
+for year_load=time_ssh_load
 % for year_load=time_ssh_load
 
 
@@ -205,7 +205,7 @@ parfor year_load=time_ssh_load
 
    
     
-    for ilayer=2:nlayer
+    parfor ilayer=2:nlayer
     
         layer_name=[num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer))];
         tree_file_name_out=[tree_model,'_',layer_name,'_',num2str(year_load)];
