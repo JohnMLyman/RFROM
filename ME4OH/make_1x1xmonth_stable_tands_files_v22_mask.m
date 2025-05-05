@@ -1,4 +1,4 @@
-function []=make_1x1xmonth_stable_tands_files_v22(TreeSetUp)
+function []=make_1x1xmonth_stable_tands_files_v22_mask(TreeSetUp)
 
 % MUST MAKE NETCDF WITH MEAN FIRST!!!!!
 
@@ -90,7 +90,7 @@ subdir='yearly_withcycle';
 path_nc_erddap_sal=[path_ERDDAP_sal,'netcdf_loess\',tree_prefix,'\',subdir,'\'];
 path_nc_erddap_temp=[path_ERDDAP_temp,'netcdf\',tree_prefix_temp,'\',subdir,'\'];
 
-path_nc_erddap_sal_stable=[path_ERDDAP_sal,'netcdf_loess_stable\',tree_prefix,'\',subdir,'\'];
+path_nc_erddap_sal_stable_mask=[path_ERDDAP_sal,'netcdf_loess_stable_mask\',tree_prefix,'\',subdir,'\'];
 
 path_nc_erddap_sal_stable_out=[path_ERDDAP_sal,'netcdf_1x1\',tree_prefix,'\',subdir,'\'];
 % path_nc_erddap_temp_stable=[path_ERDDAP_temp,'netcdf_stable\'];
@@ -122,8 +122,8 @@ years=years(:);
 nt=nmod;
 sal_out=nan(360,180,nlayers-1,nt);
 temp_out=nan(360,180,nlayers-1,nt);
-file_name_nc_sal_stable_out= [path_nc_erddap_sal_stable_out,'RFROM_SAL_STABLE_1x1xmonth.nc'];
-file_name_nc_temp_stable_out= [path_nc_erddap_sal_stable_out,'RFROM_TEMP_STABLE_1x1xmonth.nc'];
+file_name_nc_sal_stable_out= [path_nc_erddap_sal_stable_out,'RFROM_SAL_STABLE_mask_1x1xmonth.nc'];
+file_name_nc_temp_stable_out= [path_nc_erddap_sal_stable_out,'RFROM_TEMP_STABLE_mask_1x1xmonth.nc'];
 
 time_out=nan(1,nt);
 n_Ln=ones(4,360,4,180,nlayers-1);
@@ -145,15 +145,15 @@ parfor imod=1:nmod
            if imonth>=10
 %                       file_name_nc_sal= [path_nc_erddap_sal,'RFROM_SAL_LOESS_',num2str(iyear),'_',num2str(imonth),'.nc'];
 %                       file_name_nc_temp= [path_nc_erddap_temp,'RFROM_TEMP_',num2str(iyear),'_',num2str(imonth),'.nc'];
-                      file_name_nc_sal_stable= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
-                      file_name_nc_temp_stable= [path_nc_erddap_sal_stable,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
+                      file_name_nc_sal_stable= [path_nc_erddap_sal_stable_mask,'RFROMV22_SAL_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
+                      file_name_nc_temp_stable= [path_nc_erddap_sal_stable_mask,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
 
 
                    else
 %                       file_name_nc_sal= [path_nc_erddap_sal,'RFROM_SAL_LOESS_',num2str(iyear),'_0',num2str(imonth),'.nc'];
 %                       file_name_nc_temp= [path_nc_erddap_temp,'RFROM_TEMP_',num2str(iyear),'_0',num2str(imonth),'.nc'];
-                      file_name_nc_sal_stable= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
-                      file_name_nc_temp_stable= [path_nc_erddap_sal_stable,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                      file_name_nc_sal_stable= [path_nc_erddap_sal_stable_mask,'RFROMV22_SAL_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                      file_name_nc_temp_stable= [path_nc_erddap_sal_stable_mask,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
 
 
                end
@@ -196,7 +196,7 @@ parfor imod=1:nmod
     end
 end
                        
-file_name_nc_sal_stable_junk= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_2000_05.nc'];
+file_name_nc_sal_stable_junk= [path_nc_erddap_sal_stable_mask,'RFROMV22_SAL_STABLE_2000_05.nc'];
       
 [~,lon,lat,pres,~,mean_pressure_bnds]=load_sal_estimate_nc(file_name_nc_sal_stable_junk);    
 lon_out=(sum(reshape(lon,4,360),1)./4)';

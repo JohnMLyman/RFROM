@@ -116,7 +116,12 @@ months=repmat(1:12,1,nyear);
 years=repmat(year_start_nc:year_end_nc,12,1);
 years=years(:);
 %    parfor iyear=2017:2022
-  parfor imod=1:nmod
+load('D:\data\topo_tpx_new.mat','topo_tpx_new')
+
+ topo_tpx_new=-1.*topo_tpx_new;
+ shallow=topo_tpx_new < 1000;
+
+   parfor imod=1:nmod
       
 %    for iyear=year_start_nc:year_end_nc
 %        for imonth=1:12
@@ -139,57 +144,43 @@ years=years(:);
               
 
                if imonth>=10
-                      file_name_nc_sal= [path_nc_erddap_sal,'RFROMV22_SAL_LOESS_',num2str(iyear),'_',num2str(imonth),'.nc'];
-                      file_name_nc_temp= [path_nc_erddap_temp,'RFROMV22_TEMP_',num2str(iyear),'_',num2str(imonth),'.nc'];
+                     
                       file_name_nc_sal_stable= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
                       file_name_nc_temp_stable= [path_nc_erddap_sal_stable,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
+                      file_name_nc_sal_stable_mask= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
+                      file_name_nc_temp_stable_mask= [path_nc_erddap_sal_stable,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
 
 
                    else
-                      file_name_nc_sal= [path_nc_erddap_sal,'RFROMV22_SAL_LOESS_',num2str(iyear),'_0',num2str(imonth),'.nc'];
-                      file_name_nc_temp= [path_nc_erddap_temp,'RFROMV22_TEMP_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                     
                       file_name_nc_sal_stable= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
                       file_name_nc_temp_stable= [path_nc_erddap_sal_stable,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                      file_name_nc_sal_stable_mask= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                      file_name_nc_temp_stable_mask= [path_nc_erddap_sal_stable,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
 
 
                end
 
-                if exist(file_name_nc_sal,'file') && exist(file_name_nc_temp,'file')
-%                   if exist(file_name_nc_sal,'file') && exist(file_name_nc_temp,'file')&&...
-%                           ~exist(file_name_nc_sal_stable,'file')&& ~exist(file_name_nc_temp,'file')
-                       [sal,lon,lat,pres,time_1950,mean_pressure_bnds]=load_sal_estimate_nc(file_name_nc_sal);
-                       [temp]=load_temp_estimate_nc(file_name_nc_temp);
+%                 if exist(file_name_nc_sal,'file') && exist(file_name_nc_temp,'file')
+                  if exist(file_name_nc_sal_stable,'file') && exist(file_name_nc_temp_stable,'file')
+                       
+                       [sal,lon,lat,pres,time_1950,mean_pressure_bnds]=load_sal_estimate_nc(file_name_nc_sal_stable);
+                       [temp]=load_temp_estimate_nc(file_name_nc_temp_stable);
                        nlon=length(lon);
                        nlat=length(lat);
                        size_sal=size(sal);
                        sal_out=nan(size_sal);
                        temp_out=nans(size_sal);
                        pres=double(pres);
-        %                for itime=1:1
-                      for itime=1:size_sal(4)
         
-                           for ilon=1:nlon
-                               for ilat=1:nlat
-                                   SA_in=squeeze(double(sal(ilon,ilat,:,itime)));
-            
-                                   CT_in=squeeze(double(temp(ilon,ilat,:,itime)));
-                                    [SA_out, CT_out] = gsw_stabilise_SA_CT(SA_in,CT_in,pres');
-                                    sal_out(ilon,ilat,:,itime)=SA_out;
-                                    temp_out(ilon,ilat,:,itime)=CT_out;
-                               end
-            
-                           end
-        
-        
-                      end
-    
+                     
                    
     
                     
                    write_netcfd_cf_sal_pressure_mon_singlev22(sal_out,time_1950,lon,...
-                       lat,pres,mean_pressure_bnds,file_name_nc_sal_stable)
+                       lat,pres,mean_pressure_bnds,file_name_nc_sal_stable_mask)
                     write_netcfd_cf_temp_pressure_mon_singlev22(temp_out,time_1950,lon,...
-                       lat,pres,mean_pressure_bnds,file_name_nc_temp_stable)
+                       lat,pres,mean_pressure_bnds,file_name_nc_temp_stable_mask)
                   end
     %                 file_name_junk_stable_mat= [path_nc_erddap_sal_stable,'RFROM_JUNK_',num2str(iyear),'_0',num2str(imonth),'.mat'];
     % 
@@ -199,9 +190,8 @@ years=years(:);
 %        end
        
   
-   
+   end
    toc./60./60
-  end
 end
 function [sal,lon,lat,pres,time_1950,mean_pressure_bnds]=load_sal_estimate_nc(filename)
  

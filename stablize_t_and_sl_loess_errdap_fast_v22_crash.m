@@ -116,7 +116,7 @@ months=repmat(1:12,1,nyear);
 years=repmat(year_start_nc:year_end_nc,12,1);
 years=years(:);
 %    parfor iyear=2017:2022
-  parfor imod=1:nmod
+   parfor imod=1:nmod
       
 %    for iyear=year_start_nc:year_end_nc
 %        for imonth=1:12
@@ -154,9 +154,9 @@ years=years(:);
 
                end
 
-                if exist(file_name_nc_sal,'file') && exist(file_name_nc_temp,'file')
-%                   if exist(file_name_nc_sal,'file') && exist(file_name_nc_temp,'file')&&...
-%                           ~exist(file_name_nc_sal_stable,'file')&& ~exist(file_name_nc_temp,'file')
+%                 if exist(file_name_nc_sal,'file') && exist(file_name_nc_temp,'file')
+                  if exist(file_name_nc_sal,'file') && exist(file_name_nc_temp,'file')&&...
+                         ( ~exist(file_name_nc_sal_stable,'file')||~exist(file_name_nc_temp_stable,'file'))
                        [sal,lon,lat,pres,time_1950,mean_pressure_bnds]=load_sal_estimate_nc(file_name_nc_sal);
                        [temp]=load_temp_estimate_nc(file_name_nc_temp);
                        nlon=length(lon);
@@ -199,9 +199,8 @@ years=years(:);
 %        end
        
   
-   
+   end
    toc./60./60
-  end
 end
 function [sal,lon,lat,pres,time_1950,mean_pressure_bnds]=load_sal_estimate_nc(filename)
  
