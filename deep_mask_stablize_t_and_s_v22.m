@@ -117,12 +117,15 @@ months=repmat(1:12,1,nyear);
 years=repmat(year_start_nc:year_end_nc,12,1);
 years=years(:);
 %    parfor iyear=2017:2022
-load('D:\data\topo_tpx_new.mat','topo_tpx_new')
+load('D:\data\topo_tpx_new.mat','topo_tpx_new','lat_topo','lon_topo')
 
 topo_tpx_new=-1.*topo_tpx_new;
 shallow=topo_tpx_new < 1000;
-
-   parfor imod=1:nmod
+[LAT,LON]=meshgrid(lat_topo,lon_topo);
+pos_bad_1000=find_bad_depths_1000(LON,LAT);
+pos_good_1000=find_good_depths_1000(LON,LAT);
+pos_mask=(~pos_bad_1000&shallow)|pos_good_1000;
+   for imod=1:nmod
       
 %    for iyear=year_start_nc:year_end_nc
 %        for imonth=1:12
@@ -145,7 +148,8 @@ shallow=topo_tpx_new < 1000;
               
 
                if imonth>=10
-                     
+                                            
+                      file_name_nc_temp= [path_nc_erddap_temp,'RFROMV22_TEMP_',num2str(iyear),'_',num2str(imonth),'.nc'];
                       file_name_nc_sal_stable= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
                       file_name_nc_temp_stable= [path_nc_erddap_sal_stable,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
                       file_name_nc_sal_stable_mask= [path_nc_erddap_sal_stable_mask,'RFROMV22_SAL_STABLE_',num2str(iyear),'_',num2str(imonth),'.nc'];
@@ -153,11 +157,12 @@ shallow=topo_tpx_new < 1000;
 
 
                    else
-                     
+                      
+                      file_name_nc_temp= [path_nc_erddap_temp,'RFROMV22_TEMP_',num2str(iyear),'_0',num2str(imonth),'.nc']; 
                       file_name_nc_sal_stable= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
                       file_name_nc_temp_stable= [path_nc_erddap_sal_stable,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
-                      file_name_nc_sal_stable_mask= [path_nc_erddap_sal_stable,'RFROMV22_SAL_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
-                      file_name_nc_temp_stable_mask= [path_nc_erddap_sal_stable,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                      file_name_nc_sal_stable_mask= [path_nc_erddap_sal_stable_mask,'RFROMV22_SAL_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
+                      file_name_nc_temp_stable_mask= [path_nc_erddap_sal_stable_mask,'RFROMV22_TEMP_STABLE_',num2str(iyear),'_0',num2str(imonth),'.nc'];
 
 
                end
@@ -166,11 +171,15 @@ shallow=topo_tpx_new < 1000;
                   if exist(file_name_nc_sal_stable,'file') && exist(file_name_nc_temp_stable,'file')
                        
                        [sal,lon,lat,pres,time_1950,mean_pressure_bnds]=load_sal_estimate_nc(file_name_nc_sal_stable);
-                       [temp]=load_temp_estimate_nc(file_name_nc_temp_stable);
+                       [temp_stable]=load_temp_estimate_nc(file_name_nc_temp_stable);
+                       [temp]=load_temp_estimate_nc(file_name_nc_temp);
+                       stemp=size(temp);
+                       mask_big=repmat(pos_mask,1,1,stemp(3),stemp(4));
+                       temp_stable(mask_big)=temp(mask_big);
                                               
                        pres=double(pres);
-                       sal(shallow)=nan;
-                       temp(shallow)=nan;
+                       sal(mask_big)=nan;
+                       
         
                      
                    
@@ -178,7 +187,7 @@ shallow=topo_tpx_new < 1000;
                     
                    write_netcfd_cf_sal_pressure_mon_singlev22(sal,time_1950,lon,...
                        lat,pres,mean_pressure_bnds,file_name_nc_sal_stable_mask)
-                    write_netcfd_cf_temp_pressure_mon_singlev22(temp,time_1950,lon,...
+                    write_netcfd_cf_temp_pressure_mon_singlev22(temp_stable,time_1950,lon,...
                        lat,pres,mean_pressure_bnds,file_name_nc_temp_stable_mask)
                   end
     %                 file_name_junk_stable_mat= [path_nc_erddap_sal_stable,'RFROM_JUNK_',num2str(iyear),'_0',num2str(imonth),'.mat'];
