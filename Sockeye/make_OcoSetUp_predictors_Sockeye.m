@@ -7,7 +7,7 @@ file_name_argo='pfloat_sal_greg_jan_2025_QC'
 path_OHCA_data_out='/fast1/predictors_RFROM/';
 path_OHCA_data_in='/fast1/predictors_RFROM/';
 
-path_in_125_ssh='/fast1/predictors_RFROM/SSH/hires/';
+path_in_125_ssh='/fast1/predictors_RFROM/Mtpers/hires/';
 %%  YOU MUST DOWNLOAD ARGO AND AVISO DATA AND PUT THEM IN THE CORRECT LOCATIONS!!!!
 %%%%  Do I need the next line I dont think so!!!  11/14/2017
 
