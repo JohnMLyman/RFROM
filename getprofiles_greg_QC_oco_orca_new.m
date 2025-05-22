@@ -22,10 +22,10 @@ tic
 
 % get directory info
 % d1=sdir('*ocean');
-cd([file_path_in,'\CORIOLIS'])
+cd([file_path_in,'/CORIOLIS'])
 
 % n_press is the number of spaces 
- d1=dir([file_path_in,'\CORIOLIS\*\*\*\*.nc']);
+ d1=dir([file_path_in,'/CORIOLIS/*/*/*/*.nc']);
 
 n_press=2;
 depth=[1:n_press].*NaN;
