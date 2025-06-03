@@ -70,10 +70,12 @@ end
 
 
 rate_12mon=-1.*(ht_12mon(1:end-12)-ht_12mon(13:end)).*fac_year;
+rate_12mons=-1.*(ht_1mon(1:end-12)-ht_1mon(13:end)).*fac_year;
+
 rate_1mon=-1.*(ht_12mon(1:end-4)-ht_12mon(5:end)).*fac_month;
 % rate_12mon_nofilt=-1.*(ht_12mon_nofilt(1:end-12)-ht_12mon_nofilt(13:end)).*fac_year;
 
-tgrid_rate_12mon=(tgrid_12mon(1:end-12)+tgrid_12mon(13:end))./2;
+tgrid_rate_12mons=(tgrid_2mon(1:end-12)+tgrid_1mon(13:end))./2;
 tgrid_rate_1mon=(tgrid_12mon(1:end-4)+tgrid_12mon(5:end))./2;
 
 
@@ -90,4 +92,4 @@ rate=rate_12mon(good_tree);
 
 
 
-write_ascii_CERES_RFROM_new(rate',tgrid_rate',file_txt)
+% write_ascii_CERES_RFROM_new(rate',tgrid_rate',file_txt)
