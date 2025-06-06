@@ -3,7 +3,7 @@ function OcoSetUp=make_OcoSetUp_predictors_Sockeye
 
 %% set the path and file names be ware
 
-file_name_argo='pfloat_sal_greg_jan_2025_QC'
+file_name_argo='pfloat_sal_greg_test'
 path_OHCA_data_out='/fast1/predictors_RFROM/';
 path_OHCA_data_in='/fast1/predictors_RFROM/';
 
@@ -17,9 +17,9 @@ path_in_125_ssh='/fast1/predictors_RFROM/Mtpers/hires/';
 % file_nmae=argo_year_month_day_qc
 
 
-file_name='argo_2025_1_3_QC'
+file_name='argo_2025_6_1_QC'
 file_name_season=[file_name,'_seasonal']
-var_type='h'
+var_type='temp'
 %layer_bounds=[0,40,90,190,290,450,700,950,1450,1950,2000]% layer_bounds must be in assending order
 %layer_bounds=[0,100,300,700,900,1800] % layer_bounds must be in assending order
 % layer_bounds=[0, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125,...

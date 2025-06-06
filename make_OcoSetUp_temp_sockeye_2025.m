@@ -3,11 +3,13 @@ function OcoSetUp=make_OcoSetUp_temp_sockeye_2025
 
 %% set the path and file names be ware
 
-file_name_argo='pfloat_sal_greg_jan_2025_QC'
-path_OHCA_data_out='D:\';
-path_OHCA_data_in='D:\';
+file_name_argo='pfloat_sal_greg_test'
+path_OHCA_data_out='/fast1/predictors_RFROM/';
+path_OHCA_data_in='/fast1/predictors_RFROM/';
 
-path_in_125_ssh='C:\junk_ssh\';
+
+
+path_in_125_ssh='/fast1/predictors_RFROM/Mtpers/hires/';
 %%  YOU MUST DOWNLOAD ARGO AND AVISO DATA AND PUT THEM IN THE CORRECT LOCATIONS!!!!
 %%%%  Do I need the next line I dont think so!!!  11/14/2017
 
@@ -16,8 +18,8 @@ path_in_125_ssh='C:\junk_ssh\';
 % LAYERBOUNDS AND/OR FILE_NAME_ARGO SO THAT THE FILES DO NOT GET OVER WRITEN!!!!!
 % file_nmae=argo_year_month_day_qc
 
+file_name='argo_2025_6_1_QC'
 
-file_name='argo_2025_1_3_QC'
 file_name_season=[file_name,'_seasonal']
 var_type='t'
 %layer_bounds=[0,40,90,190,290,450,700,950,1450,1950,2000]% layer_bounds must be in assending order
@@ -58,9 +60,9 @@ max_day_Dshh=1;
 %set paths
 % file_path='/Volumes/ThunderBay/Data/Globalhc/Floats/Argo/CORIOLIS/'
 % file_path_out='/Volumes/ThunderBay/Data/Globalhc/Floats/Argo/CORIOLIS/depth_grid/'
-file_path=[path_OHCA_data_out,'profiles\',var_type,'_profiles\'];
-file_path_prof=[path_OHCA_data_out,'profiles\'];
-file_path_out=[path_OHCA_data_out,'grided\',var_type,'_grided\'];
+file_path=[path_OHCA_data_out,'profiles/',var_type,'_profiles/'];
+file_path_prof=[path_OHCA_data_out,'profiles/'];
+file_path_out=[path_OHCA_data_out,'grided/,var_type,'_grided/'];
 if ~exist(file_path,'dir')
     mkdir(file_path)
 end
@@ -74,14 +76,14 @@ file_path_in=path_OHCA_data_in;
 % I think you can change file_anme_mean if you want to run a diffent mean but not
 % 100% sure doubble check
 file_name_mean=file_name;
-file_path_hdata=[path_OHCA_data_out,var_type,'_maps\'];
+file_path_hdata=[path_OHCA_data_out,var_type,'_maps/'];
 if ~exist(file_path_hdata,'dir')
     mkdir(file_path_hdata)
 end
 
 file_EN3_type='_cheng_EN4_2014'
-path_EN4_in=[path_OHCA_data_in,'EN4\Cheng_2014\'];
-path_EN4_out=[path_OHCA_data_out,'EN4\Cheng_2014\'];
+path_EN4_in=[path_OHCA_data_in,'EN4/Cheng_2014/'];
+path_EN4_out=[path_OHCA_data_out,'EN4/Cheng_2014/'];
 alltemp_extra='_new'
 file_WOD_suf=file_EN3_type;
 

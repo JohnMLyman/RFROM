@@ -56,7 +56,7 @@ parfor ifile=1:nprof
 %     'DATA_CENTRE ', 'WMO_INST_TYPE ','CYCLE_NUMBER ',...
 %     'POSITION_QC','JULD_QC']);
 %       file_name_nc=[d1(i).name,'/',d2(j).name];
-      file_name_nc=[d1(ifile).folder,'\',d1(ifile).name];
+      file_name_nc=[d1(ifile).folder,'/',d1(ifile).name];
 
       %read_netcdf_getall_getprofiles
       %%

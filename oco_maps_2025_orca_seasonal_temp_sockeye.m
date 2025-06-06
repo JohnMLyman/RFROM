@@ -1,29 +1,18 @@
 OcoSetUp=make_OcoSetUp_temp_sockeye_2025;
 %% YOU ONLY NEED TO UNCOMMENT THIS SECTION IF YOU HAVEN'T RUN THE NORMAL OLD VERSION FIRST WITH THE SAME file_name AND file_name_argo
 
-% % % % Make the SSH files
-% % % 'getalltp_oco_realtime_oco_2022_orca_new'
-% % %  getalltp_oco_realtime_oco_2022_orca_new(OcoSetUp)
-% % %  
-% % % 
-% % % % Make the argo flaot filedata
-% % % 'getprofiles_greg_QC_oco_orca_new'
-% % %   getprofiles_greg_QC_oco_orca_new(OcoSetUp)
-% % % 
-% % % %%
-% %% This section makes the temp files 
-% 
-% % Make the depth grided temperature files for Argo 
-% 'pfloat_temp_oco_itp_TEOS10_new_layers_1_orca_new'
-%  
-%  pfloat_temp_oco_itp_TEOS10_new_layers_1_ocra_new(OcoSetUp)
-% 
-% % QC the argo data temperature on depth levels
-% 'qc_argo_temp_oco_new_layers_1_orca_new'
-%     qc_argo_temp_oco_new_layers_1_orca_new(OcoSetUp) 
-%    
-% % % % Make EN4 files (I know the code is called En3 :) depth grided temperature
-% % % %   files
+
+% Make the depth grided temperature files for Argo 
+'pfloat_temp_oco_itp_TEOS10_new_layers_1_orca_new'
+
+ pfloat_temp_oco_itp_TEOS10_new_layers_1_ocra_new(OcoSetUp)
+
+% QC the argo data temperature on depth levels
+'qc_argo_temp_oco_new_layers_1_orca_new'
+qc_argo_temp_oco_new_layers_1_orca_new(OcoSetUp) 
+
+% % % Make EN4 files (I know the code is called En3 :) depth grided temperature
+% % %   files
 'getwod_temp_oco_EN3_teos10_new_layers_1_orca'
 getwod_temp_oco_EN3_teos10_new_layers_1_orca_new(OcoSetUp)
 
