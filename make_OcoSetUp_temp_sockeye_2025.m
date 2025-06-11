@@ -62,7 +62,7 @@ max_day_Dshh=1;
 % file_path_out='/Volumes/ThunderBay/Data/Globalhc/Floats/Argo/CORIOLIS/depth_grid/'
 file_path=[path_OHCA_data_out,'profiles/',var_type,'_profiles/'];
 file_path_prof=[path_OHCA_data_out,'profiles/'];
-file_path_out=[path_OHCA_data_out,'grided/,var_type,'_grided/'];
+file_path_out=[path_OHCA_data_out,'grided/',var_type,'_grided/'];
 if ~exist(file_path,'dir')
     mkdir(file_path)
 end
