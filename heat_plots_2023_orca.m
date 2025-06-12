@@ -20,7 +20,7 @@ OUTOUT_type=TreeSetUp.OUTOUT_type;
 slope_min_year=start_year_plot;
 slope_max_year=end_year_plot-1;
 depth_top_plot=0;
-depth_bot_plot=2000;
+depth_bot_plot=700;
 % file_name='argo_2022_11_30_QC'
 % 
 % % this is the time range of the maps that are to be saved and outputted]

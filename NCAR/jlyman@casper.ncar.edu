@@ -1,0 +1,72 @@
+file_name_NCAR = 'D:\grided\s_grided\NCAR\argo_2023_03_23_QC_press_sal_NCAR_profile_metadata.mat';
+file_out='D:\grided\s_grided\NCAR\argo_2023_03_23_QC_press_sal_NCAR_profile_data.mat';
+load(file_name_NCAR,'coords_ncar_prof','pos_2d','yr_ncar_prof','max_depth_ncar_prof')
+
+
+
+
+min_model_year=158;
+max_model_year=183;
+ndepth=62;
+file_path_POP='K:\';
+delta_day_file=5;
+sdir=dir([file_path_POP,'g.e20.G.TL319_t13.control.001.pop.h*nc']);
+
+
+nfiles=length(sdir);
+good_files=zeros(nfiles,1,'logical');
+
+for ifile=1:nfile
+    file_name=sdir(ifile).name;
+    year_file=str2num(file_name(37:3+37));
+    if year_file>=min_model_year && year_file<=max_model_year
+        good_files(ifile)=1;
+    end
+
+
+end
+sdir=sdir(good_files);
+nfiles=length(sdir);
+
+s_prof=size(pos_2d);
+ptemp_prof_ncar=nan(s_prof(1),ndepth);
+sal_prof_ncar=ptemp_prof_ncar;
+yr_ncar=nan(s_prof(1),1);
+
+file_name=sdir(1).name;
+file_name_read=[sdir(1).folder,'\',file_name];
+depth=ncread(file_name_read,'z_t')./100;
+dz=ncread(file_name_read,'dz')./100;
+
+for ifiles=1:nfiles
+
+%    file_name='g.e20.G.TL319_t13.control.001.pop.h.0183-12-31.nc';
+   file_name=sdir(ifiles).name;
+   file_name_read=[sdir(ifiles).folder,'\',file_name];
+
+   year_file=str2num(file_name(37:3+37));
+
+   ptemp=ncread(file_name_read,'TEMP');
+   sal=ncread(file_name_read,'SALT');
+   daynum_file=ncread(file_name_read,'time');
+
+   
+   
+   year_file_comp=year_file-183+2018;
+   yr_file=year_file_comp+(daynum_file-year_file*365-1)./365;
+
+
+   
+
+    
+    good=yr_ncar_prof>yr_file-(delta_day_file./2./365) & yr_ncar_prof<=yr_file+(delta_day_file./2./365);
+    pos_2d_junk=pos_2d(good);
+    [ptemp_prof_junk,sal_prof_junk]=find_prof_NCAR(ptemp,sal,pos_2d_junk,ndepth);
+    sal_prof_ncar(good,:)=sal_prof_junk';
+    ptemp_prof_ncar(good,:)=ptemp_prof_junk';
+    yr_ncar(good)=yr_file;
+
+end
+
+save(file_out,'sal_prof_ncar','ptemp_prof_ncar','yr_ncar','depth','coords_ncar_prof','-v7')
+
