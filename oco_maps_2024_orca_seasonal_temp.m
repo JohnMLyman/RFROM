@@ -202,6 +202,7 @@ OcoSetUp.ind_var_name=ind_var_name;
 OcoSetUp.temp_var_name=temp_var_name;
 OcoSetUp.lon_grid_mean=lon_grid_mean;
 OcoSetUp.lat_grid_mean=lat_grid_mean;
+OcoSetUp.temp_var_name=temp_var_name;
 OcoSetUp.mean_temp_var_name=mean_temp_var_name;
 OcoSetUp.temp_anom_var_name=temp_anom_var_name;
 OcoSetUp.temp_wod_var_name=temp_wod_var_name;

@@ -4,6 +4,8 @@ function []=make_temp_NCAR(OcoSetUp)
 layer_bounds=OcoSetUp.layer_bounds;
 
 temp_var_name=OcoSetUp.temp_var_name;
+t_var_name=OcoSetUp.t_var_name;
+
 file_name_season=OcoSetUp.file_name_season;
 file_path_hdata=OcoSetUp.file_path_hdata;
 file_WOD_suf=OcoSetUp.file_WOD_suf;
@@ -45,9 +47,9 @@ for ilayer=2:length(layer_bounds)
 
    
     temp_junk(good)=ptemp_prof_ncar(good,ilayer-1);    
-    eval(['temp_',num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer)),'=temp_junk;'])
+    eval(['t_',num2str(layer_bounds(ilayer-1)),'_',num2str(layer_bounds(ilayer)),'=temp_junk;'])
     
 end
 
 
-eval(['save ',fname_nc,' yr coords ',temp_var_name])
+eval(['save ',fname_nc,' yr coords ',t_var_name])

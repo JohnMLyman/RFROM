@@ -1,7 +1,7 @@
 %% set the path and file names be ware
 file_name_data='argo_2023_03_23_QC_press'
-path_OHCA_data_out='L:\NCAR\';
-path_OHCA_data_in='L:\data\NCAR\';
+path_OHCA_data_out='N:\NCAR\';
+path_OHCA_data_in='N:\data\NCAR\';
 
 % Set up the where the model data is located
 
@@ -101,6 +101,16 @@ for ilayer=2:length(layer_bounds)
     
 end
 temp_var_name=[temp_var_name,' '];
+
+t_var_name=[];
+
+for ilayer=2:length(layer_bounds)
+    
+    t_var_name=[t_var_name,' t_',num2str(layer_bounds(ilayer-1)),...
+        '_',num2str(layer_bounds(ilayer))];
+    
+end
+t_var_name=[t_var_name,' '];
 %%
 OcoSetUp.path_OHCA_data_out=path_OHCA_data_out;
 OcoSetUp.path_NCAR_SSH=path_NCAR_SSH;
@@ -129,6 +139,8 @@ OcoSetUp.layer_bounds=layer_bounds;
 
 
 OcoSetUp.temp_var_name=temp_var_name;
+OcoSetUp.t_var_name=t_var_name;
+
 
 OcoSetUp.file_name_season=file_name_season;
 OcoSetUp.file_name_NCAR_metadata=file_name_NCAR_metadata;
@@ -138,7 +150,7 @@ OcoSetUp.file_name_NCAR_profiles=file_name_NCAR_profiles;
 % % % % Make the SSH snd SST files
 % % % make_SSH_SST_files_NCAR(OcoSetUp)
 % % % 
-% Make profile heatcontent files  
+% % % % Make profile heatcontent files  
 
 % NOT DONE YET!!
 make_temp_NCAR(OcoSetUp) %NEED TO GO OVER THIS!!
@@ -146,6 +158,6 @@ make_temp_NCAR(OcoSetUp) %NEED TO GO OVER THIS!!
 
 % add mean SSH from CMEMS (new Aviso)
 
-'interptpx_seasonal_orca_heat_NCAR'
+'interptpx_seasonal_orca_temp_NCAR'
 
-interptpx_seasonal_orca_heat_NCAR(OcoSetUp)
+interptpx_seasonal_orca_temp_NCAR(OcoSetUp)

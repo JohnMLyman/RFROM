@@ -82,7 +82,7 @@ end_year_trans=TreeSetUp.end_year_trans;
 
 OUTOUT_type=TreeSetUp.OUTOUT_type;%%
 
-movie_name=['ohca_0_2000_v22_',num2str(floor(end_year)),'.mp4'];
+movie_name=['ohca_0_2000_v22_',num2str(floor(end_year)),'_and.mp4'];
 
 v=VideoWriter([path_Figs,movie_name],'MPEG-4');
 v.FrameRate=2;
@@ -135,6 +135,7 @@ nfiles=length(months_movie);
 
 
 for ifile=1:nfiles
+% for ifile=1:1    
 
     %load in data
     year_load=years_movie(ifile);
@@ -158,8 +159,8 @@ for ifile=1:nfiles
 
 
 
-
     for itime=1:ntime
+        
 
 
         figure(1)
@@ -235,7 +236,7 @@ for ifile=1:nfiles
             japos=get(ja,'pos');
             set(ja,'XAxisLocation','bottom','pos',japos-[.075 .7 -.15 -.015])
         
-            frame=getframe(gcf);
+            frame=getframe(gcf,[0 20 560 330]);
             writeVideo(v,frame)
     end
 
